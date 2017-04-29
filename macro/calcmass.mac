@@ -1,0 +1,7 @@
+/SOLVE
+outpr,basic,all
+/output,mass_output,txt
+psolve,elform
+psolve,elprep
+/OUT
+FINISH
