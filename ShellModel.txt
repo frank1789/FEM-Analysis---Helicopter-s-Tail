@@ -1,0 +1,253 @@
+! ---------------------------------------------------------------------------------
+! PROBLEM: MODAL ANALYSIS of the helicopter's TAIL BOOM
+! ...................................................................
+! Natural frequencies and modal shapes of an helicopter's tail boom
+! ---------------------------------------------------------------------------------
+
+FINISH
+/CLEAR,START,NEW
+/FILNAM,Shellmodel
+/TITLE,Helicopter tail boom modal analysis shell model
+*use,testperson.mac
+ *CFOPEN,'ModalFreq','txt'
+ *VWRITE,'omega1','omega2','omega3','omega4','omega5','omega6','omega7','omega8','omega9','omega10'
+  (6x,A8,4X,A8,4x,A8,4x,A8,4X,A8,4X,A8,4X,A8,4X,A8,4X,A8,3X,A8)
+ *CFCLOS
+
+! >>>>> MODEL PARAMETERS <<<<<
+Pi = ACOS(-1) 	!Greek Pi constant
+*AFUN,DEG 	!Specify units for angular measures [DEG]
+		!*AFUN va messa DOPO la definizione di Pi
+eps = 10e-3
+						
+! >>>>> MATERIAL PROPERTIES <<<<<
+!*** steel
+SteelEyounG = 205e9		![Pa] Young's modulus
+SteelNi= 0.29			!Poisson's ratio
+SteelDensity = 7850		![Kg/m^3]
+
+!*** Aluminium
+AluminiumEyounG = 64e9 		![Pa] Young's modulus
+AluminiumNi= 0.34		!Poisson's ratio
+AluminiumDensity = 2700 	![Kg/m^3]
+
+!*** Element size
+E_length_ct = 50e-3		![m]
+
+!geometric parameter
+Lt= 5.2				![m] total tail lenght
+RadBaseTail = 0.65/2		![m]
+RadEndTail = 0.10/2		![m]
+alpha = atan((RadBaseTail-RadEndTail)/Lt) ![deg]
+
+
+!other parameters
+NumberDivisonSurface = 24	!division cone's area		
+
+!------------------------------------------------
+! MODEL DEFINITION
+!-----------------------------------------------
+! Reduced integration Timoshenko beam element
+! with quadratic shape functions
+
+/PREP7
+! >>>> DEFINE GEOMETRY <<<<
+! Define axis rotation
+K,1,0,0,0
+K,2,5,0,0
+
+! create keypoints
+K,3,0,RadBaseTail,0		! start keypoint tails
+*GET,MaxKp,KP,0,num,max 	!extract max keypoint
+*SET,StartKpTail,MaxKp 		!store in variable
+*DO,i,1,7,1
+	*GET,MaxKp,KP,0,num,max 				!extract max keypoint
+	K,MaxKp+1,Lt/7*i,RadBaseTail-Lt/7*i*tan(alpha),0	!create keypoint
+*ENDDO
+*GET,MaxKp,KP,0,num,max 	!extract max keypoint
+*SET,EndKpTail,MaxKp		!store in variable end's tail
+
+!define keypoint mantle'tail
+K,Maxkp+1,0,RadBaseTail,0
+*GET,StartKpMantle,KP,0,num,max
+K,MaxKp+2,Lt/7*i,RadEndTail,0
+*GET,EndKpMantle,KP,0,num,max
+
+*DO,j,StartKpTail,EndKpTail-1,1
+	L,j,j+1
+*ENDDO
+*GET,LenghtLineRference,LINE,1,leng !extract lenght segment line's cone generator
+
+! generate cone
+*GET,NumberLine,line,0,count 		!count lines
+*GET,StartNumberLine,line,0,num,min	!extract first number line
+*GET,NumberLine,line,0,count 		!count lines
+*GET,StartNumberLine,line,0,num,min	!extract first number line
+LSEL,S,LOC,X,0,Lt 
+AROTAT,ALL,,,,,,1,2,360,NumberDivisonSurface	!generate cone
+
+!divide line in array straight line and curved line
+!to manage in next step meshing of elements
+LSEL,S,LENGTH,,LenghtLineRference,LenghtLineRference
+*VGET,StraighLine,LINE, ,LLIST, , ,0
+ALLSEL,ALL
+LSEL,U,LENGTH,,LenghtLineRference,LenghtLineRference
+*VGET,AcrLine,LINE, ,LLIST, , ,0
+
+*GET,StartNumberLine,line,0,num,min
+lsel,all
+LPLOT
+!*
+/VIEW,1,1,1,1
+/ANG,1
+/REP,FAST   
+!*
+*USE, generateimages.mac
+
+!*GET,NumberLine,line,0,count 		!count lines
+!*DIM,StraighLine,ARRAY,NumberLine,2
+!*DIM,ArchLine,ARRAY,NumberLine,2
+!*DO,n,StartNumberLine,NumberLine,1	
+!	*GET,LenghtLine,LINE,n,leng,
+!	*IF,LenghtLineRference,EQ,LenghtLine,THEN
+!		StraighLine(n,1)=n
+!		StraighLine(n,2)=LenghtLine!
+!		*SET,LastStraightLine,n
+!	*ELSE
+!		ArchLine(n,1)=n
+!		ArchLine(n,2)=LenghtLine
+!		*SET,LastArchLine,n
+!	*ENDIF
+!*ENDDO
+
+! >>>> MESH <<<<
+!set material properties and element
+ET,1,BEAM188,,,2
+MP,EX,1,SteelEyounG
+MP,NUXY,1,SteelNi
+MP,DENS,1,SteelDensity
+
+!***Horizzontal STabilizer
+SECTYPE,  1,BEAM,RECT,HorizzontalStabilizer,0  
+SECOFFSET,CENT 
+SECDATA,0.009,0.0015
+
+*GET,LenghtStraighLine,'PARM',StraighLine,DIM,X 
+LSEL,S,LINE,,StraighLine(1),StraighLine(LenghtStraighLine)
+LESIZE,all,E_length_ct
+LATT,1,,1,,,,1
+LMESH,ALL
+LSEL,NONE
+/ESHAPE,1
+/REPLO
+
+!***stiffners
+SECTYPE,  2,BEAM,RECT,Stiffeners,0  
+SECOFFSET,ORIG
+SECDATA,5e-3,5e-3
+
+*GET,LenghtAcrLine,'PARM',AcrLine,DIM,X 
+LSEL,S,LINE,,AcrLine(1),AcrLine(LenghtAcrLine)
+LESIZE,ALL,,,,3
+LATT,1,,1,,,,2
+LMESH,ALL
+LSEL,NONE
+/REPLO
+
+!***Mantle
+!set material properties and element
+ET,2,SHELL181   
+MP,EX,2,AluminiumEyounG
+MP,NUXY,2,AluminiumNi
+MP,DENS,2,AluminiumDensity
+SECT,3,SHELL,,mantle
+SECDATA,5E-3,2,0.0,3
+SECOFFSET,top
+
+TYPE,2
+SECNUM,3
+AESIZE,ALL,E_length_ct,
+MSHAPE,0,2D 
+MSHKEY,1
+AMESH,ALL
+
+EPLOT
+!*
+/VIEW,1,1,1,1
+/ANG,1
+/REP,FAST   
+!*
+*USE, generateimages.mac
+
+!***Boundary conditions at base of tail
+ALLSEL,ALL
+LSEL,S,LOC,Y,-(RadBaseTail*2)+eps,(RadBaseTail*2)+eps 
+LSEL,S,LOC,x,0,0
+!*GET,MinBaseTailLine,line,0,num,min
+!*GET,MaxBaseTailLine,line,0,num,max
+!*DO,i,MinBaseTailLine,MaxBaseTailLine,(MaxBaseTailLine-MinBaseTailLine)/(NumberDivisonSurface-1)
+	DL,ALL,,ALL,0
+!*ENDDO 
+
+*USE,calcmass.mac
+FINISH
+! >>>> SOLUTION <<<<
+!------------------------------------------------
+! Preliminary static analysis - Prestress
+!------------------------------------------------
+/SOLU
+ANTYPE,STATIC,NEW		!Preliminary static analysis
+PSTRES,ON			!Includes prestress effects
+Acel,,9.81			!gravitational acceleration
+
+SOLVE
+FINISH
+
+/POST1  
+PLDISP,1
+*USE,generateimages.mac
+PLNSOL, U,SUM, 0,1.0
+*USE,generateimages.mac
+PLNSOL, S,EQV, 0,1.0
+*USE,generateimages.mac
+
+
+!------------------------------------------------
+! Modal analysis
+!------------------------------------------------
+/SOLU    
+ANTYPE,MODAL,NEW
+PSTRES,ON			! Includes prestress effects
+MODOPT,LANB,10			! First 10 modes are extracted
+LUMPM,OFF			! lumped/consistent mass matrix
+MXPAND,10,,,Yes			! First 10 modes are expanded, calculate element stress
+
+SOLVE
+FINISH
+
+! >>>> POSTPROCESSING <<<<
+/POST1
+SET,LIST		!List natural frequencies
+SET,1,1			!Loads first mode
+PLDISP			!Displays modal shape
+
+*Do,q,1,10,1
+ *GET,omega%q%,MODE,q,FREQ
+*ENDDO
+!***Store Frequencies in file 
+*CFOPEN,'ModalFreq','txt',,append	
+  *VWRITE,omega1,omega2,omega3,omega4,omega5,omega6,omega7,omega8,omega9,omega10
+   (F12.5,F12.5,F12.5,F12.5,F12.5,F12.5,F12.5,F12.5,F12.5,F12.5)
+*CFCLOS
+
+!*
+/VIEW,1,1,1,1
+/ANG,1
+/REP,FAST   
+!*  
+PLDI,,
+ANMODE,120,0.5E-02,,0  
+!*
+
+FINISH
+!/EXIT,NOSAVE
