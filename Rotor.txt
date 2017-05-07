@@ -1,60 +1,73 @@
 FINISH
-/CLEAR,START,NEW
+/CLEAR, START, NEW
 /TITLE, Mozzo
-/FILNAME, Mozzo,1
+/FILNAME, Mozzo, 1
 
 ! >>>>> PARAMETERS <<<<<
-Pi = ACOS(-1)	!Greek Pi constant
-*AFUN,DEG     	!Specify units for angular measures [DEG], specify after function *AFUN
-eps = 10e-3		!precision interval
+*SET, Pi, ACOS(-1)		!Pi constant
+*AFUN, DEG     			!Specify units for angular measures [DEG], specify after function *AFUN
+*SET, eps, 10e-3		!precision interval
 
 !**Blade
-*SET, LengthRotor, 475e-3 					![m] length single rotor blade
-*SET, LengthAttackRotor, 100e-3				![m] lenght attack rotor blade to shaft
+*SET, LengthRotor, 475e-3 						![m] length single rotor blade
+*SET, LengthAttackRotor, 100e-3					![m] lenght attack rotor blade to shaft
 !import data airfoil from table
-*DIM,test,TABLE,101,2,,idx,cordin   		!table 101 rows, 2 conlunms
-*TREAD,test(0,0),tbnaca0008,txt,,3			!skip first 3 line
+*DIM, AirfoilData, TABLE, 101, 2, , idx, cordin   		!table 101 rows, 2 conlunms
+*TREAD, AirfoilData(0, 0), tbnaca0008, txt, , 3		!skip first 3 line
 !get length of table
-*GET,LengthTable,'PARM',TEST,DIM,X
+*GET, LengthTable, 'PARM', AirfoilData, DIM, X
 
 !**DISC
-*SET,DiscRadius,0.15							![m] Radis Rotor
+*SET, DiscRadius, 0.15							![m] Radis Rotor
 
 ! >>>>> GEOMETRY MODEL <<<<<
 !***blade rotor
-CLOCAL, 100, 0, DiscRadius*cos(-30)-0.003, DiscRadius*sin(-30)-0.003, 0,0,90,-120
-CSYS,100
-*GET,LocalSystem,CDSY,,NUM,MAX
+CLOCAL, 100, 0, DiscRadius*cos(-30)-0.003, DiscRadius*sin(-30)+0.003, 0, 0, 90, -120
+CSYS, 100
+*GET, LocalSystem, CDSY, , NUM, MAX
 *SET, MaxKp, 0
-*use,airfoilgen.mac,LocalSystem,MaxKp
-CSYS,0
+*use, airfoilgen.mac, LocalSystem, MaxKp
+CSYS, 0
 /COM, restore default Working Plane 
 SAVE
 
-CLOCAL, 200, 0, DiscRadius*cos(210)+0.003, DiscRadius*sin(210)+0.003, 0,0,90,120
-CSYS,200
-*GET,LocalSystem,CDSY,,NUM,MAX
-*GET, MaxKp, KP,,num,max
-*use,airfoilgen.mac,LocalSystem,MaxKp
-CSYS,0
+CLOCAL, 200, 0, DiscRadius*cos(210)+0.003, DiscRadius*sin(210)+0.003, 0, 0, 90, 120
+CSYS, 200
+*GET, LocalSystem, CDSY, , NUM, MAX
+*GET, MaxKp, KP, , num, max
+*use, airfoilgen.mac, LocalSystem, MaxKp
+CSYS, 0
 /COM, restore default Working Plane 
 SAVE
 
 CLOCAL, 300, 0, 0, DiscRadius*1-0.003, 0, 0, 90
-CSYS,300
-*GET,LocalSystem,CDSY,,NUM,MAX
-*GET, MaxKp, KP,,num,max
-*use,airfoilgen.mac,LocalSystem,MaxKp
-CSYS,0
+CSYS, 300
+*GET, LocalSystem, CDSY, , NUM, MAX
+*GET, MaxKp, KP, , num, max
+*use, airfoilgen.mac, LocalSystem, MaxKp
+CSYS, 0
 /COM, restore default Working Plane 
+*SET, MaxKp, 
 SAVE
 
-ALLSEL,ALL
-/VIEW,1,,,1 
-/ANG,1  
-/REP,FAST 
+ALLSEL, ALL
+/VIEW, 1, , , 1 
+/ANG, 1  
+/REP, FAST 
 SAVE
 
 !***disc support rotor
 /PREP7  
-CYL4,0,0,DiscRadius
+CYL4, 0, 0, DiscRadius
+VOFFST, 453, 0.025, , 
+VOFFST, 453, -0.025, , 
+SAVE
+VADD, ALL
+*GET, Volumes, volu, , count
+/com, number volumes: %volumes%
+*STAT, Volumes
+*SET, Volumes, 
+SAVE
+
+! >>>>> MESHING <<<<<
+ET, 1, SOLID187
