@@ -1,0 +1,101 @@
+! >>>>> PREPROCESSING <<<<<
+/COM,enter Macro
+/PREP7
+/COM, create Local cartesian coordinate system 
+CLOCAL,ARG1+1, 0, 0, 0, -(LengthAttackRotor)
+
+!create keypoint airfoil
+*DO,i,1,LengthTable,1
+	K,i+ARG2,test(i)/1000,test(i,2)/1000,0 							![m]
+	/com, keypoint %i+ARG2% x = %test(i)/1000%, y = %test(i,2)/1000%, z = 0
+*ENDDO
+
+!create lines airfoil
+KSEL,S,LOC,X,0,0.1
+ksel,r,loc,y, -0.05,0.05
+
+*GET,KpBaseLine,Kp,,NUM,MIN
+*GET,KpCloseLine,Kp,,NUM,MAX
+*DO,i,KpBaseLine,KpCloseLine-1,1
+	L,i,i+1
+*ENDDO
+L,KpBaseLine,KpCloseLine
+KSEL,S,LOC,X,0,0.1
+ksel,r,loc,y, -0.05,0.05
+LSLK,s,1
+
+!create area
+AL,ALL
+
+*GET,LocalSystem,CDSY,,NUM,MAX
+*GET,LocalSystemX,CDSY,LocalSystem,loc,x
+*GET,LocalSystemY,CDSY,LocalSystem,loc,y
+*GET,LocalSystemZ,CDSY,LocalSystem,loc,z
+
+KSEL,ALL
+KSEL,s,loc,x,-(LocalSystemX+0.0001),(LocalSystemX+0.0001)
+KSEL,r,loc,y,0,0
+KSEL,r,loc,z,-(LocalSystemZ),(LocalSystemZ)
+
+*GET,KpMax,KP,,NUM,MAX
+*SET,KpLineExtrudeMid,KpMax
+*GET,KpCordinX,KP,KpMax,LOC,X
+*GET,KpCordinY,KP,KpMax,LOC,Y
+
+KSEL,ALL
+*GET,KpMax,KP,,NUM,MAX
+K,KpMax+1,KpCordinX,KpCordinY, -(LengthRotor - LengthAttackRotor)
+/com, create keypoint %KpMax+1% @ %KpCordinX%,%KpCordinY%, %-(LengthRotor - LengthAttackRotor)%
+*GET,KpLineExtrudeStart,KP,,NUM,MAX
+K,KpLineExtrudeStart+1,KpCordinX,KpCordinY,LengthAttackRotor
+/com, create keypoint %KpLineExtrudeStart+1% @ %KpCordinX%,%KpCordinY%, %LengthAttackRotor%
+
+*GET,KpLineExtrudeEnd,KP,,NUM,MAX
+
+*GET,LocalSystem,CDSY,,NUM,MAX
+*GET,LocalSystemX,CDSY,LocalSystem,loc,x
+*GET,LocalSystemY,CDSY,LocalSystem,loc,y
+*GET,LocalSystemZ,CDSY,LocalSystem,loc,z
+
+asel,all
+asel,s,loc,x,0,0.1  
+*GET,SurfaceAirfoil,AREA,,NUM,MAX
+KSEL,ALL
+L,KpLineExtrudeStart,KpLineExtrudeMid
+*GET,LineAlongExtrude,LINE,,NUM,MAX
+VDRAG,SurfaceAirfoil, , , , , ,LineAlongExtrude
+SAVE
+
+L,KpLineExtrudeMid,KpLineExtrudeEnd
+*GET,LineAlongExtrude,LINE,,NUM,MAX
+VDRAG,SurfaceAirfoil, , , , , ,LineAlongExtrude
+*GET,VolumeToCut,VOLU,,NUM,MAX
+SAVE
+
+!extrude surface to cut airfoil
+*GET,LocalSystemZ,CDSY,ARG1,loc,z
+*GET,LocalSystemZZ,CDSY,LocalSystem,loc,z
+WPCSYS,-1
+WPAVE,0,0,0
+WPROTA,0,90
+WPOFFS, 0, 0, -0.05
+CYL4,0.125,0.1,0.09, , , ,0.1
+*GET,VolumeToDelete,VOLU,,NUM,MAX
+WPCSYS,-1
+SAVE
+
+*GET,CuttingArea,AREA,,NUM,MAX
+VSBA,VolumeToCut,CuttingArea
+*GET,VolumeToDelete2,VOLU,,NUM,MAX
+VDELE,VolumeToDelete, , ,1
+VDELE,VolumeToDelete2-1, , ,1
+SAVE
+/COM, restore default Working Plane -Local Coordinate System
+WPSTYL,DEFA
+WPSTYLE,,,,,,,,0
+/COM, restore default Coordinate System
+!Renumberitng for volume
+*GET,LastVolume,VOLU,,NUM,MAX
+NUMSTR,VOLU,LastVolume,
+/COM,exit Macro
+FINISH
