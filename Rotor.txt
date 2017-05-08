@@ -9,16 +9,16 @@ FINISH
 *SET, eps, 10e-3		!precision interval
 
 !**Blade
-*SET, LengthRotor, 475e-3 						![m] length single rotor blade
+*SET, LengthRotor, 475e-3 					![m] length single rotor blade
 *SET, LengthAttackRotor, 100e-3					![m] lenght attack rotor blade to shaft
 !import data airfoil from table
 *DIM, AirfoilData, TABLE, 101, 2, , idx, cordin   		!table 101 rows, 2 conlunms
-*TREAD, AirfoilData(0, 0), tbnaca0008, txt, , 3		!skip first 3 line
+*TREAD, AirfoilData(0, 0), tbnaca0008, txt, , 3			!skip first 3 line
 !get length of table
 *GET, LengthTable, 'PARM', AirfoilData, DIM, X
 
 !**DISC
-*SET, DiscRadius, 0.15							![m] Radis Rotor
+*SET, DiscRadius, 0.15						![m] Radis Rotor
 
 ! >>>>> GEOMETRY MODEL <<<<<
 !***blade rotor
@@ -59,9 +59,14 @@ SAVE
 !***disc support rotor
 /PREP7  
 CYL4, 0, 0, DiscRadius
-VOFFST, 453, 0.025, , 
-VOFFST, 453, -0.025, , 
+ASEL,S,LOC,X,0
+ASEL,r,LOC,Y,0
+ASEL,r,LOC,Z,0
+*GET,RotorDisc,AREA,,NUM,MAX
+VOFFST, RotorDisc, 0.025, , 
+VOFFST, RotorDisc, -0.025, , 
 SAVE
+ALLSEL,ALL
 VADD, ALL
 *GET, Volumes, volu, , count
 /com, number volumes: %volumes%
