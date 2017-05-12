@@ -99,18 +99,18 @@ LSEL, U, LENGTH, , LenghtLineRference, LenghtLineRference
 *VGET, AcrLine, LINE, , LLIST, , , 0
 
 *GET, StartNumberLine, line, 0, num, min
-lsel, all
-LPLOT
-!*
+LSEL, ALL
+
 /VIEW, 1, 1, 1, 1
 /ANG, 1
-/REP, FAST   
-!*
+/REP, FAST
+LPLOT  
 *USE, generateimages.mac
 
 ! >>>> MESH <<<<
+/ESHAPE, 1
 !set material properties and element
-ET, 1, BEAM189!, , , 2
+ET, 1, BEAM189
 MP, EX, 1, SteelEyounG
 MP, NUXY, 1, SteelNi
 MP, DENS, 1, SteelDensity
@@ -142,6 +142,12 @@ LMESH, ALL
 LSEL, NONE
 /REPLO
 
+/VIEW, 1, 1, 1, 1
+/ANG, 1
+/REP, FAST
+EPLOT  
+*USE, generateimages.mac
+
 !***Mantle
 !set material properties and element
 ET, 2, SHELL181   
@@ -158,13 +164,12 @@ AESIZE, ALL, E_length_ct,
 MSHAPE, 0, 2D 
 MSHKEY, 1
 AMESH, ALL
+SAVE
 
-EPLOT
-!*
 /VIEW, 1, 1, 1, 1
 /ANG, 1
 /REP, FAST   
-!*
+EPLOT
 *USE, generateimages.mac
 
 !***Boundary conditions at base of tail
@@ -172,7 +177,7 @@ ALLSEL, ALL
 LSEL, S, LOC, Y, -(RadBaseTail*2)+eps, (RadBaseTail*2)+eps 
 LSEL, S, LOC, x, 0, 0
 DL, ALL, , ALL, 0
- 
+
 *USE, calcmass.mac
 FINISH
 
@@ -229,14 +234,5 @@ PLDISP				!Displays modal shape
    (F12.5, F12.5, F12.5, F12.5, F12.5, F12.5, F12.5, F12.5, F12.5, F12.5)
 *CFCLOS
 
-!*
-/VIEW, 1, 1, 1, 1
-/ANG, 1
-/REP, FAST   
-!*  
-!PLDI, , 
-!ANMODE, 120, 0.5E-02, , 0  
-!*
-
 FINISH
-!/EXIT, NOSAVE
+/EXIT, NOSAVE

@@ -136,9 +136,16 @@ ConnectionKp(1, 2) =tmp2
 *ENDDO 
 SAVE
 
+/VIEW,1,1,1,1   
+/ANG,1  
+/REP,FAST
+LPLOT
+*USE, generateimages.mac
+
 ! >>>> MESH <<<<
+/ESHAPE, 1
 ! set material properties and element
-ET, 1, BEAM189!, , , 2
+ET, 1, BEAM189
 MP, EX, 1, SteelEyounG
 MP, NUXY, 1, SteelNi
 MP, DENS, 1, SteelDensity
@@ -153,7 +160,6 @@ LESIZE, all, E_length_ct
 LATT, 1, , 1, , , , 1
 LMESH, ALL
 LSEL, NONE
-/ESHAPE, 1
 /REPLO
 
 !***stiffners
@@ -168,12 +174,17 @@ LMESH, ALL
 LSEL, NONE
 /REPLO
 
+/VIEW, 1, 1, 1, 1
+/ANG, 1
+/REP, FAST
+EPLOT  
+*USE, generateimages.mac
+
 !***Mantle
 ! set material properties and element
 ET, 2, SHELL181   
 KEYOPT, 2, 3, 2
 KEYOPT, 2, 8, 1
- 
 
 MP, EX, 2, AluminiumEyounG
 MP, NUXY, 2, AluminiumNi
@@ -189,6 +200,12 @@ MSHAPE, 0, 2D
 MSHKEY, 1
 AMESH, ALL
 SAVE
+
+/VIEW, 1, 1, 1, 1
+/ANG, 1
+/REP, FAST
+EPLOT  
+*USE, generateimages.mac
 
 !define shaft and support
 *DIM, KpShaft, ARRAY, 8, 1
@@ -246,6 +263,16 @@ TYPE, 3
 	E, ConnectionShaftSupportNode(i, 1), ConnectionShaftSupportNode(i, 3)
 *ENDDO
 
+EPLOT
+/VIEW,1,,,1 
+/ANG,1  
+/REP,FAST   
+*USE, generateimages.mac
+/VIEW,1,1,1,1   
+/ANG,1  
+/REP,FAST
+*USE, generateimages.mac
+
 !***Boundary conditions at base of tail
 ALLSEL, ALL
 LSEL, S, LOC, Y, -(RadBaseTail*2)+eps, (RadBaseTail*2)+eps 
@@ -273,17 +300,12 @@ FINISH
 
 ! >>>> POSTPROCESSING <<<<
 /POST1  
-PLDISP, 1
-/VIEW, 1, 1, 1, 1   
-/ANG, 1  
-/REP, FAST     
+PLDISP, 1    
 *use, generateimages.mac
-/DSCALE, ALL, 1.0  
 PLNSOL,  U, SUM,  0, 1.0
 *use, generateimages.mac
 PLNSOL,  S, EQV,  0, 1.0
 *use, generateimages.mac
-/REPLOT 
 
 /COM, ------------------------------------------------
 /COM, Modal analysis
@@ -316,14 +338,5 @@ PLDISP				!Displays modal shape
    (F12.5, F12.5, F12.5, F12.5, F12.5, F12.5, F12.5, F12.5, F12.5, F12.5)
 *CFCLOS
 
-!*
-/VIEW, 1, 1, 1, 1   
-/ANG, 1  
-/REP, FAST   
-!*  
-!PLDI, , 
-!ANMODE, 120, 0.5E-02, , 0  
-!*
-
 FINISH
-!/EXIT, NOSAVE
+/EXIT, NOSAVE
