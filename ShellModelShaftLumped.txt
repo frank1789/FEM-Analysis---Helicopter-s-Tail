@@ -2,11 +2,11 @@
 /COM,  PROBLEM: MODAL ANALYSIS of the helicopter's TAIL BOOM
 /COM,  ---------------------------------------------------------------------------------
 /COM,  Natural frequencies and modal shapes of an helicopter's tail boom
-/COM,  ---------------------------------------------------------------------------------	  
+/COM,  ---------------------------------------------------------------------------------
 
 FINISH
 /CLEAR, START, NEW
-/FILNAM, ShellmodelShaft
+/FILNAM, ShellmodelShaftLumped
 /TITLE, Helicopter tail boom modal analysis shell model
 /UNIT, SI
 /INQUIRE, StrJobname, JOBNAME
@@ -48,9 +48,14 @@ FINISH
 !geometric parameter mantle
 *SET, ThichknessMantle, 5e-4 			![m]
 
-!geometric parameter shaft
-*SET, InternalRadius, 0.012
-*SET, ExternalRadius, 0.014
+!!geometric parameter shaft
+!*SET, InternalRadius, 0.012
+!*SET, ExternalRadius, 0.014
+
+!mass Lumped
+*SET, MassShaft, 7				![kg] concentrated mass shaft
+*SET, MassRotor, 30				![kg] concentrated mass motorblock
+*SET, J0, 1					![kg*m^2] concentrated inertia motorblock
 
 !other parameters
 *SET, NumberDivisonSurface, 24	!division cone's area
@@ -132,8 +137,8 @@ ConnectionKp(1, 2) =tmp2
 	ConnectionKp(i+1, 1) =tmp1
 	ConnectionKp(i+1, 2) =tmp2
 	!clear temp variable
-	*SET, tmp1,  
-	*SET, tmp2,  
+	*SET, tmp1,
+	*SET, tmp2,
 *ENDDO 
 SAVE
 
@@ -179,7 +184,7 @@ LSEL, NONE
 /ANG, 1
 /REP, FAST
 EPLOT  
-*USE, generateimages.mac
+*USE, generateimages.mac, StrJobname(1)
 
 !***Mantle
 ! set material properties and element
@@ -222,15 +227,30 @@ Kpshaft(1)=LastNode
 	*GET, LastLine, LINE, , num, max
 	L, LastNode-1, LastNode
 *ENDDO
-
-!***Shaft
-SECTYPE,    4,  BEAM,  CTUBE,  Shaft,  0
-SECOFFSET,  CENT 
-SECDATA,InternalRadius,ExternalRadius
-LESIZE, ALL, E_length_ct
-LATT, 1,  , 1,  ,  ,  , 4  
-LMESH, ALL
 SAVE
+
+!***Shaft lumped mass
+*DIM, ConnectionShaftSupportNode, ARRAY, 8, 3
+*GET, KpShaftDimension,'PARM',KPSHAFT,DIM,X
+ET, 4, MASS21, , ,2        
+R, 4, MassShaft/8                
+TYPE, 4                     
+REAL, 4
+*DO, i, 1, KpShaftDimension, 1
+	*GET,LastNode,NODE,,NUM,MAX
+	N, LastNode+1, KX(Kpshaft(i)), KY(Kpshaft(i)), KZ(Kpshaft(i))
+	*GET,node_numb,NODE,,NUM,MAX
+	ConnectionShaftSupportNode(i, 1) = node_numb
+	E, node_numb
+*ENDDO
+SAVE
+
+!***gearbox lumped
+ET, 5, MASS21, , , 3        !2D mass with rotary inertia
+R, 5, MassRotor, J0
+TYPE, 5                     
+REAL, 5
+E, ConnectionShaftSupportNode(7, 1)
 
 !***Support shaft - rigid connection
 ET, 3, MPC184, 1
@@ -241,12 +261,10 @@ MP, NUXY, 3, SteelNi
 SECNUM, 4
 MAT, 3
 TYPE, 3
-*DIM, ConnectionShaftSupportNode, ARRAY, 8, 3
 *DO, i, 1, 8, 1
 	KSEL, s, KP, , KpShaft(i)
 	NSLK, s
 	*GET, NodeShaft, node, , num, max
-	ConnectionShaftSupportNode(i, 1) = NodeShaft
 	*SET, NodeShaft,  
 	KSEL, ALL
 	KSEL, s, KP, , ConnectionKp(i, 1)
@@ -263,15 +281,16 @@ TYPE, 3
 	E, ConnectionShaftSupportNode(i, 1), ConnectionShaftSupportNode(i, 2)
 	E, ConnectionShaftSupportNode(i, 1), ConnectionShaftSupportNode(i, 3)
 *ENDDO
+SAVE
 
 EPLOT
-/VIEW,1,,,1 
-/ANG,1  
-/REP,FAST   
+/VIEW, 1, , , 1 
+/ANG, 1  
+/REP, FAST   
 *USE, generateimages.mac
-/VIEW,1,1,1,1   
-/ANG,1  
-/REP,FAST
+/VIEW, 1, 1, 1, 1   
+/ANG, 1  
+/REP, FAST
 *USE, generateimages.mac
 
 !***Boundary conditions at base of tail

@@ -1,6 +1,6 @@
 /SOLVE
 outpr,basic,all
-/output,mass_output,txt
+/output,mass_output-%ARG1%,txt
 psolve,elform
 psolve,elprep
 /OUT

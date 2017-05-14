@@ -1,14 +1,15 @@
-! ---------------------------------------------------------------------------------
-! PROBLEM: MODAL ANALYSIS of the helicopter's TAIL BOOM
-! ...................................................................
-! Natural frequencies and modal shapes of an helicopter's tail boom
-! ---------------------------------------------------------------------------------
+/COM,  ---------------------------------------------------------------------------------
+/COM,  PROBLEM: MODAL ANALYSIS of the helicopter's TAIL BOOM
+/COM,  ---------------------------------------------------------------------------------
+/COM,  Natural frequencies and modal shapes of an helicopter's tail boom
+/COM,  ---------------------------------------------------------------------------------
 
 FINISH
 /CLEAR, START, NEW
 /FILNAM, Shellmodel
 /TITLE, Helicopter tail boom modal analysis shell model
 /UNIT, SI
+/INQUIRE, StrJobname, JOBNAME
 *USE, testperson.mac
 
 ! >>>>> MODEL PARAMETERS <<<<<
@@ -178,7 +179,7 @@ LSEL, S, LOC, Y, -(RadBaseTail*2)+eps, (RadBaseTail*2)+eps
 LSEL, S, LOC, x, 0, 0
 DL, ALL, , ALL, 0
 
-*USE, calcmass.mac
+*USE, calcmass.mac, StrJobname(1)
 FINISH
 
 /COM, ------------------------------------------------
@@ -227,7 +228,7 @@ PLDISP				!Displays modal shape
  *GET, omega%q%, MODE, q, FREQ
 *ENDDO
 !***Store Frequencies in file 
-*CFOPEN, 'ModalFreq', 'txt'
+*CFOPEN, 'ModalFreq-%StrJobname(1)%', 'txt'
  *VWRITE, 'omega1', 'omega2', 'omega3', 'omega4', 'omega5', 'omega6', 'omega7', 'omega8', 'omega9', 'omega10'
   (6x, A8, 4X, A8, 4x, A8, 4x, A8, 4X, A8, 4X, A8, 4X, A8, 4X, A8, 4X, A8, 3X, A8)	
   *VWRITE, omega1, omega2, omega3, omega4, omega5, omega6, omega7, omega8, omega9, omega10
