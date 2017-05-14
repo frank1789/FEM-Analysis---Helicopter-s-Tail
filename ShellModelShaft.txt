@@ -340,4 +340,4 @@ PLDISP				!Displays modal shape
 *CFCLOS
 
 FINISH
-/EXIT, NOSAVE
+/EXIT, ALL
