@@ -1,7 +1,7 @@
 /COM,  ---------------------------------------------------------------------------------
-/COM,  PROBLEM: MODAL ANALYSIS of the helicopter's TAIL BOOM
+/COM,   PROBLEM: MODAL ANALYSIS of the helicopter's TAIL BOOM
 /COM,  ---------------------------------------------------------------------------------
-/COM,  Natural frequencies and modal shapes of an helicopter's tail boom
+/COM,   Natural frequencies and modal shapes of an helicopter's tail boom
 /COM,  ---------------------------------------------------------------------------------
 
 FINISH
@@ -61,7 +61,7 @@ FINISH
 *SET, NumberDivisonSurface, 24	!division cone's area
 
 /COM, -----------------------------------------------
-/COM, MODEL DEFINITION
+/COM,  MODEL DEFINITION
 /COM, -----------------------------------------------
 ! >>>> DEFINE GEOMETRY <<<<
 ! Reduced integration Timoshenko beam element, with quadratic shape functions
@@ -307,12 +307,13 @@ LSEL, S, LOC, x, 0, 0
 FINISH
 
 /COM, ------------------------------------------------
-/COM, Preliminary static analysis - Prestress
+/COM,  Preliminary static analysis - Prestress
 /COM, ------------------------------------------------
 ! >>>> SOLUTION <<<<
 /SOLU
 ANTYPE, STATIC, NEW	!Preliminary static analysis
 PSTRES, ON		!Includes prestress effects
+LUMPM, ON
 Acel, , 9.81		!gravitational acceleration
 
 SOLVE
@@ -328,14 +329,14 @@ PLNSOL,  S, EQV,  0, 1.0
 *use, generateimages.mac
 
 /COM, ------------------------------------------------
-/COM, Modal analysis
+/COM,  Modal analysis
 /COM, ------------------------------------------------
 ! >>>> SOLUTION <<<<
 /SOLU    
 ANTYPE, MODAL, NEW
 PSTRES, ON				! Includes prestress effects
 MODOPT, LANB, 10			! First 10 modes are extracted
-LUMPM, OFF				! lumped/consistent mass matrix
+LUMPM, ON				! lumped/consistent mass matrix
 MXPAND, 10, , , Yes			! First 10 modes are expanded, calculate element stress
 
 SOLVE
@@ -347,15 +348,19 @@ SET, LIST			!List natural frequencies
 SET, 1, 1			!Loads first mode
 PLDISP				!Displays modal shape
 
+*DIM,ModalFreq,ARRAY,10,1
 *Do, i, 1, 10, 1
- *GET, omega%i%, MODE, i, FREQ
+ *GET, omega, MODE, i, FREQ
+	ModalFreq(i,1) = omega
+	*SET, omega,
 *ENDDO
-!***Store Frequencies in file 
+
+*SET, omega,
 *CFOPEN, 'ModalFreq-%StrJobname(1)%', 'txt'
- *VWRITE, 'omega1', 'omega2', 'omega3', 'omega4', 'omega5', 'omega6', 'omega7', 'omega8', 'omega9', 'omega10'
-  (6x, A8, 4X, A8, 4x, A8, 4x, A8, 4X, A8, 4X, A8, 4X, A8, 4X, A8, 4X, A8, 3X, A8)	
-  *VWRITE, omega1, omega2, omega3, omega4, omega5, omega6, omega7, omega8, omega9, omega10
-   (F12.5, F12.5, F12.5, F12.5, F12.5, F12.5, F12.5, F12.5, F12.5, F12.5)
+ *VWRITE, 'Num', 'omega'
+  (8x, A8, 4X, A8,)	
+  *VWRITE, sequ, ModalFreq(1,1)
+   (F12.0, F12.5)
 *CFCLOS
 
 FINISH
