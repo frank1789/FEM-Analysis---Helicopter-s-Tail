@@ -1,7 +1,7 @@
 /COM,  ---------------------------------------------------------------------------------
-/COM,  PROBLEM: MODAL ANALYSIS of the helicopter's TAIL BOOM
+/COM,   PROBLEM: MODAL ANALYSIS of the helicopter's TAIL BOOM
 /COM,  ---------------------------------------------------------------------------------
-/COM,  Natural frequencies and modal shapes of an helicopter's tail boom
+/COM,   Natural frequencies and modal shapes of an helicopter's tail boom
 /COM,  ---------------------------------------------------------------------------------
 
 FINISH
@@ -52,7 +52,7 @@ FINISH
 *SET, NumberDivisonSurface, 24	!division cone's area
 
 /COM, -----------------------------------------------
-/COM, MODEL DEFINITION
+/COM,  MODEL DEFINITION
 /COM, -----------------------------------------------
 ! >>>> DEFINE GEOMETRY <<<<
 ! Reduced integration Timoshenko beam element, with quadratic shape functions
@@ -183,7 +183,7 @@ DL, ALL, , ALL, 0
 FINISH
 
 /COM, ------------------------------------------------
-/COM, Preliminary static analysis - Prestress
+/COM,  Preliminary static analysis - Prestress
 /COM, ------------------------------------------------
 ! >>>> SOLUTION <<<<
 /SOLU
@@ -205,7 +205,7 @@ PLNSOL, S, EQV, 0, 1.0
 
 
 /COM, ------------------------------------------------
-/COM, Modal analysis
+/COM,  Modal analysis
 /COM, ------------------------------------------------
 ! >>>> SOLUTION <<<<
 /SOLU    
