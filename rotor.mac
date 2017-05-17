@@ -1,0 +1,164 @@
+/PREP7
+! >>>>> MODEL PARAMETERS SHAST AND DISK <<<<<
+shftlen = 0.50
+shftdia = 0.03
+dskoff = shftlen
+brngoff = 0.12
+dskdia = 1.912
+d_i = 0.40
+dskthk = 0.02
+bstf = 378E+7 	! Brng Stiffness
+nmd = 10 		! Number of modes
+nmspn = 8 		! Number of speeds
+mxspn = 4000 	! Max Omega (rpm)
+
+/COM, -----------------------------------------------
+/COM,  MODEL DEFINITION -SHAFT
+/COM, -----------------------------------------------
+*GET, NodeMax, NODE, , NUM, MAX
+*SET, NodeStart, NodeMax + 1
+N, NodeStart
+N, NodeStart + 8, brngoff
+*GET, NodeEnd, NODE, , NUM, MAX
+FILL, NodeStart, NodeEnd
+*GET, NodeMax, NODE, , NUM, MAX
+N, NodeMax+19, dskoff
+*GET, LastNode, NODE, , NUM, MAX
+FILL, LastNode,  NodeEnd 
+N, LastNode, nx(LastNode) + 0.02
+*GET, LastNode, NODE, , NUM, MAX
+SAVE
+
+!***Bearing ground nodes
+!n, 101, 
+!n, 201, 
+!n, 110, nx(8)
+!n, 210, nx(8)
+
+!clear parameters
+*SET, NodeMax, 
+
+/COM, -----------------------------------------------
+/COM,  MESH - SHAFT
+/COM, -----------------------------------------------
+! >>>>> MATERIAL PROPERTIES <<<<<
+*GET, MaterialNum, MAT, , COUNT
+
+! Aluminum 7075
+*SET, Aluminum7075, MaterialNum + 1
+
+MP, EX, Aluminum7075, 71.7e+9
+MP, DENS, Aluminum7075, 2810
+MP, NUXY, Aluminum7075, 0.33
+
+/COM, DEFINE BEAM188 for SHAFT
+*GET, LastElementType, ETYP, , NUM, MAX
+*SET, BeamShaft, LastElementType + 1
+! Use 188 elements, solid
+ET, BeamShaft, 188, , , 2
+*GET, LastElementType, ETYP, , NUM, MAX
+/COM, BEAM188 for SHAFT have number %BeamShaft%
+SECTYPE, BeamShaft, BEAM, CSOLID
+SECDATA, shftdia/2
+! Make elements
+SECNUM, BeamShaft
+TYPE, BeamShaft
+MAT, Aluminum7075
+!real, 1
+NSEL, S, NODE, , NodeStart, LastNode, 1
+*GET, NodeNumShaft, NODE, , COUNT
+*GET, NodeStartShaft, NODE, , NUM, MIN
+*GET, NodeEndShaft, NODE, , NUM, MAX
+*DO, i, NodeStartShaft, NodeEndShaft-1, 1
+	E, i, i+1
+*ENDDO
+SAVE
+
+!clear parameters
+*SET, NodeNumShaft, 
+*SET, NodeStartShaft, 
+*SET, NodeEndShaft, 
+
+/COM, -----------------------------------------------
+/COM,  MODEL DEFINITION - DISK
+/COM, -----------------------------------------------
+! >>>> DEFINE GEOMETRY <<<<
+WPCSYS, -1 
+WPOFFS, nx(LastNode), ny(LastNode), nz(LastNode)
+WPROTA, , , 90
+CYL4, 0, 0, d_i/2, 0, dskdia/2, 360
+
+/COM, -----------------------------------------------
+/COM,  MESH - SHAFT
+/COM, -----------------------------------------------
+/COM, DEFINE SHELL181 for DISK
+*GET, LastElementType, ETYP, , NUM, MAX
+*SET, ShellDisk, LastElementType + 1
+ET, ShellDisk, SHELL181
+*GET, LastElementType, ETYP, , NUM, MAX
+/COM, SHELL181 for Disk have number %ShellDisk%
+SECTYPE, ShellDisk, SHELL
+secd, dskthk
+TYPE, ShellDisk
+SECN, ShellDisk
+MAT, Aluminum7075
+MSHKEY, 0
+!MSHAPE, 1, 2D
+ESIZE, 0.07
+AMESH, ALL
+SAVE
+
+!*** clamp between disk and spindle
+/COM, *** CLAMP BETWEEN DISK AND SPINDLE
+/COM, DEFINE MASS21 for CLAMP BETWEEN DISK AND SPINDLE
+*GET, LastElementType, ETYP, , NUM, MAX
+*SET, ClampDiskSplinde, LastElementType + 1
+ET, ClampDiskSplinde, MASS21
+*GET, ClampDiskSplinde, ETYP, , NUM, MAX
+/COM, MASS21 for clamp between disk and spindle have number %ClampDiskSplinde%
+R, ClampDiskSplinde, 10, 10, 10, 8.59e-2, 4.295e-2, 4.295e-2
+TYPE, ClampDiskSplinde
+REAL, ClampDiskSplinde
+MAT, Aluminum7075
+E, LastNode
+SAVE
+
+CERIG, LastNode, LastNode-1, ALL
+LSEL, S, LOC, X, nx(LastNode)
+LSEL, R, LOC, Y, -d_i/2, d_i/2
+NSLL, S, 1
+NSEL, A, NODE, , LastNode
+CERIG, LastNode, ALL, ALL
+/REP, FAST
+SAVE
+
+
+!rimane da sistemare i cuscinetti da collegare anche alla struttura
+
+
+
+
+! Bearings
+et, 4, COMBIN14, , 2  !1-D longitudinal spring-damper (UY degree of freedom)
+et, 5, COMBIN14, , 3  !1-D longitudinal spring-damper (UZ degree of freedom)
+r, 4, bstf
+
+type, 4 $real, 4
+e, 1, 101 $e, 8, 110
+type, 5 $real, 4
+e, 1, 201 $e, 8, 210
+
+
+! Fix axial and rotational DOF at ends
+d, 1, ux $d, 1, rotx
+d, 8, ux $d, 4, rotx
+! Fix Brng ground nodes
+d, 101, all $d, 201, all
+d, 110, all $d, 210, all
+
+SAVE
+
+! Plot the model
+/view, 1, 1, 1, 1 $/vup, 1, z
+/eshape, 1, 1 $/pnum, sect, 1
+/num, 1 $eplot
