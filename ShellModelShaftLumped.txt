@@ -48,10 +48,6 @@ FINISH
 !geometric parameter mantle
 *SET, ThichknessMantle, 5e-4 			![m]
 
-!!geometric parameter shaft
-!*SET, InternalRadius, 0.012
-!*SET, ExternalRadius, 0.014
-
 !mass Lumped
 *SET, MassShaft, 7				![kg] concentrated mass shaft
 *SET, MassRotor, 30				![kg] concentrated mass motorblock
@@ -364,4 +360,3 @@ PLDISP				!Displays modal shape
 *CFCLOS
 
 FINISH
-/EXIT, ALL
