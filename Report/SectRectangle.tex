@@ -12,7 +12,7 @@
 \node at (3,10) (c) {};
 \node at (1,10) (d) {};
 
-\draw (a) rectangle (c);
+\draw[fill=lightgray] (a) rectangle (c);
 \draw[-latex] (2,12)--( 2,9.5)node[right]{\scriptsize x};
 \draw[-latex] (2,12)--(3.5,12)node[above]{\scriptsize y};
 
@@ -25,13 +25,14 @@
                 %extension end style={gray,thin},
                 extension start length=0.5cm,
                 extension end length=0.5cm
-                ]{(1,14.5)}{(3,14.5)}{$b$};
+                ]{(1,14.5)}{(3,14.5)}{$9$};
                 
 \dimline    [color=gray,
+			label style={above=0.1ex},
                 % line style={thick},
                 %extension start style={gray,thin},
                 %extension end style={gray,thin},
                 extension start length=0.5cm,
                 extension end length=0.5cm
-                ]{(0.5,10)}{(0.5,14)}{$w$};
+                ]{(0.5,10)}{(0.5,14)}{$1.5$};
 \end{tikzpicture}
