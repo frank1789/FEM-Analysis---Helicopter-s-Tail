@@ -29,7 +29,7 @@ One such measure was the use of a rolled sheet structure, a manufacturing techni
 		Empty weight		& 1220 kg\\
 		Max takeoff weight & 2250 kg\\
 		capability	& 2500 kg\\
-		\multicolumn{2}{>{\columncolor{lightgray}}c}{Propulsione}\\
+		\multicolumn{2}{>{\columncolor{lightgray}}c}{Propulsion}\\
 		Powerplant	&	1 x Turbine\\ 
 		& Turbomeca\\& Arriel 1D1\\
 		Power	&	546 kW\\
@@ -44,7 +44,7 @@ One such measure was the use of a rolled sheet structure, a manufacturing techni
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.80\textwidth]{Helicopter_rescue_sancy_takeoff}
-\caption{Di Fabien1309 - Opera propria, CC BY-SA 2.0 fr, https://commons.wikimedia.org/w/index.php?curid=209802}
+\caption{Helicopter takeoff \\Di Fabien1309 - Own work}
 \label{fig:AS350wiki}
 \end{figure}
 
@@ -53,7 +53,7 @@ One such measure was the use of a rolled sheet structure, a manufacturing techni
 The geometric model is shared among three different configuration where was enfatizated a different approach to evalute the repsonce of structural elemtents in different condition of approximation. Infact the first case is an evalution of the simple model where considering only tail like as a cantilever beam. 
 While in the second case considering also the trasmission shaft rigidly linked at the tail and the presence of a lumped mass to simulate the persence of the block of rotor in the proximity the end of tail. 
 Finally consider a third model where we considering the shaft's weight is distributed along the lenght of tail like as lumped mass, we consider as before another concentrated mass to represent the block of rotor at the tail's end.
-The model was obtained by the revolution of seven contiguous segments with respect to axis placed in the plane $xz$, thus obtaining a truncated cone having a radius \dots $mm$ at the base and a radius \dots $mm$ for the minor base, the whole extension is \dots $m$.
+The model was obtained by the revolution of seven contiguous segments with respect to axis placed in the plane $xz$, thus obtaining a truncated cone having a radius $325\,mm$ at the base and a radius $501,mm$ for the minor base, the whole extension is $5.2\,m$.
 The cone trunk was highlighted in twentyfour equal segments in order to obtain a bse for the reallization of components such as stringer, horizontal stabilizer attachment, stiffners and ribs.
 The result can be seen in the figure \ref{fig:Ansys1}.
 
@@ -75,9 +75,11 @@ For structural elements such as:
 \item ribs.
 \end{itemize}
 Type elements have been used: \textsc{beam189}, this type of element has been assigned a rectangular section and a square as shown in \ref{fig:SectionGeometry}. Specifically, the rectangular section, fig. \ref{subfig:Rectagnle}, is intended to form the stinger and longerons components, instead the square section, fig.\ref{subfig:Square}, perform the ribs.
-The material used for Steel with the following properties:
+The material used is steel with the following properties:
 \begin{itemize}
-\item
+\item Young's modulus, $205\,[GPa]$ 
+\item Poisson's ratio, $0.29$
+\item Density, $7850	\,[kg/m^3]$
 \end{itemize}
 
 \begin{figure}[htb]
@@ -90,10 +92,11 @@ The material used for Steel with the following properties:
 \label{fig:SectionGeometry}
 \end{figure}
 
-\noindent On the other hand, to realize the mantle covering the support structure was used type element: \textsc{shell181}
-The material used for aluminum with the following properties:
+\noindent On the other hand, to realize the mantle covering the support structure was used type element: \textsc{shell181} with aluminum used as material with the following properties:
 \begin{itemize}
-\item
+\item Young's modulus: $64\,[GPa]$;
+\item Poisson's ratio: $0.34$;
+\item Density: $2700\,[kg/m^3]$.
 \end{itemize}
 Finally, you can see the full model in the figure \ref{fig:Ansys1Mesh}.
 
@@ -106,11 +109,24 @@ Finally, you can see the full model in the figure \ref{fig:Ansys1Mesh}.
 
 \subsection{Simple model with shaft}
 In this case, the geometric model has the same features as the previously described model, with the addition of a transmission shaft on top of the cone.
-To make rigid connections, elements of type: \textsc{mpc184}, with key option: ,used to block six degrees of freedom. Moreover, they have resistance properties equal to those of the extruded steel for the beam elements. 
-Note that they were used without densities because the default section in ansys is 1 this because they caused an error in mass calculation and then in the derived natural frequencies of the modal analysis.
+the shaft has been modellated with type of elements \textsc{beam189} with tube section, fig. \ref{fig:SectCTube}, and realized in duralumin characterized by the following property:
+\begin{itemize}
+\item Young's modulus: $72\,[GPa]$;
+\item Poisson's ratio: $0.33$;
+\item Density: $2810\,[kg/m^3]$.
+\end{itemize}
+\begin{figure}[htb]
+\centering
+\resizebox{.25\linewidth}{!}{\input{SectCTube.tex}}
+\caption{Shaft's tubolar section}
+\label{fig:SectCTube}
+\end{figure}
+To make rigid connections, elements of type: \textsc{mpc184}, with key option: $1$,used to block six degrees of freedom. Moreover, they have resistance properties equal to those of the extruded steel for the beam elements. 
+Note that they were used without densities because the default section in \textsc{ansys} is equal to $1$ for default, this because they caused an overstimation in mass calculation and then in the derived natural frequencies of the modal analysis.
 Finally, we consider the mass concentrated near the end of the queue representing the tail rotor block, this simplification is static represented by elements of the type: \textsc{mass21}, to which the following mass and inertia properties were assigned:
 \begin{itemize}
-\item
+\item concentrated mass: $30\,[kg];$
+\item concentrated inertia:  $1\,[kg*m^2]$. 
 \end{itemize}
 The result is visible in fig. \ref{fig:Ansys1MeshShaft}
 
@@ -125,15 +141,29 @@ The result is visible in fig. \ref{fig:Ansys1MeshShaft}
 \end{figure}
 
 \subsection{Simple model with lumped mass}
-Starting with the simple model, in this case, the rigid rigid links are added as done to the model with the shaft, but in this case in the connecting terminal part are added the concave mass portions representing the distributed tree weight. In fact, these are modeled with \textsc{mass21} element type and have the property of having the mass equal to a fraction of the shaft.
+Starting with the simple model, in this case, the rigid rigid links are added as done to the model with the shaft, but in this case in the connecting terminal part are added the concave mass portions representing the distributed shaft weight. In fact, these are modeled with \textsc{mass21} element type and have the property of having the mass equal to a fraction of the shaft.
 Also in this case consider the rotor block as near the tail as modeled in the previous case, the result is visible in Figure 2.
 %% inserire immagini
 
-\section{Pre stress analysis}
-It is noted that both structures are bound to the base of the cone and can be appraised as cantilever beams.
-For both models, a prestressed analysis was performed to verify the stress due to the weight of the structure and oservable a deflection equal to $0.921\, mm$ for the simple model, while for the model with a transmission shaft the deflection is equal to $0.778\, mm$, show in figures \ref{fig:ShellDisplacement}.
-In the following images you can observe the effects of flexural tension distribution for the two structures and the effect due to the presence or not of the shaft, osservable in figures \ref{fig:ShellNodalSolu}--\ref{fig:ShellVonMises}.
-
+\section{Preliminary analysis}
+In the preliminary analysis we have investigated the deformations caused by the proper weight of the structure, in fact this is only subject to gravity acceleration, using an approximate value equal to $9.81\,[m/s^2]$.
+Each model has been studied by making it a constraint with a cone at the base of the cone, so it is possible to make a parallelism with a cantilever beam.
+In the following, table \ref{tab:RecapStressDeformation}, shows deflection and stress values while you can observe the effects of flexural tension distribution for structures and the effect due to the presence or not of the shaft, osservable in figures \ref{fig:ShellNodalSolu}--\ref{fig:ShellVonMises}.
+\begin{table}[!ht]
+\centering
+\begin{tabular}{lcc}
+\hline
+Case				& Displacement 	& 	Stress\\
+				& $[mm]$			&	$[MPa]$\\
+\hline
+Simple model		& value 			& 	value\\
+With shaft		& value 			& 	value\\
+Lumped mass		& value 			& 	value\\
+\hline
+\end{tabular}
+\caption{Deformation values and stress of the models analyzed}
+\label{tab:RecapStressDeformation}
+\end{table}
 \begin{figure}[ht]
 \centering
 \subfloat[][\emph{Simple model}.]
@@ -173,7 +203,8 @@ In the following images you can observe the effects of flexural tension distribu
 	% which applies to <colname> only.
     every head row/.style={before row=\hline,after row=\hline},
     every last row/.style={after row=\hline},
-    display columns/1/.style={column name = Frequence[Hz], column type = {r},
+    display columns/0/.style={column name =Mode, int detect,column type=r},
+    display columns/1/.style={column name =Frequence [Hz], column type=r,
 	fixed,fixed zerofill,precision=5,set thousands separator={\,}},
     %other style option   
     }
