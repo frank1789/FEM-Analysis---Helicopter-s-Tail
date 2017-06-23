@@ -28,6 +28,11 @@ FINISH
 *SET, AluminiumNi, 0.34				!Poisson's ratio
 *SET, AluminiumDensity, 2700 			![Kg/m^3]
 
+!*** Duraluminium
+*SET, DurAluminiumEyounG, 72e9   ![Pa] Young's modulus
+*SET, DurAluminiumNi, 0.33	       !Poisson's ratio
+*SET, DurAluminiumDensity, 2810	      ![Kg/m^3]
+
 !*** Element size
 *SET, E_length_ct, 50e-3			![m]
 
@@ -212,7 +217,9 @@ SAVE
 EPLOT  
 *USE, generateimages.mac
 
-!define shaft and support
+/COM,  -------------------------------
+/COM,   DEFINITION SHAFT AND SUPPORT
+/COM,  -------------------------------
 *DIM, KpShaft, ARRAY, 8, 1
 *GET, LastNode, KP, , num, max
 K, LastNode+1, 0, RadBaseTail+50e-3, 0
@@ -228,22 +235,25 @@ Kpshaft(1)=LastNode
 *ENDDO
 
 !***Shaft
+MP, EX, 3, DurAluminiumEyounG
+MP, NUXY, 3, DurAluminiumNi
+MP, DENS, 3, DurAluminiumDensity
 SECTYPE,    4,  BEAM,  CTUBE,  Shaft,  0
 SECOFFSET,  CENT 
 SECDATA,InternalRadius,ExternalRadius
 LESIZE, ALL, E_length_ct
-LATT, 1,  , 1,  ,  ,  , 4  
+LATT, 3,  , 1,  ,  ,  , 4  
 LMESH, ALL
 SAVE
 
 !***Support shaft - rigid connection
 ET, 3, MPC184, 1
 KEYOPT, 3, 1, 1
-MP, EX, 3, SteelEyounG
-MP, NUXY, 3, SteelNi
+MP, EX, 4, SteelEyounG
+MP, NUXY, 4, SteelNi
 
 SECNUM, 4
-MAT, 3
+MAT, 4
 TYPE, 3
 *DIM, ConnectionShaftSupportNode, ARRAY, 8, 3
 *DO, i, 1, 8, 1
