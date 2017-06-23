@@ -1,0 +1,409 @@
+/COM,  ---------------------------------------------------------------------------------
+/COM,   PROBLEM: MODAL ANALYSIS of the helicopter's TAIL BOOM
+/COM,  ---------------------------------------------------------------------------------
+/COM,   Natural frequencies and modal shapes of an helicopter's tail boom
+/COM,  ---------------------------------------------------------------------------------	  
+
+FINISH
+/CLEAR, START, NEW
+/FILNAM, ShellmodelShaft
+/TITLE, Helicopter tail boom modal analysis shell model
+/UNIT, SI
+/INQUIRE, StrJobname, JOBNAME
+*USE, testperson.mac
+
+! >>>>> MODEL PARAMETERS <<<<<
+*SET, Pi, ACOS(-1)		!Pi constant
+*AFUN, DEG     			!Specify units for angular measures [DEG], specify after function *AFUN
+*SET, eps, 10e-3		!precision interval
+						
+! >>>>> MATERIAL PROPERTIES <<<<<
+!*** steel
+*SET, SteelEyounG, 205e9			![Pa] Young's modulus
+*SET, SteelNi, 0.29				!Poisson's ratio
+*SET, SteelDensity, 7850			![Kg/m^3]
+
+!*** Aluminium
+*SET, AluminiumEyounG, 64e9 			![Pa] Young's modulus
+*SET, AluminiumNi, 0.34				!Poisson's ratio
+*SET, AluminiumDensity, 2700 			![Kg/m^3]
+
+!*** Element size
+*SET, E_length_ct, 50e-3			![m]
+
+!geometric parameter
+*SET, Lt, 5.2					![m] total tail lenght
+*SET, RadBaseTail, 0.65/2			![m]
+*SET, RadEndTail, 0.10/2			![m]
+*SET, alpha, atan((RadBaseTail-RadEndTail)/Lt) 	![deg]
+
+!geometric parameters section stiffner
+*SET, StiffnerBase, 5e-3
+*SET, StiffnerHeight, 5e-3
+
+!geometric parameters section Horizzontal Stabilizer
+*SET, HorizStabBase, 0.009
+*SET, HorizStabHeigth, 0.0015
+
+!geometric parameter mantle
+*SET, ThichknessMantle, 5e-4 			![m]
+
+!geometric parameter shaft
+*SET, InternalRadius, 0.012
+*SET, ExternalRadius, 0.014
+
+!mass Lumped
+*SET, MassRotor, 30				![kg] concentrated mass motorblock
+*SET, J0, 1					![kg*m^2] concentrated inertia motorblock
+
+!other parameters
+*SET, NumberDivisonSurface, 24	!division cone's area
+
+/COM, -----------------------------------------------
+/COM,  MODEL DEFINITION
+/COM, -----------------------------------------------
+! >>>> DEFINE GEOMETRY <<<<
+! Reduced integration Timoshenko beam element, with quadratic shape functions
+/PREP7
+! Define axis rotation
+K, 1, 0, 0, 0
+K, 2, 5, 0, 0
+
+! create keypoints
+K, 3, 0, RadBaseTail, 0						!start keypoint tails
+*GET, MaxKp, KP, 0, NUM, MAX 					!extract max keypoint
+*SET, StartKpTail, MaxKp 					!store in variable
+*DIM, SegmentRadius, ARRAY, 7, 1				!store in array radius of segment distance between 0 - Y before rotating
+*DO, i, 1, 7, 1
+	*GET, MaxKp, KP, 0, NUM, MAX 				!extract max keypoint
+	K, MaxKp+1, Lt/7*i, RadBaseTail-Lt/7*i*tan(alpha), 0	!create keypoint
+	SegmentRadius(i) = RadBaseTail-Lt/7*i*tan(alpha)
+*ENDDO
+*GET, MaxKp, KP, 0, NUM, MAX 					!extract max keypoint
+*SET, EndKpTail, MaxKp						!store in variable end's tail
+SAVE
+
+! define keypoint mantle'tail
+K, Maxkp+1, 0, RadBaseTail, 0
+*GET, StartKpMantle, KP, 0, NUM, MAX
+K, MaxKp+2, Lt/7*i, RadEndTail, 0
+*GET, EndKpMantle, KP, 0, NUM, MAX
+SAVE
+*DO, j, StartKpTail, EndKpTail-1, 1
+	L, j, j+1
+*ENDDO
+*GET, LenghtLineRference, LINE, 1, LENG 			!extract lenght segment line's cone generator
+
+! generate cone
+*GET, NumberLine, line, 0, COUNT 				!count lines
+*GET, StartNumberLine, LINE, 0, NUM, MIN			!extract first number line
+LSEL, S, LOC, X, 0, Lt 
+AROTAT, ALL, , , , , , 1, 2, 360, NumberDivisonSurface		!generate cone
+SAVE
+
+!divide line in array straight line and curved line
+!to manage in next step meshing of elements
+*GET, NumberLine, LINE, 0, COUNT 				!count lines
+*DIM, StraighLine, ARRAY, NumberLine, 2
+*DIM, ArchLine, ARRAY, NumberLine, 2
+*DO, n, StartNumberLine, NumberLine, 1	
+	*GET, LenghtLine, LINE, n, leng, 
+	*IF, LenghtLineRference, EQ, LenghtLine, THEN
+		StraighLine(n, 1) = n
+		StraighLine(n, 2) = LenghtLine
+		*SET, LastStraightLine, n
+	*ELSE
+		ArchLine(n, 1)=n
+		ArchLine(n, 2)=LenghtLine
+		*SET, LastArchLine, n
+	*ENDIF
+*ENDDO
+
+*DIM, ConnectionKp, ARRAY, 8, 2
+KSEL, S, LOC, X, 0, RadBaseTail
+KSEL, S, LOC, Y, RadBaseTail*cos(360/NumberDivisonSurface), RadBaseTail*cos(360/NumberDivisonSurface)
+KSEL, R, LOC, Z, -RadBaseTail, RadBaseTail
+*GET, tmp1, KP, 0, NUM, MIN
+*GET, tmp2, KP, 0, NUM, MAX
+ConnectionKp(1, 1) =tmp1
+ConnectionKp(1, 2) =tmp2
+*DO, i, 1, 7, 1
+	KSEL, S, LOC, X, Lt/7*i
+	KSEL, R, LOC, Y, SegmentRadius(i)*cos(360/NumberDivisonSurface), SegmentRadius(i)*cos(360/NumberDivisonSurface)
+	KSEL, R, LOC, Z, -SegmentRadius(i)*sin(360/NumberDivisonSurface), SegmentRadius(i)*sin(360/NumberDivisonSurface)
+	*GET, tmp1, KP, 0, NUM, MIN
+	*GET, tmp2, KP, 0, NUM, MAX
+	ConnectionKp(i+1, 1) =tmp1
+	ConnectionKp(i+1, 2) =tmp2
+	!clear temp variable
+	*SET, tmp1,  
+	*SET, tmp2,  
+*ENDDO 
+SAVE
+
+! >>>> MESH <<<<
+/ESHAPE, 1
+! set material properties and element
+ET, 1, BEAM189
+KEYOPT,1,1,1 
+KEYOPT,1,15,1   
+
+MP, EX, 1, SteelEyounG
+MP, NUXY, 1, SteelNi
+MP, DENS, 1, SteelDensity
+
+!***Horizzontal STabilizer
+SECTYPE,   1, BEAM, RECT, HorizzontalStabilizer, 0  
+SECOFFSET, CENT 
+SECDATA, HorizStabBase, HorizStabHeigth
+
+LSEL, S, LINE, , 1, LastStraightLine
+LESIZE, all, E_length_ct
+LATT, 1, , 1, , , , 1
+LMESH, ALL
+LSEL, NONE
+/REPLO
+
+!***stiffners
+SECTYPE,   2, BEAM, RECT, Stiffeners, 0  
+SECOFFSET, ORIG
+SECDATA, StiffnerBase, StiffnerHeight
+
+LSEL, S, LINE, , LastStraightLine+1, LastArchLine
+LESIZE, ALL, , , , 3
+LATT, 1, , 1, , , , 2
+LMESH, ALL
+LSEL, NONE
+/REPLO
+
+!***Mantle
+! set material properties and element
+ET, 2, SHELL181   
+KEYOPT, 2, 3, 2
+KEYOPT, 2, 8, 2
+
+MP, EX, 2, AluminiumEyounG
+MP, NUXY, 2, AluminiumNi
+MP, DENS, 2, AluminiumDensity
+SECT, 3, SHELL, , mantle
+SECDATA, ThichknessMantle, 2, 0.0, 3
+SECOFFSET, TOP 
+
+TYPE, 2
+SECNUM, 3
+AESIZE, ALL, E_length_ct, 
+MSHAPE, 0, 2D 
+MSHKEY, 1
+AMESH, ALL
+SAVE
+
+!define shaft and support
+*DIM, KpShaft, ARRAY, 8, 1
+*GET, LastNode, KP, , num, max
+K, LastNode+1, 0, RadBaseTail+50e-3, 0
+*GET, LastNode, KP, , num, max
+Kpshaft(1)=LastNode
+*DO, i, 1, 5, 1
+	*GET, LastNode, KP, , num, max
+	K, LastNode+1, Lt/7*i, SegmentRadius(i)+50e-3, 0
+	*GET, LastNode, KP, , num, max
+	Kpshaft(i+1)=LastNode
+	*GET, LastLine, LINE, , num, max
+	L, LastNode-1, LastNode
+*ENDDO
+
+!***Shaft
+SECTYPE,    4,  BEAM,  CTUBE,  Shaft,  0
+SECOFFSET,  CENT 
+SECDATA,InternalRadius,ExternalRadius
+LESIZE, ALL, E_length_ct
+LATT, 1,  , 1,  ,  ,  , 4  
+LMESH, ALL
+SAVE
+
+!***Support shaft - rigid connection
+ET, 3, MPC184, 1
+KEYOPT, 3, 1, 1
+MP, EX, 3, SteelEyounG
+MP, NUXY, 3, SteelNi
+
+SECNUM, 4
+MAT, 3
+TYPE, 3
+*DIM, ConnectionShaftSupportNode, ARRAY, 8, 3
+*DO, i, 1, 8, 1
+	KSEL, s, KP, , KpShaft(i)
+	NSLK, s
+	*GET, NodeShaft, node, , num, max
+	ConnectionShaftSupportNode(i, 1) = NodeShaft
+	*SET, NodeShaft,  
+	KSEL, ALL
+	KSEL, s, KP, , ConnectionKp(i, 1)
+	NSLK, s
+	*GET, NodeSupport1, node, , num, max
+	ConnectionShaftSupportNode(i, 2) = NodeSupport1
+	*SET, NodeSupport1,  
+	KSEL, ALL
+	KSEL, s, KP, , ConnectionKp(i, 2)
+	NSLK, s
+	*GET, NodeSupport2, node, , num, max
+	ConnectionShaftSupportNode(i, 3) = NodeSupport2
+	*SET, NodeSupport2, 
+	E, ConnectionShaftSupportNode(i, 1), ConnectionShaftSupportNode(i, 2)
+	E, ConnectionShaftSupportNode(i, 1), ConnectionShaftSupportNode(i, 3)
+*ENDDO
+
+!***gearbox lumped
+ET, 5, MASS21, , , 3        !2D mass with rotary inertia
+R, 5, MassRotor, J0
+TYPE, 5                     
+REAL, 5
+E, ConnectionShaftSupportNode(7, 1)
+SAVE
+
+/COM, ------------------------------------------------
+/COM,  COMPLETE MODEL
+/COM, ------------------------------------------------
+!selct base keypoint and node
+KSEL, S, LOC, X, 4.457143
+KSEL, R, LOC, Y, 0.4464286E-01
+KSEL, R, LOC, Z, -0.7732370E-01, 0.7732370E-01
+*GET, BaseBearing1, KP, , NUM, MIN
+*GET, BaseBearing2, KP, , NUM, MAX
+ALLSEL,ALL
+*GET, LastNode, NODE, , NUM, MAX
+N, LastNode + 1, kx(BaseBearing1), SegmentRadius(6)+50e-3, kz(BaseBearing1) 
+*GET, NodeBearing1, NODE, , NUM, MAX
+*SET, LastNode,
+*GET, LastNode, NODE, , NUM, MAX
+N, LastNode + 1, kx(BaseBearing2), SegmentRadius(6)+50e-3, kz(BaseBearing2)
+*GET, NodeBearing2, NODE, , NUM, MAX
+*GET, NodeBearing2CoorX, NODE, NodeBearing2, LOC, X
+*GET, NodeBearing2CoorY, NODE, NodeBearing2, LOC, Y
+*GET, NodeBearing2CoorZ, NODE, NodeBearing2, LOC, Z
+!***Set local system and start macro rotor
+*GET, LocalSystem, CDSY, , NUM, MAX
+*SET, RotorLocalSystem, LocalSystem + 100
+CLOCAL, RotorLocalSystem, 0,  Lt/7*6, SegmentRadius(6)+50e-3, kz(BaseBearing1), , , 90
+CSYS, RotorLocalSystem
+
+*USE, rotor.mac, NodeBearing1, NodeBearing2, NodeBearing2CoorX, NodeBearing2CoorY, NodeBearing2CoorZ
+CSYS, 0
+SAVE
+
+!define rigid link
+*GET, LastElementType, ETYP, , NUM, MAX
+*SET, RigidLink, LastElementType+1
+ET,RigidLink,MPC184
+MAT, 3
+TYPE, RigidLink
+KSEL,S,KP,,BaseBearing1
+NSLK,S
+*GET, LastNode, NODE, , NUM, MAX
+E, LastNode, NodeStart
+ALLSEL,ALL
+KSEL,S,KP,,BaseBearing2
+NSLK,S
+*GET, LastNode, NODE, , NUM, MAX
+E, LastNode, NodeEnd
+
+
+
+
+!***Boundary conditions at base of tail
+ALLSEL, ALL
+LSEL, S, LOC, Y, -(RadBaseTail*2)+eps, (RadBaseTail*2)+eps 
+LSEL, S, LOC, x, 0, 0
+*GET, MinBaseTailLine, line, 0, num, min
+*GET, MaxBaseTailLine, line, 0, num, max
+*DO, i, MinBaseTailLine, MaxBaseTailLine, 8
+	DL, i, , ALL, 0
+*ENDDO 
+SAVE
+
+
+
+!clear parmaters
+*SET, BaseBearing1, 
+*SET, BaseBearing2,
+*SET, LastNode,
+*SET, i,
+*SET, NodeBearing2
+*SET, NodeBearing2CoorX,
+*SET, NodeBearing2CoorY,
+*SET, NodeBearing2CoorZ,
+*SET, LocalSystem, 
+*SET, RotorLocalSystem,
+
+
+!***Boundary conditions at base of tail
+ALLSEL, ALL
+LSEL, S, LOC, Y, -(RadBaseTail*2)+eps, (RadBaseTail*2)+eps 
+LSEL, S, LOC, x, 0, 0
+*GET, MinBaseTailLine, line, 0, num, min
+*GET, MaxBaseTailLine, line, 0, num, max
+*DO, i, MinBaseTailLine, MaxBaseTailLine, 8
+	DL, i, , ALL, 0
+*ENDDO 
+
+*USE, calcmass.mac, StrJobname(1)
+FINISH
+SAVE
+
+/COM, ------------------------------------------------
+/COM,  Preliminary static analysis - Prestress
+/COM, ------------------------------------------------
+! >>>> SOLUTION <<<<
+/SOLU
+ANTYPE, STATIC, NEW	!Preliminary static analysis
+PSTRES, ON		!Includes prestress effects
+Acel, , 9.81		!gravitational acceleration
+
+SOLVE
+FINISH
+
+! >>>> POSTPROCESSING <<<<
+/POST1  
+PLDISP, 1    
+*use, generateimages.mac
+PLNSOL,  U, SUM,  0, 1.0
+*use, generateimages.mac
+PLNSOL,  S, EQV,  0, 1.0
+*use, generateimages.mac
+
+/COM, ------------------------------------------------
+/COM,  Modal analysis
+/COM, ------------------------------------------------
+! >>>> SOLUTION <<<<
+/SOLU    
+ANTYPE, MODAL, NEW
+PSTRES, ON				! Includes prestress effects
+MODOPT, LANB, 10			! First 10 modes are extracted
+LUMPM, OFF				! lumped/consistent mass matrix
+MXPAND, 10, , , Yes			! First 10 modes are expanded, calculate element stress
+
+SOLVE
+FINISH
+
+! >>>> POSTPROCESSING <<<<
+/POST1
+SET, LIST			!List natural frequencies
+SET, 1, 1			!Loads first mode
+PLDISP				!Displays modal shape
+
+*DIM,ModalFreq,ARRAY,10,1
+*Do, i, 1, 10, 1
+ *GET, omega, MODE, i, FREQ
+	ModalFreq(i,1) = omega
+	*SET, omega,
+*ENDDO
+
+*SET, omega,
+*CFOPEN, 'ModalFreq-%StrJobname(1)%', 'txt'
+ *VWRITE, 'Num', 'omega'
+  (8x, A8, 4X, A8,)	
+  *VWRITE, sequ, ModalFreq(1,1)
+   (F12.0, F12.5)
+*CFCLOS
+
+FINISH
