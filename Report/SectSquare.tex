@@ -1,0 +1,36 @@
+\begin{tikzpicture}
+%linee guida
+%\foreach \x in {0,1,...,15}
+%   \draw [help lines] (\x,0) node [below,%
+%          font=\footnotesize] {$\x$} -- (\x,15);
+%\foreach \y in {0,1,...,15}
+%   \draw [help lines] (0,\y) node [left,%
+%          font=\footnotesize] {$\y$} -- (15,\y);
+
+\node at (1,14) (a) {};
+\node at (4,14) (b) {};
+\node at (4,11) (c) {};
+\node at (1,11) (d) {};
+
+\draw (a) rectangle (c);
+\draw[-latex] (2.5,12.5)--( 2.5,10.5)node[right]{\scriptsize x};
+\draw[-latex] (2.5,12.5)--(4.5,12.5)node[above]{\scriptsize y};
+
+
+% quote track
+ \dimline    [color=gray,
+                % line style={thick},
+                %extension start style={gray,thin},
+                %extension end style={gray,thin},
+                extension start length=0.5cm,
+                extension end length=0.5cm
+                ]{(1,14.5)}{(4,14.5)}{$b$};
+                
+\dimline    [color=gray,
+                % line style={thick},
+                %extension start style={gray,thin},
+                %extension end style={gray,thin},
+                extension start length=0.5cm,
+                extension end length=0.5cm
+                ]{(0.5,11)}{(0.5,14)}{$w$};
+\end{tikzpicture}
