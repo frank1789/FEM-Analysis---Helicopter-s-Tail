@@ -1,0 +1,105 @@
+%========================================
+% PREAMBOLO
+%========================================
+
+% === Impostazione del documento ==========================
+\documentclass[12pt,a4paper,twoside,english,hidelinks]{book}
+\pagenumbering{arabic}
+\usepackage{setspace}
+\onehalfspace
+
+% === Regolazione dei margini =============================
+\addtolength{\oddsidemargin}{30pt}
+\addtolength{\evensidemargin}{-30pt}
+\usepackage{fancyhdr}
+\usepackage{multirow}
+\usepackage{multicol}
+\usepackage[section]{placeins}
+
+% === Impostazione dei font ===============================
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{ae}
+\usepackage{relsize}
+\usepackage{csquotes} 
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{mathdots}
+\usepackage{mathtools}
+\usepackage[colorlinks=true]{hyperref}
+\hypersetup{
+	bookmarksnumbered=true,
+	linkcolor=black,
+	citecolor=black,
+	%pagecolor=black,
+	urlcolor=black,
+}
+\usepackage{verbatim}
+\usepackage{alltt}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\DeclarePairedDelimiter{\norma}{\lVert}{\rVert}
+
+% === Integrazione delle figure ===========================
+\usepackage{graphicx}
+\graphicspath{{./imgs/}}
+\renewcommand{\figurename}{Fig.}
+\usepackage{subfig}
+\usepackage[font=small,labelfont=bf]{caption}
+\usepackage{wrapfig}
+
+
+% === Per gli algoritmi ===================================
+\usepackage{algorithmicx}
+\usepackage[ruled]{algorithm}
+\usepackage{algpseudocode}
+
+% === Per le tabelle ====================================
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{color}
+\usepackage{colortbl}
+\usepackage{pgfplotstable}
+\usepackage{makecell}
+\usepackage{booktabs}
+
+% === Per la bibliografia multicolonna =======================
+\usepackage{etoolbox}
+\patchcmd{\thebibliography}{\list}{\begin{multicols}{2}\smaller\list}{}{}
+\appto{\endthebibliography}{\end{multicols}}
+%==Per le figure latex===================================
+%Package e librerie per TikZ e PGF, le librerie non sono tutte necessarie a questo documento LATEX.
+     \usepackage{tikz,fp,ifthen,fullpage,pgfmath,xparse,tikz-dimline}
+     \usetikzlibrary{decorations,backgrounds,fit,calc,through}
+     \usetikzlibrary{arrows,shadows,shapes}
+     \usetikzlibrary{fadings,patterns,mindmap}
+     \usepackage{pgfplots}
+\pgfplotsset{compat=1.13}
+      
+%========================================
+% TESTO DELLA TESI
+%========================================
+
+\begin{document}
+	% === Frontespizio ====================================
+	\pagestyle{empty}
+	\input{frontespizio}
+	% === Indice =========================================
+	\tableofcontents
+
+	% === Capitoli Tesi ===================================
+	\pagestyle{plain}
+	\input{introduzione}
+	\input{start}
+	\input{shell}
+	% Inserite qui gli altri capitoli:
+
+	\input{conclusione}
+
+	% === Bibliografia ====================================
+	\newpage
+	\bibliographystyle{IEEEtran}
+	\bibliography{bibliografia-tesi.bib}
+
+\end{document}
