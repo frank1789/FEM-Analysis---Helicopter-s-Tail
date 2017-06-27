@@ -186,6 +186,7 @@ CLOCAL, RotorLocalSystem, 0,  Lt/7*6, SegmentRadius(6)+50e-3, kz(BaseBearing1), 
 CSYS, RotorLocalSystem
 
 *USE, rotor.mac, NodeBearing1, NodeBearing2, NodeBearing2CoorX, NodeBearing2CoorY, NodeBearing2CoorZ
+!/EOF
 CSYS, 0
 SAVE
 
@@ -193,6 +194,9 @@ SAVE
 *GET, LastElementType, ETYP, , NUM, MAX
 *SET, RigidLink, LastElementType + 1
 ET, RigidLink, MPC184
+KEYOPT,RigidLink,1,1
+KEYOPT,RigidLink,2,0
+
 !material for rigid link
 *GET, MaterialNum, MAT, , NUM, MAX
 *SET, RigidLinkMaterial, MaterialNum + 1
@@ -246,7 +250,7 @@ LSEL, S, LOC, x, 0, 0
 *USE, calcmass.mac, StrJobname(1)
 FINISH
 SAVE
-/EOF
+
 /COM, ------------------------------------------------
 /COM,  Preliminary static analysis - Prestress
 /COM, ------------------------------------------------
