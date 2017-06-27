@@ -75,6 +75,8 @@ KEYOPT,BeamShaft,15,1
 *SET, SectionBeamShaft, LastSectionType + 1
 SECTYPE, SectionBeamShaft, BEAM, CSOLID
 SECDATA, shftdia/2
+cm, BeamOmega, elem 
+
 ! Make elements
 SECNUM, SectionBeamShaft
 TYPE, BeamShaft
@@ -122,6 +124,7 @@ secd, dskthk
 TYPE, ShellDisk
 SECNUM, SectionShellDisk
 MAT, Aluminum7075
+cm, DiscOmega, elem
 MSHKEY, 0
 !MSHAPE, 1, 2D
 ESIZE, 0.07
@@ -143,12 +146,14 @@ R, ClampDiskSplinde, 10, 10, 10, 8.59e-2, 4.295e-2, 4.295e-2
 TYPE, ClampDiskSplinde
 REAL, ClampDiskSplinde
 MAT, Aluminum7075
+cm, HubOmega, elem
 E, LastNode
 SAVE
 
 CERIG, LastNode, LastNode-1, ALL
+ALLSEL, ALL
 LSEL, S, LOC, X, nx(LastNode)
-LSEL, R, LOC, Y, -d_i/2, d_i/2
+LSEL, R, RADIUS,, d_i/2  
 NSLL, S, 1
 NSEL, A, NODE, , LastNode
 CERIG, LastNode, ALL, ALL
@@ -178,6 +183,7 @@ E, ARG1, NodeStart
 E, ARG2, NodeEnd
 !***longitudinal spring-damper (UZ degree of freedom)
 TYPE, SpringDamperUZ
+REAL, SpingDumperRealConst
 E, ARG1, NodeStart
 E, ARG2, NodeEnd
 
@@ -186,8 +192,8 @@ E, ARG2, NodeEnd
 d, NodeStart, ux $d, NodeStart, rotx
 d, NodeEnd, ux $d, NodeEnd, rotx
 ! Fix Brng ground nodes
-!d, 101, all $d, 201, all
-!d, 110, all $d, 210, all
+d, NodeStart, all $d, NodeStart, all
+d, NodeEnd, all $d, NodeEnd, all
 SAVE
 
 *SET, LastElementType,
@@ -195,3 +201,30 @@ SAVE
 *SET, SpingDumperRealConst,
 *SET, SpringDamperUZ
 *SET, SpringDamperUY
+/EOF
+
+!-----------------------------------------
+! Inserimento delle omega
+!-----------------------------------------
+
+! Plot the model
+/view,1,1,1,1 $/vup,1,z
+/eshape,1,1 $/pnum,sect,1
+/num,1 $eplot
+
+
+/solu
+! Setup modal run
+antype,modal
+coriolis,on,,,on
+modopt,qrdamp,nmd,,,on
+
+! Loop on speeds
+!*do,i,1,nmspn
+	spn = (i-1)*(mxspn/(nmspn-1))
+	cmomega, BeamOmega,,,spn
+	cmomega, DiscOmega,,,spn
+	cmomega, HubOmega,,,spn
+	mxpand,nmd,,,yes
+	solve
+*enddo
