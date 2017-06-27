@@ -33,7 +33,8 @@ N, ARG2,
 *SET, NodeStart, NodeMax + 1
 N, NodeStart,
 N, NodeStart + 8, ARG4
-/com, %NodeStart + 8%, %nx(ARG2)%, %ny(ARG2)%, %nz(ARG2)%
+/COM, %NodeStart + 8%, %nx(ARG2)%, %ny(ARG2)%, %nz(ARG2)%
+
 *GET, NodeEnd, NODE, , NUM, MAX
 FILL, NodeStart, NodeEnd
 *GET, NodeMax, NODE, , NUM, MAX
@@ -50,12 +51,12 @@ SAVE
 /COM, -----------------------------------------------
 /COM,  MESH - SHAFT
 /COM, -----------------------------------------------
+
 ! >>>>> MATERIAL PROPERTIES <<<<<
 *GET, MaterialNum, MAT, , NUM, MAX
 
 ! Aluminum 7075
 *SET, Aluminum7075, MaterialNum + 1
-
 MP, EX, Aluminum7075, 71.7e+9
 MP, DENS, Aluminum7075, 2810
 MP, NUXY, Aluminum7075, 0.33
@@ -99,6 +100,7 @@ SAVE
 /COM, -----------------------------------------------
 /COM,  MODEL DEFINITION - DISK
 /COM, -----------------------------------------------
+
 ! >>>> DEFINE GEOMETRY <<<<
 WPCSYS, -1 
 WPOFFS, nx(LastNode), ny(LastNode), nz(LastNode)
@@ -127,7 +129,7 @@ MAT, Aluminum7075
 cm, DiscOmega, elem
 MSHKEY, 0
 !MSHAPE, 1, 2D
-ESIZE, 0.07
+ESIZE, 0.02
 AMESH, ALL
 SAVE
 
@@ -135,6 +137,7 @@ SAVE
 *SET,  ShellDisk,
 
 !*** clamp between disk and spindle
+
 /COM, *** CLAMP BETWEEN DISK AND SPINDLE
 /COM, DEFINE MASS21 for CLAMP BETWEEN DISK AND SPINDLE
 *GET, LastElementType, ETYP, , NUM, MAX
@@ -153,7 +156,7 @@ SAVE
 CERIG, LastNode, LastNode-1, ALL
 ALLSEL, ALL
 LSEL, S, LOC, X, nx(LastNode)
-LSEL, R, RADIUS,, d_i/2  
+LSEL, R, RADIUS, , d_i/2  
 NSLL, S, 1
 NSEL, A, NODE, , LastNode
 CERIG, LastNode, ALL, ALL
@@ -174,34 +177,44 @@ ET, SpringDamperUY, COMBIN14, , 2  !1-D longitudinal spring-damper (UY degree of
 *SET, SpringDamperUZ, LastElementType+1
 ET, SpringDamperUZ, COMBIN14, , 3  !1-D longitudinal spring-damper (UZ degree of freedom)
 *GET, RealConstant, RCON, , NUM, MAX
-*SET, SpingDumperRealConst, RealConstant + 1
-R, SpingDumperRealConst, bstf
+*SET, SpringDumperRealConst, RealConstant + 1
+R, SpringDumperRealConst, bstf
+
 !1-D longitudinal spring-damper (UY degree of freedom)
 TYPE, SpringDamperUY 
-REAL, SpingDumperRealConst
+REAL, SpringDumperRealConst
 E, ARG1, NodeStart 
 E, ARG2, NodeEnd
+/COM, 1-D longitudinal spring-damper (UY degree of freedom): 
+/COM,	Node1: %ARG1% (ARG1); Node2: %NodeStart% (NodeStart)
+/COM,	Node1: %ARG2% (ARG2); Node2: %NodeEnd% (NodeEnd)
+
 !***longitudinal spring-damper (UZ degree of freedom)
 TYPE, SpringDamperUZ
-REAL, SpingDumperRealConst
+REAL, SpringDumperRealConst
 E, ARG1, NodeStart
 E, ARG2, NodeEnd
-
-
+/COM, 1-D longitudinal spring-damper (UZ degree of freedom): 
+/COM,	Node1: %ARG1% (ARG1); Node2: %NodeStart% (NodeStart)
+/COM,	Node1: %ARG2% (ARG2); Node2: %NodeEnd% (NodeEnd)
+/EOF
+/COM, -----------------------------------------------
+/COM,  BOUNDARY CONDITION
+/COM,  Fix axial and rotational DOF at ends
+/COM, -----------------------------------------------
+ALLSEL,ALL
 ! Fix axial and rotational DOF at ends
-d, NodeStart, ux $d, NodeStart, rotx
-d, NodeEnd, ux $d, NodeEnd, rotx
-! Fix Brng ground nodes
-d, NodeStart, all $d, NodeStart, all
-d, NodeEnd, all $d, NodeEnd, all
+D, NodeStart, ,0 , , , , UX, ROTX
+D, NodeEnd, ,0 , , , , UX, ROTX
 SAVE
 
-*SET, LastElementType,
+!clear parameters
 *SET, LastNode,
-*SET, SpingDumperRealConst,
+*SET, LastElementType,
 *SET, SpringDamperUZ
 *SET, SpringDamperUY
-/EOF
+*SET, SpringDumperRealConst
+!/EOF
 
 !-----------------------------------------
 ! Inserimento delle omega
@@ -220,7 +233,7 @@ coriolis,on,,,on
 modopt,qrdamp,nmd,,,on
 
 ! Loop on speeds
-!*do,i,1,nmspn
+*do,i,1,nmspn
 	spn = (i-1)*(mxspn/(nmspn-1))
 	cmomega, BeamOmega,,,spn
 	cmomega, DiscOmega,,,spn
