@@ -1,7 +1,17 @@
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!                                                  !
+!         WINDOW PERSONAZATION STYLE MACRO         !
+!           Author: Francesco Argentieri           !
+!                                                  !
+! PARAMETERS INPUT:                                !
+!                  ARG1: JOBNAME string            !
+!                                                  !
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 /SOLVE
-outpr,basic,all
-/output,mass_output-%ARG1%,txt
-psolve,elform
-psolve,elprep
+OUTPR, BASIC, ALL
+/OUTPUT, mass_output-%ARG1%, txt
+PSOLVE, ELFORM
+PSOLVE, ELPREP
 /OUT
 FINISH
