@@ -4,8 +4,10 @@
 !                                                  !
 !                                                  !
 !PARAMETERS INPUT:                                 !
-!                 ARG1:                            !
-!                 ARG2:                            !
+!               ARG1: 1st node value               !
+!               ARG2: 2nd node value               !
+!				ARG3: pass distance between 	   !
+!						previous nodes			   !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 ! >>>>> MODEL PARAMETERS SHAFT AND DISK <<<<<
@@ -25,18 +27,18 @@
 /COM,  MODEL DEFINITION -SHAFT
 /COM, -----------------------------------------------
 !***Bearing ground nodes
-N, ARG1,
-N, ARG2,
+!N, ARG1,
+!N, ARG2,
 
-!***Shaft defintion
+!***Shaft defintion 
+!1st part
 *GET, NodeMax, NODE, , NUM, MAX
 *SET, NodeStart, NodeMax + 1
 N, NodeStart,
-N, NodeStart + 8, ARG4
-/COM, %NodeStart + 8%, %nx(ARG2)%, %ny(ARG2)%, %nz(ARG2)%
-
+N, NodeStart + 8, ARG3 $ /COM, %NodeStart + 8%, %ARG3%
 *GET, NodeEnd, NODE, , NUM, MAX
 FILL, NodeStart, NodeEnd
+!2nd part
 *GET, NodeMax, NODE, , NUM, MAX
 N, NodeMax+19, dskoff
 *GET, LastNode, NODE, , NUM, MAX
@@ -171,17 +173,15 @@ SAVE
 /COM, -----------------------------------------------
 !*** define bearings
 *GET, LastElementType, ETYP, , NUM, MAX
-*SET, SpringDamperUY, LastElementType+1
-ET, SpringDamperUY, COMBIN14, , 2  !1-D longitudinal spring-damper (UY degree of freedom)
-*GET, LastElementType, ETYP, , NUM, MAX
-*SET, SpringDamperUZ, LastElementType+1
-ET, SpringDamperUZ, COMBIN14, , 3  !1-D longitudinal spring-damper (UZ degree of freedom)
+*SET, SpringDamper, LastElementType+1
+ET, SpringDamper, COMBIN14
 *GET, RealConstant, RCON, , NUM, MAX
 *SET, SpringDumperRealConst, RealConstant + 1
 R, SpringDumperRealConst, bstf
 
 !1-D longitudinal spring-damper (UY degree of freedom)
-TYPE, SpringDamperUY 
+TYPE, SpringDamper
+KEYOPT, SpringDamper, 2, 2
 REAL, SpringDumperRealConst
 E, ARG1, NodeStart 
 E, ARG2, NodeEnd
@@ -190,8 +190,8 @@ E, ARG2, NodeEnd
 /COM,	Node1: %ARG2% (ARG2); Node2: %NodeEnd% (NodeEnd)
 
 !***longitudinal spring-damper (UZ degree of freedom)
-TYPE, SpringDamperUZ
-REAL, SpringDumperRealConst
+TYPE, SpringDamper
+KEYOPT, SpringDamper, 2, 3 
 E, ARG1, NodeStart
 E, ARG2, NodeEnd
 /COM, 1-D longitudinal spring-damper (UZ degree of freedom): 
@@ -223,10 +223,12 @@ KEYOPT, RevoluteJoint, 4, 0
 
 !***define revolute joint
 TYPE, RevoluteJoint
+SECTYPE, , JOINT, REVO
 E, ARG1, NodeStart
+SECTYPE, , JOINT, REVO
 E, ARG2, NodeStart + 8
-
 SAVE
+
 !clear parameters
 *SET, LastElementType,
 *SET, RevoluteJoint,
