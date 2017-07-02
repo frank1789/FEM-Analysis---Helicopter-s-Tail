@@ -66,9 +66,9 @@ MP, NUXY, Aluminum7075, 0.33
 *SET, BeamShaft, LastElementType + 1
 ! Use 188 elements, solid
 ET, BeamShaft, 188
-KEYOPT,BeamShaft,1,1
-KEYOPT,BeamShaft,3,2
-KEYOPT,BeamShaft,15,1 
+KEYOPT, BeamShaft, 1, 1
+KEYOPT, BeamShaft, 3, 2
+KEYOPT, BeamShaft,15, 0
 
 *GET, LastElementType, ETYP, , NUM, MAX
 /COM, BEAM188 for SHAFT have number %BeamShaft%
@@ -169,7 +169,7 @@ SAVE
 /COM, -----------------------------------------------
 /COM,  MESH - BEARINGS
 /COM, -----------------------------------------------
-/COM, DEFINE BEARINGS
+!*** define bearings
 *GET, LastElementType, ETYP, , NUM, MAX
 *SET, SpringDamperUY, LastElementType+1
 ET, SpringDamperUY, COMBIN14, , 2  !1-D longitudinal spring-damper (UY degree of freedom)
@@ -197,16 +197,6 @@ E, ARG2, NodeEnd
 /COM, 1-D longitudinal spring-damper (UZ degree of freedom): 
 /COM,	Node1: %ARG1% (ARG1); Node2: %NodeStart% (NodeStart)
 /COM,	Node1: %ARG2% (ARG2); Node2: %NodeEnd% (NodeEnd)
-/EOF
-/COM, -----------------------------------------------
-/COM,  BOUNDARY CONDITION
-/COM,  Fix axial and rotational DOF at ends
-/COM, -----------------------------------------------
-ALLSEL,ALL
-! Fix axial and rotational DOF at ends
-D, NodeStart, ,0 , , , , UX, ROTX
-D, NodeEnd, ,0 , , , , UX, ROTX
-SAVE
 
 !clear parameters
 *SET, LastNode,
@@ -214,7 +204,35 @@ SAVE
 *SET, SpringDamperUZ
 *SET, SpringDamperUY
 *SET, SpringDumperRealConst
-!/EOF
+
+/COM, -----------------------------------------------
+/COM,  REVOLUTE JOINT
+/COM,  create revolute joint to block d.o.f shaft
+/COM, -----------------------------------------------
+!MPC184 Revolute Joint Geometry shows the geometry and node locations for this element. 
+!Two nodes (I and J) define the element. The two nodes are expected to have identical spatial 
+!coordinates initially.
+*GET, LastElementType, ETYP, , NUM, MAX
+*SET, RevoluteJoint, LastElementType+1
+ET, RevoluteJoint, MPC184
+KEYOPT, RevoluteJoint, 1, 6
+
+!If KEYOPT(4) = 0, then element is an x-axis revolute joint with the local e1 axis as the revolute axis.
+!If KEYOPT(4) = 1, then element is a z-axis revolute joint with the local e3 axis as the revolute axis.
+KEYOPT, RevoluteJoint, 4, 0
+
+!***define revolute joint
+TYPE, RevoluteJoint
+E, ARG1, NodeStart
+E, ARG2, NodeStart + 8
+
+SAVE
+!clear parameters
+*SET, LastElementType,
+*SET, RevoluteJoint,
+
+/COM, --------------------END MACRO------------------
+/EOF
 
 !-----------------------------------------
 ! Inserimento delle omega
