@@ -1,6 +1,4 @@
-
 # FEM Analysis - Helicopter's Tail
-
 
 Study of vibrational tail helicopter behavior [Eurocopter AS350](https://it.wikipedia.org/wiki/Aérospatiale_AS_350_Écureuil) :helicopter:, where all historical and other information is available.
 
