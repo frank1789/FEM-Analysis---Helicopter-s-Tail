@@ -24,13 +24,8 @@
 *SET, mxspn, 4000 	! Max Omega (rpm)
 
 /COM, -----------------------------------------------
-/COM,  MODEL DEFINITION -SHAFT
-/COM, -----------------------------------------------
-!***Bearing ground nodes
-!N, ARG1,
-!N, ARG2,
-
-!***Shaft defintion 
+/COM,  MODEL DEFINITION - SHAFT
+/COM, ----------------------------------------------- 
 !1st part
 *GET, NodeMax, NODE, , NUM, MAX
 *SET, NodeStart, NodeMax + 1

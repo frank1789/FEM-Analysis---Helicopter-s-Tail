@@ -173,6 +173,8 @@ KSEL, R, LOC, Z, -0.7732370E-01, 0.7732370E-01
 *GET, BaseBearing1, KP, , NUM, MIN
 *GET, BaseBearing2, KP, , NUM, MAX
 ALLSEL,ALL
+
+!create node for rigid link
 *GET, LastNode, NODE, , NUM, MAX
 N, LastNode + 1, kx(BaseBearing2), SegmentRadius(6)+50e-3, kz(BaseBearing2)
 *GET, NodeBearing2, NODE, , NUM, MAX
