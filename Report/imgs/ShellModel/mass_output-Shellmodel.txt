@@ -1,0 +1,101 @@
+
+ *****  ANSYS PSOLVE   COMMAND  *****
+
+ TRANSFER SOLID MODEL BOUNDARY CONDITIONS TO FINITE ELEMENT MODEL
+      CONSTRAINTS    TRANSFERRED FROM LINES         =    720
+
+ *** SELECTION OF ELEMENT TECHNOLOGIES FOR APPLICABLE ELEMENTS ***
+                ---GIVE SUGGESTIONS ONLY---
+
+ ELEMENT TYPE    1 IS BEAM189 . KEYOPT(1)=1 IS SUGGESTED FOR NON-CIRCULAR CROSS
+ SECTIONS.
+
+ ELEMENT TYPE    1 IS BEAM189 . KEYOPT(15) IS ALREADY SET AS SUGGESTED.
+
+ ELEMENT TYPE    2 IS SHELL181. IT IS ASSOCIATED WITH ELASTOPLASTIC 
+ MATERIALS ONLY. KEYOPT(8)=2 IS SUGGESTED AND KEYOPT(3)=2 IS SUGGESTED FOR
+ HIGHER ACCURACY OF MEMBRANE STRESSES; OTHERWISE, KEYOPT(3)=0 IS SUGGESTED.
+
+
+
+                       S O L U T I O N   O P T I O N S
+
+   PROBLEM DIMENSIONALITY. . . . . . . . . . . . .3-D                  
+   DEGREES OF FREEDOM. . . . . . UX   UY   UZ   ROTX ROTY ROTZ
+   ANALYSIS TYPE . . . . . . . . . . . . . . . . .STATIC (STEADY-STATE)
+   GLOBALLY ASSEMBLED MATRIX . . . . . . . . . . .SYMMETRIC  
+
+ *** NOTE ***                            CP =      20.469   TIME= 19:50:45
+ Present time 0 is less than or equal to the previous time.  Time will   
+ default to 1.                                                           
+
+                      L O A D   S T E P   O P T I O N S
+
+   LOAD STEP NUMBER. . . . . . . . . . . . . . . .     1
+   TIME AT END OF THE LOAD STEP. . . . . . . . . .  1.0000    
+   NUMBER OF SUBSTEPS. . . . . . . . . . . . . . .     1
+   STEP CHANGE BOUNDARY CONDITIONS . . . . . . . .    NO
+   PRINT OUTPUT CONTROLS
+      ITEM     FREQUENCY   COMPONENT
+      BASI        ALL               
+   DATABASE OUTPUT CONTROLS. . . . . . . . . . . .ALL DATA WRITTEN
+                                                  FOR THE LAST SUBSTEP
+
+
+ SOLUTION MONITORING INFO IS WRITTEN TO FILE= Shellmodel.mntr                                                                                                                                                                                                                                                     
+
+ *** NOTE ***                            CP =      20.625   TIME= 19:50:45
+ Predictor is ON by default for structural elements with rotational      
+ degrees of freedom.  Use the PRED,OFF command to turn the predictor     
+ OFF if it adversely affects the convergence.                            
+
+
+
+                         ***********  PRECISE MASS SUMMARY  ***********
+
+   TOTAL RIGID BODY MASS MATRIX ABOUT ORIGIN
+               Translational mass               |   Coupled translational/rotational mass
+         23.370      -0.71897E-18   0.88270E-18 |    0.68362E-19  -0.63656E-13  -0.17201E-13
+       -0.75129E-18    23.370       0.26400E-16 |    0.63659E-13  -0.47369E-16    53.990    
+        0.91899E-18   0.26109E-16    23.370     |    0.17198E-13   -53.990       0.47897E-16
+     ------------------------------------------ | ------------------------------------------
+                                                |         Rotational mass (inertia)
+                                                |     1.1053      -0.75554E-14   0.52844E-13
+                                                |   -0.75665E-14    177.17      -0.13182E-13
+                                                |    0.52848E-13  -0.13181E-13    177.17    
+
+   TOTAL MASS =  23.370    
+     The mass principal axes coincide with the global Cartesian axes
+
+   CENTER OF MASS (X,Y,Z)=    2.3103       0.73604E-15  -0.27239E-14
+
+   TOTAL INERTIA ABOUT CENTER OF MASS
+         1.1053       0.32176E-13  -0.94226E-13
+        0.32176E-13    52.440      -0.13182E-13
+       -0.94226E-13  -0.13182E-13    52.440    
+     The inertia principal axes coincide with the global Cartesian axes
+
+
+  *** MASS SUMMARY BY ELEMENT TYPE ***
+
+  TYPE      MASS
+     1   15.0925    
+     2   8.27584    
+
+ Range of element maximum matrix coefficients in global coordinates
+ Maximum = 4.16021312E+09 at element 2535.                               
+ Minimum = 11018853.4 at element 6073.                                   
+
+   *** ELEMENT MATRIX FORMULATION TIMES
+     TYPE    NUMBER   ENAME      TOTAL CP  AVE CP
+
+        1      2904  BEAM189       0.750   0.000258
+        2      5040  SHELL181      1.438   0.000285
+ Time at end of element matrix formulation CP = 21.734375.               
+
+ *** NOTE ***                            CP =      21.734   TIME= 19:50:46
+ Solution is done!                                                       
+
+
+ *****  ANSYS PARTIAL SOLUTION   ELPREP    *****
+

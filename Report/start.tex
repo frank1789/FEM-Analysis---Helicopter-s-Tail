@@ -1,0 +1,85 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Come fare le cose}
+\label{chap:omfglol}
+
+In questo capitolo vediamo la roba smanettosa per iniziare a smanettare
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Occorrente}
+\label{sec:occorrente}
+
+Roba da scaricare e installare (Tabella \ref{tab:filesize}).
+
+\begin{table}[h]
+\centering
+\caption{Tabella vergognosamente inutile}
+\vspace{0.3cm}
+\label{tab:filesize}
+\begin{tabular}{lll}
+ \hline
+File & Piattaforma & Dimensioni \\\hline
+\emph{TexMaker} & Windows & 46.3 MB \\
+\emph{TexMaker} & Mac & 40.7 MB \\
+\emph{MiKTeX} & Windows & 154.1 MB \\
+\emph{MacTex} & Mac & 2.3 GB \\
+Template Susanna & Multiglobale-powa & 4 MB (circa) \\\hline
+\end{tabular}
+\end{table}
+
+\pagebreak
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{L'IDE}
+\label{sub:ide}
+
+Allora... per prima cosa vi serve un IDE, ovvero un programma che vi funga da editor e compilatore (in realtà il compilatore si scarica a parte ma vabbè). Ce ne sono molti in giro ma io vi consiglio \emph{TexMaker}\footnote{http://www.xm1math.net/texmaker/} per due motivi:
+
+\begin{enumerate}
+\item È molto intuitivo è ben fatto
+\item Esiste sia per Mac che per Windows
+\end{enumerate}
+
+Non dovreste avere problemi con il download e l'installazione (vi state per laureare porca paletta, non devo spiegarvi pure questo).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Il compilatore}
+\label{sub:compilatore}
+
+Per quanto riguarda il compilatore il discorso è un po' più complicato. Armatevi di pazienza e scaricate \emph{MiKTeX}\footnote{http://miktex.org/download} se avete Windows oppure \emph{MacTex}\footnote{http://mirror.ctan.org/systems/mac/mactex/MacTeX.pkg} se avete un Mac (mi dispiace ma non conosco un compilatore LaTeX per Linux... se lo trovato fatemelo sapere che aggiorno la guida). Entrambi questi programmi inglobano un ambiente di sviluppo \LaTeX costituito da diversi compilatori che il nostro IDE riconoscerà automaticamente.
+
+\textbf{P.S.} Prima che cominciate a strapparvi i capelli, sì, \emph{MacTex} occupa più di 2 GB... questo perchè comprende tutti i pacchetti necessari per \LaTeX, mentre \emph{MiKTeX} (che occupa solo 150 mb) li scarica volta per volta.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Il template}
+\label{sub:template}
+
+Trovate il sorgente di questo template ad un link dropbox non meglio specificato\footnote{https://www.dropbox.com/sh/1f06sd7eprongvl/dKsfID1Kwc}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Configurazione dell'IDE}
+\label{sec:configurazioneIDE}
+
+Oooh, ora che avete installato IDE e compilatore, lanciate l'IDE. Principalmente dovete fare tre cose una volta avviato:
+
+\begin{enumerate}
+\item Aprite il file Susanna.tex del template
+\item Andate su Opzioni -> Definire il documento corrente come Master (questo serve per dire all'IDE che gli altri documenti sono inclusi in un documento master e che quindi, al momento della compilazione, non devono essere trattati come documenti separati)
+\item Andate nelle preferenze dell'IDE nella sezione Compilazione Rapida e personalizzate la compilazione tramite l'assistente-wizard. Essenzialmente dovete configurarla in modo da effettuare 3 compilazioni: PdfLatex, BibTex e di nuovo PdfLatex. Oltre a queste tre compilazioni aggiungete una quarta opzione ovvero la visualizzazione pdf.
+\end{enumerate}
+
+Vi spiego meglio il punto 3... praticamente ci sono più compilatori diversi, che svolgono operazioni diverse... ma a noi interessano solo due compilatori, ovvero PdfLatex (che compila il codice \LaTeX in un documento pdf) e BibTex (che compila la bibliografia). Le compilazioni sono 3 e in quel preciso ordine perchè altrimenti la bibliografia non viene compilata bene (non chiedetemi perchè). Per evitare di dover eseguire manualmente le diverse compilazioni, \emph{TexMaker} vi dà la possibilità di utilizzare la Compilazione Rapida che esegue automaticamente queste operazioni con un click. Configuratela come vi ho spiegato e non avrete problemi.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Siamo pronti}
+\label{sec:pronti}
+
+Abbiamo configurato l'IDE ed il (i) compilatore(i). Ora premendo sulla freccina della Compilazione Rapida (oppure premendo F1) potrete compilare il vostro codice \LaTeX in pdf. Fate una prova compilando il template (il pdf purtroppo, così come tutti gli scarti della compilazione, verranno generati nella stessa cartella del sorgente...).
+
+E ora? Ora create i vostri capitoli copiando la struttura di \emph{start.tex} e di \emph{introduzione.tex} ed integrateli nel documento master :) se avete bisogno di ulteriori dettagli sulla sintassi \LaTeX vi consiglio di farvi un giro nella sezione Tex di \emph{Stack Exchange}\footnote{http://tex.stackexchange.com/}: è tipo Yahoo Answers ma focalizzato ovviamente su \LaTeX :)
