@@ -246,7 +246,7 @@ LSEL, S, LOC, x, 0, 0
 	DL, i, , ALL, 0
 *ENDDO
 SAVE 
-/eof
+
 !calc mass
 *USE, calcmass.mac, StrJobname(1)
 FINISH
