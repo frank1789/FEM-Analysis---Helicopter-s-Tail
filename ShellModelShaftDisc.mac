@@ -264,39 +264,53 @@ SAVE
 /COM, ------------------------------------------------
 /COM,  COMPLETE MODEL
 /COM, ------------------------------------------------
-!selct base keypoint and node
+
+!Selct base keypoint and node
 KSEL, S, LOC, X, 4.457143
 KSEL, R, LOC, Y, 0.4464286E-01
 KSEL, R, LOC, Z, -0.7732370E-01, 0.7732370E-01
 *GET, BaseBearing1, KP, , NUM, MIN
 *GET, BaseBearing2, KP, , NUM, MAX
 ALLSEL,ALL
-*GET, LastNode, NODE, , NUM, MAX
-N, LastNode + 1, kx(BaseBearing1), SegmentRadius(6)+50e-3, kz(BaseBearing1) 
-*GET, NodeBearing1, NODE, , NUM, MAX
-*SET, LastNode,
+
+!create node for rigid link
 *GET, LastNode, NODE, , NUM, MAX
 N, LastNode + 1, kx(BaseBearing2), SegmentRadius(6)+50e-3, kz(BaseBearing2)
 *GET, NodeBearing2, NODE, , NUM, MAX
-*GET, NodeBearing2CoorX, NODE, NodeBearing2, LOC, X
-*GET, NodeBearing2CoorY, NODE, NodeBearing2, LOC, Y
-*GET, NodeBearing2CoorZ, NODE, NodeBearing2, LOC, Z
-!***Set local system and start macro rotor
+*GET, LastNode, NODE, , NUM, MAX
+N, LastNode + 1, kx(BaseBearing1), SegmentRadius(6)+50e-3, kz(BaseBearing1) 
+*GET, NodeBearing1, NODE, , NUM, MAX
+*USE, distancenode.mac, NodeBearing1, NodeBearing2
+
+!Set local system and start macro rotor
 *GET, LocalSystem, CDSY, , NUM, MAX
 *SET, RotorLocalSystem, LocalSystem + 100
 CLOCAL, RotorLocalSystem, 0,  Lt/7*6, SegmentRadius(6)+50e-3, kz(BaseBearing1), , , 90
 CSYS, RotorLocalSystem
-
-*USE, rotor.mac, NodeBearing1, NodeBearing2, NodeBearing2CoorX, NodeBearing2CoorY, NodeBearing2CoorZ
+/COM, -------------------ENTER MACRO-----------------
+*USE, rotor.mac, NodeBearing1, NodeBearing2, DistancePoint
 CSYS, 0
 SAVE
 
-!define rigid link
+/COM, -------------------------------------------------
+/COM,  RIGID LINK
+/COM,  create revolute joint to connect shfat and tail
+/COM, -------------------------------------------------
+!define element rigid link
 *GET, LastElementType, ETYP, , NUM, MAX
-*SET, RigidLink, LastElementType+1
-ET,RigidLink,MPC184
-MAT, 3
+*SET, RigidLink, LastElementType + 1
+ET, RigidLink, MPC184
+KEYOPT, RigidLink, 2, 0
+
+!material for rigid link
+*GET, MaterialNum, MAT, , NUM, MAX
+*SET, RigidLinkMaterial, MaterialNum + 1
+MP, EX, RigidLinkMaterial, SteelEyounG
+MP, NUXY, RigidLinkMaterial, SteelNi
+MAT, RigidLinkMaterial
 TYPE, RigidLink
+
+!create element
 KSEL,S,KP,,BaseBearing1
 NSLK,S
 *GET, LastNode, NODE, , NUM, MAX
@@ -307,36 +321,19 @@ NSLK,S
 *GET, LastNode, NODE, , NUM, MAX
 E, LastNode, NodeEnd
 
-
-
-
-!***Boundary conditions at base of tail
-ALLSEL, ALL
-LSEL, S, LOC, Y, -(RadBaseTail*2)+eps, (RadBaseTail*2)+eps 
-LSEL, S, LOC, x, 0, 0
-*GET, MinBaseTailLine, line, 0, num, min
-*GET, MaxBaseTailLine, line, 0, num, max
-*DO, i, MinBaseTailLine, MaxBaseTailLine, 8
-	DL, i, , ALL, 0
-*ENDDO 
-SAVE
-
-
-
 !clear parmaters
 *SET, BaseBearing1, 
 *SET, BaseBearing2,
+*SET, NodeBearing1,
+*SET, NodeBearing2,
 *SET, LastNode,
 *SET, i,
-*SET, NodeBearing2
-*SET, NodeBearing2CoorX,
-*SET, NodeBearing2CoorY,
-*SET, NodeBearing2CoorZ,
 *SET, LocalSystem, 
 *SET, RotorLocalSystem,
 
-
-!***Boundary conditions at base of tail
+/COM, ------------------------------------------------
+/COM,  BOUNDARY CONDITION
+/COM, ------------------------------------------------
 ALLSEL, ALL
 LSEL, S, LOC, Y, -(RadBaseTail*2)+eps, (RadBaseTail*2)+eps 
 LSEL, S, LOC, x, 0, 0
