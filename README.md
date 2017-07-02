@@ -12,12 +12,10 @@ Study of vibrational tail helicopter behavior [Eurocopter AS350](https://it.wiki
 |Empty weight		| 	1220 kg |
 |Max takeoff weight 	| 	2250 kg |
 |capability		|	 2500 kg|
-|Propulsion		|		|
-|-----------------------|--------------:|
+|**Propulsion**		|		|
 |Powerplant	  	| 1 x Turbine<br> Turbomeca Arriel 1D1|
 |Power			|	  546 kW|
-|Performance		|		|
-|-----------------------|--------------:|
+|**Performance**		|		|
 |Maximum speed  	| 	287 km/h|
 |Range	        	| 	476 km	|
 |service ceiling 	| 	6100 m  |
