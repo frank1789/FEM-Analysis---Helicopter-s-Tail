@@ -1,0 +1,111 @@
+
+ *****  ANSYS PSOLVE   COMMAND  *****
+
+ TRANSFER SOLID MODEL BOUNDARY CONDITIONS TO FINITE ELEMENT MODEL
+      CONSTRAINTS    TRANSFERRED FROM LINES         =    720
+
+ *** WARNING ***                         CP =      29.328   TIME= 19:52:10
+ MPC184 elements are being used in the current analysis and the          
+ NLGEOM,ON command has not been used.  Thus, only linearized behavior    
+ will be considered.  If finite rotation and large deflection effects    
+ are to be considered, please use the NLGEOM,ON command.                 
+
+ *** NOTE ***                            CP =      29.344   TIME= 19:52:10
+ The model data was checked and warning messages were found.             
+  Please review output or errors file (                                  
+ C:\Users\1\Desktop\helicopter\ShellModelShaftLumped\file.err ) for      
+ these warning messages.                                                 
+
+ *** SELECTION OF ELEMENT TECHNOLOGIES FOR APPLICABLE ELEMENTS ***
+                ---GIVE SUGGESTIONS ONLY---
+
+ ELEMENT TYPE    1 IS BEAM189 . KEYOPT(1)=1 IS SUGGESTED FOR NON-CIRCULAR CROSS
+ SECTIONS.
+
+ ELEMENT TYPE    1 IS BEAM189 . KEYOPT(15) IS ALREADY SET AS SUGGESTED.
+
+ ELEMENT TYPE    2 IS SHELL181. IT IS ASSOCIATED WITH ELASTOPLASTIC 
+ MATERIALS ONLY. KEYOPT(8)=2 IS SUGGESTED AND KEYOPT(3)=2 IS SUGGESTED FOR
+ HIGHER ACCURACY OF MEMBRANE STRESSES; OTHERWISE, KEYOPT(3)=0 IS SUGGESTED.
+
+
+
+                       S O L U T I O N   O P T I O N S
+
+   PROBLEM DIMENSIONALITY. . . . . . . . . . . . .3-D                  
+   DEGREES OF FREEDOM. . . . . . UX   UY   UZ   ROTX ROTY ROTZ
+   ANALYSIS TYPE . . . . . . . . . . . . . . . . .STATIC (STEADY-STATE)
+   GLOBALLY ASSEMBLED MATRIX . . . . . . . . . . .SYMMETRIC  
+
+ *** NOTE ***                            CP =      29.359   TIME= 19:52:10
+ Present time 0 is less than or equal to the previous time.  Time will   
+ default to 1.                                                           
+
+                      L O A D   S T E P   O P T I O N S
+
+   LOAD STEP NUMBER. . . . . . . . . . . . . . . .     1
+   TIME AT END OF THE LOAD STEP. . . . . . . . . .  1.0000    
+   NUMBER OF SUBSTEPS. . . . . . . . . . . . . . .     1
+   STEP CHANGE BOUNDARY CONDITIONS . . . . . . . .    NO
+   PRINT OUTPUT CONTROLS
+      ITEM     FREQUENCY   COMPONENT
+      BASI        ALL               
+   DATABASE OUTPUT CONTROLS. . . . . . . . . . . .ALL DATA WRITTEN
+                                                  FOR THE LAST SUBSTEP
+
+
+ SOLUTION MONITORING INFO IS WRITTEN TO FILE= ShellmodelShaftLumped.mntr                                                                                                                                                                                                                                          
+
+ *** NOTE ***                            CP =      29.516   TIME= 19:52:10
+ Predictor is ON by default for structural elements with rotational      
+ degrees of freedom.  Use the PRED,OFF command to turn the predictor     
+ OFF if it adversely affects the convergence.                            
+
+
+
+
+            **** CENTER OF MASS, MASS, AND MASS MOMENTS OF INERTIA ****
+
+  CALCULATIONS ASSUME ELEMENT MASS AT ELEMENT CENTROID
+
+  TOTAL MASS =   60.368    
+
+                           MOM. OF INERTIA         MOM. OF INERTIA
+  CENTER OF MASS            ABOUT ORIGIN        ABOUT CENTER OF MASS
+
+  XC =   3.4108          IXX =    2.138          IXX =    1.573    
+  YC =  0.96757E-01      IYY =    840.7          IYY =    138.5    
+  ZC = -0.75445E-15      IZZ =    841.8          IZZ =    138.9    
+                         IXY =   -21.87          IXY =   -1.952    
+                         IYZ =  -0.5706E-14      IYZ =  -0.1011E-13
+                         IZX =   0.5813E-13      IZX =  -0.9721E-13
+
+
+  *** MASS SUMMARY BY ELEMENT TYPE ***
+
+  TYPE      MASS
+     1   15.0925    
+     2   8.27584    
+     4   7.00000    
+     5   30.0000    
+
+ Range of element maximum matrix coefficients in global coordinates
+ Maximum = 4.16021312E+09 at element 2535.                               
+ Minimum = 13000208 at element 7126.                                     
+
+   *** ELEMENT MATRIX FORMULATION TIMES
+     TYPE    NUMBER   ENAME      TOTAL CP  AVE CP
+
+        1      2904  BEAM189       0.859   0.000296
+        2      5040  SHELL181      2.141   0.000425
+        3        16  MPC184        0.016   0.000977
+        4         8  MASS21        0.016   0.001953
+        5         1  MASS21        0.000   0.000000
+ Time at end of element matrix formulation CP = 31.09375.                
+
+ *** NOTE ***                            CP =      31.094   TIME= 19:52:13
+ Solution is done!                                                       
+
+
+ *****  ANSYS PARTIAL SOLUTION   ELPREP    *****
+
