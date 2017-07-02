@@ -179,9 +179,7 @@ N, LastNode + 1, kx(BaseBearing2), SegmentRadius(6)+50e-3, kz(BaseBearing2)
 *GET, LastNode, NODE, , NUM, MAX
 N, LastNode + 1, kx(BaseBearing1), SegmentRadius(6)+50e-3, kz(BaseBearing1) 
 *GET, NodeBearing1, NODE, , NUM, MAX
-*GET, NodeBearing2CoorX, NODE, NodeBearing2, LOC, X
-*GET, NodeBearing2CoorY, NODE, NodeBearing2, LOC, Y
-*GET, NodeBearing2CoorZ, NODE, NodeBearing2, LOC, Z
+*USE, distancenode.mac, NodeBearing1, NodeBearing2
 
 !Set local system and start macro rotor
 *GET, LocalSystem, CDSY, , NUM, MAX
@@ -189,7 +187,7 @@ N, LastNode + 1, kx(BaseBearing1), SegmentRadius(6)+50e-3, kz(BaseBearing1)
 CLOCAL, RotorLocalSystem, 0,  Lt/7*6, SegmentRadius(6)+50e-3, kz(BaseBearing1), , , 90
 CSYS, RotorLocalSystem
 /COM, -------------------ENTER MACRO-----------------
-*USE, rotor.mac, NodeBearing1, NodeBearing2, NodeBearing2CoorX, NodeBearing2CoorY, NodeBearing2CoorZ
+*USE, rotor.mac, NodeBearing1, NodeBearing2, DistancePoint
 CSYS, 0
 SAVE
 
@@ -225,12 +223,10 @@ E, LastNode, NodeEnd
 !clear parmaters
 *SET, BaseBearing1, 
 *SET, BaseBearing2,
+*SET, NodeBearing1,
+*SET, NodeBearing2,
 *SET, LastNode,
 *SET, i,
-*SET, NodeBearing2
-*SET, NodeBearing2CoorX,
-*SET, NodeBearing2CoorY,
-*SET, NodeBearing2CoorZ,
 *SET, LocalSystem, 
 *SET, RotorLocalSystem,
 
