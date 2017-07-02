@@ -28,11 +28,6 @@ FINISH
 *SET, AluminiumNi, 0.34				!Poisson's ratio
 *SET, AluminiumDensity, 2700 			![Kg/m^3]
 
-!*** Duraluminium
-*SET, DurAluminiumEyounG, 72e9   ![Pa] Young's modulus
-*SET, DurAluminiumNi, 0.33	       !Poisson's ratio
-*SET, DurAluminiumDensity, 2810	      ![Kg/m^3]
-
 !*** Element size
 *SET, E_length_ct, 50e-3			![m]
 
@@ -146,16 +141,13 @@ ConnectionKp(1, 2) =tmp2
 *ENDDO 
 SAVE
 
-/VIEW,1,1,1,1   
-/ANG,1  
-/REP,FAST
-LPLOT
-*USE, generateimages.mac
-
 ! >>>> MESH <<<<
 /ESHAPE, 1
 ! set material properties and element
 ET, 1, BEAM189
+KEYOPT,1,1,1 
+KEYOPT,1,15,1   
+
 MP, EX, 1, SteelEyounG
 MP, NUXY, 1, SteelNi
 MP, DENS, 1, SteelDensity
@@ -184,17 +176,11 @@ LMESH, ALL
 LSEL, NONE
 /REPLO
 
-/VIEW, 1, 1, 1, 1
-/ANG, 1
-/REP, FAST
-EPLOT  
-*USE, generateimages.mac
-
 !***Mantle
 ! set material properties and element
 ET, 2, SHELL181   
 KEYOPT, 2, 3, 2
-KEYOPT, 2, 8, 1
+KEYOPT, 2, 8, 2
 
 MP, EX, 2, AluminiumEyounG
 MP, NUXY, 2, AluminiumNi
@@ -211,21 +197,13 @@ MSHKEY, 1
 AMESH, ALL
 SAVE
 
-/VIEW, 1, 1, 1, 1
-/ANG, 1
-/REP, FAST
-EPLOT  
-*USE, generateimages.mac
-
-/COM,  -------------------------------
-/COM,   DEFINITION SHAFT AND SUPPORT
-/COM,  -------------------------------
+!define shaft and support
 *DIM, KpShaft, ARRAY, 8, 1
 *GET, LastNode, KP, , num, max
 K, LastNode+1, 0, RadBaseTail+50e-3, 0
 *GET, LastNode, KP, , num, max
 Kpshaft(1)=LastNode
-*DO, i, 1, 7, 1
+*DO, i, 1, 5, 1
 	*GET, LastNode, KP, , num, max
 	K, LastNode+1, Lt/7*i, SegmentRadius(i)+50e-3, 0
 	*GET, LastNode, KP, , num, max
@@ -235,25 +213,22 @@ Kpshaft(1)=LastNode
 *ENDDO
 
 !***Shaft
-MP, EX, 3, DurAluminiumEyounG
-MP, NUXY, 3, DurAluminiumNi
-MP, DENS, 3, DurAluminiumDensity
 SECTYPE,    4,  BEAM,  CTUBE,  Shaft,  0
 SECOFFSET,  CENT 
 SECDATA,InternalRadius,ExternalRadius
 LESIZE, ALL, E_length_ct
-LATT, 3,  , 1,  ,  ,  , 4  
+LATT, 1,  , 1,  ,  ,  , 4  
 LMESH, ALL
 SAVE
 
 !***Support shaft - rigid connection
 ET, 3, MPC184, 1
 KEYOPT, 3, 1, 1
-MP, EX, 4, SteelEyounG
-MP, NUXY, 4, SteelNi
+MP, EX, 3, SteelEyounG
+MP, NUXY, 3, SteelNi
 
 SECNUM, 4
-MAT, 4
+MAT, 3
 TYPE, 3
 *DIM, ConnectionShaftSupportNode, ARRAY, 8, 3
 *DO, i, 1, 8, 1
@@ -284,16 +259,82 @@ R, 5, MassRotor, J0
 TYPE, 5                     
 REAL, 5
 E, ConnectionShaftSupportNode(7, 1)
+SAVE
 
-EPLOT
-/VIEW,1,,,1 
-/ANG,1  
-/REP,FAST   
-*USE, generateimages.mac
-/VIEW,1,1,1,1   
-/ANG,1  
-/REP,FAST
-*USE, generateimages.mac
+/COM, ------------------------------------------------
+/COM,  COMPLETE MODEL
+/COM, ------------------------------------------------
+!selct base keypoint and node
+KSEL, S, LOC, X, 4.457143
+KSEL, R, LOC, Y, 0.4464286E-01
+KSEL, R, LOC, Z, -0.7732370E-01, 0.7732370E-01
+*GET, BaseBearing1, KP, , NUM, MIN
+*GET, BaseBearing2, KP, , NUM, MAX
+ALLSEL,ALL
+*GET, LastNode, NODE, , NUM, MAX
+N, LastNode + 1, kx(BaseBearing1), SegmentRadius(6)+50e-3, kz(BaseBearing1) 
+*GET, NodeBearing1, NODE, , NUM, MAX
+*SET, LastNode,
+*GET, LastNode, NODE, , NUM, MAX
+N, LastNode + 1, kx(BaseBearing2), SegmentRadius(6)+50e-3, kz(BaseBearing2)
+*GET, NodeBearing2, NODE, , NUM, MAX
+*GET, NodeBearing2CoorX, NODE, NodeBearing2, LOC, X
+*GET, NodeBearing2CoorY, NODE, NodeBearing2, LOC, Y
+*GET, NodeBearing2CoorZ, NODE, NodeBearing2, LOC, Z
+!***Set local system and start macro rotor
+*GET, LocalSystem, CDSY, , NUM, MAX
+*SET, RotorLocalSystem, LocalSystem + 100
+CLOCAL, RotorLocalSystem, 0,  Lt/7*6, SegmentRadius(6)+50e-3, kz(BaseBearing1), , , 90
+CSYS, RotorLocalSystem
+
+*USE, rotor.mac, NodeBearing1, NodeBearing2, NodeBearing2CoorX, NodeBearing2CoorY, NodeBearing2CoorZ
+CSYS, 0
+SAVE
+
+!define rigid link
+*GET, LastElementType, ETYP, , NUM, MAX
+*SET, RigidLink, LastElementType+1
+ET,RigidLink,MPC184
+MAT, 3
+TYPE, RigidLink
+KSEL,S,KP,,BaseBearing1
+NSLK,S
+*GET, LastNode, NODE, , NUM, MAX
+E, LastNode, NodeStart
+ALLSEL,ALL
+KSEL,S,KP,,BaseBearing2
+NSLK,S
+*GET, LastNode, NODE, , NUM, MAX
+E, LastNode, NodeEnd
+
+
+
+
+!***Boundary conditions at base of tail
+ALLSEL, ALL
+LSEL, S, LOC, Y, -(RadBaseTail*2)+eps, (RadBaseTail*2)+eps 
+LSEL, S, LOC, x, 0, 0
+*GET, MinBaseTailLine, line, 0, num, min
+*GET, MaxBaseTailLine, line, 0, num, max
+*DO, i, MinBaseTailLine, MaxBaseTailLine, 8
+	DL, i, , ALL, 0
+*ENDDO 
+SAVE
+
+
+
+!clear parmaters
+*SET, BaseBearing1, 
+*SET, BaseBearing2,
+*SET, LastNode,
+*SET, i,
+*SET, NodeBearing2
+*SET, NodeBearing2CoorX,
+*SET, NodeBearing2CoorY,
+*SET, NodeBearing2CoorZ,
+*SET, LocalSystem, 
+*SET, RotorLocalSystem,
+
 
 !***Boundary conditions at base of tail
 ALLSEL, ALL
@@ -366,4 +407,3 @@ PLDISP				!Displays modal shape
 *CFCLOS
 
 FINISH
-/EXIT, ALL
