@@ -225,11 +225,15 @@ KEYOPT, RevoluteJoint, 4, 0
 
 !***define revolute joint
 TYPE, RevoluteJoint
-SECTYPE, , JOINT, REVO
+SECTYPE, , JOINT, REVO, RevoJoint_1
 SECJOINT, , ARG4, ARG4
+*GET, LastSectionType, SECP, ,NUM, MAX 
+SECNUM, LastSectionType
 E, ARG1, NodeStart
-SECTYPE, , JOINT, REVO
+SECTYPE, , JOINT, REVO, RevoJoint_2
 SECJOINT, , ARG5, ARG5
+*GET, LastSectionType, SECP, ,NUM, MAX 
+SECNUM, LastSectionType
 E, ARG2, NodeEnd
 SAVE
 
