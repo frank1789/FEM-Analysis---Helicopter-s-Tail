@@ -229,8 +229,8 @@ SECTYPE, , JOINT, REVO
 SECJOINT, , ARG4, ARG4
 E, ARG1, NodeStart
 SECTYPE, , JOINT, REVO
-E, ARG2, NodeStart + 8
 SECJOINT, , ARG5, ARG5
+E, ARG2, NodeEnd
 SAVE
 
 !clear parameters
