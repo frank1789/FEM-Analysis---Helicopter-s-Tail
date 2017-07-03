@@ -184,12 +184,16 @@ N, LastNode + 1, kx(BaseBearing1), SegmentRadius(6)+50e-3, kz(BaseBearing1)
 *USE, distancenode.mac, NodeBearing1, NodeBearing2
 
 !Set local system and start macro rotor
-*GET, LocalSystem, CDSY, , NUM, MAX
-*SET, RotorLocalSystem, LocalSystem + 100
-CLOCAL, RotorLocalSystem, 0,  Lt/7*6, SegmentRadius(6)+50e-3, kz(BaseBearing1), , , 90
-CSYS, RotorLocalSystem
+!*GET, LocalSystem, CDSY, , NUM, MAX
+!*SET, RotorLocalSystem, LocalSystem + 100
+!CLOCAL, RotorLocalSystem, 0,  Lt/7*6, SegmentRadius(6)+50e-3, kz(BaseBearing1), , , 90
+!CSYS, RotorLocalSystem
+
+*USE, relativereferencesystem.mac, 1, 0, Lt/7*6, SegmentRadius(6)+50e-3, kz(BaseBearing1), , , 90
+*USE, relativereferencesystem.mac, 2, 0, Lt/7*6, SegmentRadius(6)+50e-3, kz(BaseBearing2), , , 90 
+CSYS, LocalSystem_1
 /COM, -------------------ENTER MACRO-----------------
-*USE, rotor.mac, NodeBearing1, NodeBearing2, DistancePoint
+*USE, rotor.mac, NodeBearing1, NodeBearing2, DistancePoint, LocalSystem_1, LocalSystem_2
 CSYS, 0
 SAVE
 
@@ -229,8 +233,6 @@ E, LastNode, NodeEnd
 *SET, NodeBearing2,
 *SET, LastNode,
 *SET, i,
-*SET, LocalSystem, 
-*SET, RotorLocalSystem,
 
 /COM, ------------------------------------------------
 /COM,  BOUNDARY CONDITION
