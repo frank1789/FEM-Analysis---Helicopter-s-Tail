@@ -6,8 +6,10 @@
 !PARAMETERS INPUT:                                 !
 !               ARG1: 1st node value               !
 !               ARG2: 2nd node value               !
-!		ARG3: pass distance between 	   !
-!		      previous nodes	           !
+!				ARG3: pass distance between 	   !
+!						previous nodes			   !
+!               ARG4: Local reference frame        !
+!               ARG5: Local reference frame        !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 ! >>>>> MODEL PARAMETERS SHAFT AND DISK <<<<<
@@ -24,8 +26,13 @@
 *SET, mxspn, 4000 	! Max Omega (rpm)
 
 /COM, -----------------------------------------------
-/COM,  MODEL DEFINITION - SHAFT
-/COM, ----------------------------------------------- 
+/COM,  MODEL DEFINITION -SHAFT
+/COM, -----------------------------------------------
+!***Bearing ground nodes
+!N, ARG1,
+!N, ARG2,
+
+!***Shaft defintion 
 !1st part
 *GET, NodeMax, NODE, , NUM, MAX
 *SET, NodeStart, NodeMax + 1
@@ -219,14 +226,16 @@ KEYOPT, RevoluteJoint, 4, 0
 !***define revolute joint
 TYPE, RevoluteJoint
 SECTYPE, , JOINT, REVO
+SECJOINT, , ARG4, ARG4
 E, ARG1, NodeStart
 SECTYPE, , JOINT, REVO
 E, ARG2, NodeStart + 8
+SECJOINT, , ARG5, ARG5
 SAVE
 
 !clear parameters
 *SET, LastElementType,
-*SET, RevoluteJoint,
+*SET, RevoluteJoint, 
 
 /COM, --------------------END MACRO------------------
 /EOF
