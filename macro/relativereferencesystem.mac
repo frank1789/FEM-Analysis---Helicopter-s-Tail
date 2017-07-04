@@ -1,4 +1,4 @@
-﻿!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !                                                                     !
 !            CREATE NEW LOCAL REFERENCE SYSTEM                        !
 !                                                                     !
@@ -6,15 +6,15 @@
 !PARAMETERS INPUT:                                                    !
 !               ARG1: Number new reference system RF                  !
 !               ARG2: Coordinate system type                          !
-!		ARG3: pass distance between previous nodes            !
+!				ARG3: pass distance between previous nodes			  !
 !               ARG4: Local reference frame                           !
-!		ARG3: x - Location (in the active coordinate system)  ! 
-!		      of the origin of the new coordinate system      !
-!		ARG4: y - Location (in the active coordinate system)  ! 
+!				ARG3: x - Location (in the active coordinate system)  ! 
+!					  of the origin of the new coordinate system      !
+!				ARG4: y - Location (in the active coordinate system)  ! 
 !                     of the origin of the new coordinate system      !
-!		ARG5: z - Location (in the active coordinate system)  !
+!				ARG5: z - Location (in the active coordinate system)  !
 !                     of the origin of the new coordinate system      !
-!		ARG6: First rotation about local Z                    !
+!				ARG6: First rotation about local Z                    !
 !                     (positive X toward Y)                           !
 !               ARG7: Second rotation about local X                   !
 !                     (positive Y toward Z)                           !
