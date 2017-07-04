@@ -1,0 +1,136 @@
+! >>>>> PREPROCESSING <<<<<
+/COM, enter Macro
+/PREP7
+/COM, create Local cartesian coordinate system 
+CLOCAL, ARG1+1, 0, 0, 0, -(LengthAttackRotor)
+
+!create keypoint airfoil
+*DO, i, 1, LengthTable, 1
+	K, i+ARG2, AirfoilData(i)/1000, AirfoilData(i, 2)/1000, 0 							![m]
+	/com, keypoint %i+ARG2% x = %AirfoilData(i)/1000%, y = %AirfoilData(i, 2)/1000%, z = 0
+*ENDDO
+
+!create lines airfoil
+KSEL, S, LOC, X, 0, 0.1
+KSEL, R, LOC, Y, -0.05, 0.05
+
+*GET, KpBaseLine, KP, , NUM, MIN
+*GET, KpCloseLine, KP, , NUM, MAX
+*GET, NumKp, KP, ,COUNT
+
+*cfopen,spl_ine,mac
+		*cfwrite,FLST,3,NumKp,3
+		*do,j,KpBaseLine,KpCloseLine,1
+			*cfwrite,FITEM,3,%j%
+			/com, FITEM,3,%j%
+  		*enddo
+  *cfwrite,BSPLIN, ,P51X   
+*cfclose
+*USE,spl_ine.mac
+
+
+
+!*DO, i, KpBaseLine, KpCloseLine-1, 1
+!	L, i, i+1
+!*ENDDO
+L, KpBaseLine, KpCloseLine
+KSEL, S, LOC, X, 0, 0.1
+KSEL, R, LOC, Y, -0.05, 0.05
+LSLK, S, 1
+
+!create area
+AL, ALL
+
+*GET, LocalSystem, CDSY, , NUM, MAX
+*GET, LocalSystemX, CDSY, LocalSystem, loc, x
+*GET, LocalSystemY, CDSY, LocalSystem, loc, y
+*GET, LocalSystemZ, CDSY, LocalSystem, loc, z
+
+KSEL, ALL
+KSEL, S, LOC, X, -(LocalSystemX+0.0001), (LocalSystemX+0.0001)
+KSEL, R, LOC, Y, 0, 0
+KSEL, R, LOC, Z, -(LocalSystemZ), (LocalSystemZ)
+
+*GET, KpMax, KP, , NUM, MAX
+*SET, KpLineExtrudeMid, KpMax
+*GET, KpCordinX, KP, KpMax, LOC, X
+*GET, KpCordinY, KP, KpMax, LOC, Y
+
+KSEL, ALL
+*GET, KpMax, KP, , NUM, MAX
+K, KpMax+1, KpCordinX, KpCordinY, -(LengthRotor - LengthAttackRotor)
+/com, create keypoint %KpMax+1% @ %KpCordinX%, %KpCordinY%, %-(LengthRotor - LengthAttackRotor)%
+*GET, KpLineExtrudeStart, KP, , NUM, MAX
+K, KpLineExtrudeStart+1, KpCordinX, KpCordinY, LengthAttackRotor
+/com, create keypoint %KpLineExtrudeStart+1% @ %KpCordinX%, %KpCordinY%, %LengthAttackRotor%
+
+*GET, KpLineExtrudeEnd, KP, , NUM, MAX
+*GET, LocalSystem, CDSY, , NUM, MAX
+*GET, LocalSystemX, CDSY, LocalSystem, loc, x
+*GET, LocalSystemY, CDSY, LocalSystem, loc, y
+*GET, LocalSystemZ, CDSY, LocalSystem, loc, z
+
+ASEL, ALL
+ASEL, S, LOC, X, 0, 0.1  
+*GET, SurfaceAirfoil, AREA, , NUM, MAX
+KSEL, ALL
+L, KpLineExtrudeStart, KpLineExtrudeMid
+*GET, LineAlongExtrude, LINE, , NUM, MAX
+VDRAG, SurfaceAirfoil, , , , , , LineAlongExtrude
+SAVE
+
+L, KpLineExtrudeMid, KpLineExtrudeEnd
+*GET, LineAlongExtrude, LINE, , NUM, MAX
+VDRAG, SurfaceAirfoil, , , , , , LineAlongExtrude
+*GET, VolumeToCut, VOLU, , NUM, MAX
+SAVE
+
+!extrude surface to cut airfoil
+*GET, LocalSystemZ, CDSY, ARG1, loc, z
+*GET, LocalSystemZZ, CDSY, LocalSystem, loc, z
+WPCSYS, -1
+WPAVE, 0, 0, 0
+WPROTA, 0, 90
+WPOFFS, 0, 0, -0.05
+CYL4, 0.125, 0.1, 0.09, , , , 0.1
+*GET, VolumeToDelete, VOLU, , NUM, MAX
+WPCSYS, -1
+SAVE
+
+*GET, CuttingArea, AREA, , NUM, MAX
+VSBA, VolumeToCut, CuttingArea
+*GET, VolumeToDelete2, VOLU, , NUM, MAX
+VDELE, VolumeToDelete, , , 1
+VDELE, VolumeToDelete2, , , 1
+SAVE
+/COM, restore default Working Plane -Local Coordinate System
+WPSTYL, DEFA
+WPSTYLE, , , , , , , , 0
+/COM, restore default Coordinate System
+!Renumberitng for volume
+
+*GET, LastVolume, VOLU, , NUM, MAX
+NUMSTR, VOLU, LastVolume, 
+/COM, Clear macro's parameters
+*SET, KpMax, 
+*SET, KpBaseLine, 
+*SET, KpCloseLine, 
+*SET, LocalSystem, 
+*SET, LocalSystemX, 
+*SET, LocalSystemY, 
+*SET, LocalSystemZ, 
+*SET, KpLineExtrudeMid, 
+*SET, KpCordinX, 
+*SET, KpCordinY, 
+*SET, KpLineExtrudeStart, 
+*SET, KpLineExtrudeEnd, 
+*SET, SurfaceAirfoil, 
+*SET, LineAlongExtrude, 
+*SET, VolumeToCut, 
+*SET, LocalSystemZZ, 
+*SET, VolumeToDelete, 
+*SET, CuttingArea, 
+*SET, VolumeToDelete2, 
+*SET, i, 
+/COM, exit Macro
+FINISH
