@@ -278,40 +278,60 @@ Acel, , 9.81		!gravitational acceleration
 SOLVE
 FINISH
 
-/COM, ------------------------------------------------
-/COM,  Modal analysis
-/COM, ------------------------------------------------
-! >>>> SOLUTION <<<<
-/SOLU    
-ANTYPE, MODAL, NEW
-PSTRES, ON				! Includes prestress effects
-MODOPT, LANB, 10			! First 10 modes are extracted
-LUMPM, OFF				! lumped/consistent mass matrix
-MXPAND, 10, , , Yes			! First 10 modes are expanded, calculate element stress
+! >>>>> ANALISYS PARAMETRS <<<<<
+*SET, nmd, 10 		! Number of modes
+*SET, nmspn, 8 		! Number of speeds
+*SET, mxspn, 4000 	! Max Omega (rpm)
 
-SOLVE
-FINISH
+!get element component about a user-defined rotational
+!in this case there is only one component
+*GET, NumberComponet, 'COMP', , NCOMP
+*GET, RotorBlock, 'COMP', NumberComponet, NAME
 
-! >>>> POSTPROCESSING <<<<
-/POST1
-SET, LIST			!List natural frequencies
-SET, 1, 1			!Loads first mode
-PLDISP				!Displays modal shape
+!get value for axis X1, Y1, Z1 <-> X2, Y2, Z2
+*USE, getextremeaxis.mac
 
-*DIM,ModalFreq,ARRAY,10,1
-*Do, i, 1, 10, 1
- *GET, omega, MODE, i, FREQ
-	ModalFreq(i,1) = omega
-	*SET, omega,
+/SOLU
+!Setup modal run
+ANTYPE, MODAL
+CORIOLIS, ON, , , ON
+MODOPT, QRDAMP, nmd, , , ON
+
+*ABSET, Loop On Speed - progress: 0%, Bar
+! Loop on speeds
+*DO, i, 1, nmspn
+	*SET, progress, i/nmspn*100
+	spn = (i-1)*(mxspn/(nmspn-1))
+	*SET, OMEGAX, spn
+	*SET, OMEGAY, 0
+	*SET, OMEGAZ, 0
+	!CMOMEGA, CM_NAME, OMEGAX, OMEGAY, OMEGAZ, X1, Y1, Z1, X2, Y2, Z2
+	/COM,===============================================
+	/COM, CMOMEGA, %CM_Name%, %OMEGAX%, %OMEGAY%, %OMEGAZ%, 
+	/COM, %Node1CoorX%, %Node1CoorY%, %Node1CoorZ%,
+	/COM, %Node2CoorX%, %Node2CoorY%, %Node2CoorZ%
+	/COM,===============================================
+	CMOMEGA, %CM_Name%, OMEGAX, OMEGAY, OMEGAZ, Node1CoorX, Node1CoorY, Node1CoorZ, Node2CoorX, Node2CoorY, Node2CoorZ
+	MXPAND, nmd, , , YES
+	SOLVE
+	*ABCHECK, progress, Loop On Speed - progress: %progress% %
 *ENDDO
-
-*SET, omega,
-*CFOPEN, 'ModalFreq-%StrJobname(1)%', 'txt'
- *VWRITE, 'Num', 'omega'
-  (8x, A8, 4X, A8,)	
-  *VWRITE, sequ, ModalFreq(1,1)
-   (F12.0, F12.5)
-*CFCLOS
-
+*ABFINI
 FINISH
-/EXIT, ALL
+
+/post1
+! Plot/List Campbell Diagrams
+/gropts,view,2
+/yrange,0,100
+/xrange,0,4000
+plcamp,,1,rpm
+prcamp,,1,rpm
+
+! Plot orbit
+set,1,2
+plorb
+! Animate whirl
+set,3,1
+plnsol,u,sum
+anharm
+finish

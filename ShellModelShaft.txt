@@ -29,9 +29,9 @@ FINISH
 *SET, AluminiumDensity, 2700 			![Kg/m^3]
 
 !*** Duraluminium
-*SET, DurAluminiumEyounG, 72e9   ![Pa] Young's modulus
-*SET, DurAluminiumNi, 0.33	       !Poisson's ratio
-*SET, DurAluminiumDensity, 2810	      ![Kg/m^3]
+*SET, DurAluminiumEyounG, 72e9   		![Pa] Young's modulus
+*SET, DurAluminiumNi, 0.33	       		!Poisson's ratio
+*SET, DurAluminiumDensity, 2810	      		![Kg/m^3]
 
 !*** Element size
 *SET, E_length_ct, 50e-3			![m]

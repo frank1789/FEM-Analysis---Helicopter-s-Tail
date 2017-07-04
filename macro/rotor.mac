@@ -21,9 +21,6 @@
 *SET, d_i, 1.75
 *SET, dskthk, 0.02
 *SET, bstf, 378E+7 	! Brng Stiffness
-*SET, nmd, 10 		! Number of modes
-*SET, nmspn, 8 		! Number of speeds
-*SET, mxspn, 4000 	! Max Omega (rpm)
 
 /COM, -----------------------------------------------
 /COM,  MODEL DEFINITION -SHAFT
@@ -48,9 +45,6 @@ FILL, LastNode,  NodeEnd
 N, LastNode, nx(LastNode) + 0.02
 *GET, LastNode, NODE, , NUM, MAX
 SAVE
-
-!clear parameters
-*SET, NodeMax, 
 
 /COM, -----------------------------------------------
 /COM,  MESH - SHAFT
@@ -80,7 +74,7 @@ KEYOPT, BeamShaft,15, 0
 *SET, SectionBeamShaft, LastSectionType + 1
 SECTYPE, SectionBeamShaft, BEAM, CSOLID
 SECDATA, shftdia/2
-cm, BeamOmega, elem 
+!cm, BeamOmega, elem 
 
 ! Make elements
 SECNUM, SectionBeamShaft
@@ -94,12 +88,6 @@ NSEL, S, NODE, , NodeStart, LastNode, 1
 	E, i, i+1
 *ENDDO
 SAVE
-
-!clear parameters
-*SET, NodeNumShaft, 
-*SET, NodeStartShaft, 
-*SET, NodeEndShaft, 
-*SET, BeamShaft,
 
 /COM, -----------------------------------------------
 /COM,  MODEL DEFINITION - DISK
@@ -126,19 +114,16 @@ KEYOPT, ShellDisk, 8, 2
 *GET, LastSectionType, SECP, ,NUM, MAX
 *SET, SectionShellDisk, LastSectionType + 1
 SECTYPE, SectionShellDisk, SHELL
-secd, dskthk
+SECD, dskthk
 TYPE, ShellDisk
 SECNUM, SectionShellDisk
 MAT, Aluminum7075
-cm, DiscOmega, elem
+!cm, DiscOmega, elem
 MSHKEY, 0
 !MSHAPE, 1, 2D
 ESIZE, 0.02
 AMESH, ALL
 SAVE
-
-!clear parameters
-*SET,  ShellDisk,
 
 !*** clamp between disk and spindle
 
@@ -147,13 +132,13 @@ SAVE
 *GET, LastElementType, ETYP, , NUM, MAX
 *SET, ClampDiskSplinde, LastElementType + 1
 ET, ClampDiskSplinde, MASS21
+KEYOPT, ClampDiskSplinde, 2, 0
 *GET, ClampDiskSplinde, ETYP, , NUM, MAX
 /COM, MASS21 for clamp between disk and spindle have number %ClampDiskSplinde%
 R, ClampDiskSplinde, 10, 10, 10, 8.59e-2, 4.295e-2, 4.295e-2
 TYPE, ClampDiskSplinde
 REAL, ClampDiskSplinde
 MAT, Aluminum7075
-cm, HubOmega, elem
 E, LastNode
 SAVE
 
@@ -166,9 +151,6 @@ NSEL, A, NODE, , LastNode
 CERIG, LastNode, ALL, ALL
 /REP, FAST
 SAVE
-
-!clear parameters
-*SET,  ClampDiskSplinde,
 
 /COM, -----------------------------------------------
 /COM,  MESH - BEARINGS
@@ -200,13 +182,6 @@ E, ARG2, NodeEnd
 /COM,	Node1: %ARG1% (ARG1); Node2: %NodeStart% (NodeStart)
 /COM,	Node1: %ARG2% (ARG2); Node2: %NodeEnd% (NodeEnd)
 
-!clear parameters
-*SET, LastNode,
-*SET, LastElementType,
-*SET, SpringDamperUZ
-*SET, SpringDamperUY
-*SET, SpringDumperRealConst
-
 /COM, -----------------------------------------------
 /COM,  REVOLUTE JOINT
 /COM,  create revolute joint to block d.o.f shaft
@@ -237,35 +212,34 @@ SECNUM, LastSectionType
 E, ARG2, NodeEnd
 SAVE
 
+!select element to
+ESEL, S, TYPE, , BeamShaft
+ESEL, A, TYPE, , ShellDisk
+ESEL, A, TYPE, , ClampDiskSplinde
+EPLOT
+
+!create a component
+CM, RotorBlock, ELEM
+
+!in this case there is only one component
+*GET, NumberComponet, 'COMP', , NCOMP
+*GET, CM_Name, 'COMP', NumberComponet, NAME
+*MSG, UI, NumberComponet, CM_Name
+Created: (%I) component, Named: (%S)
+
 !clear parameters
+*SET, NodeMax, 
 *SET, LastElementType,
-*SET, RevoluteJoint, 
-
-/COM, --------------------END MACRO------------------
+*SET, RevoluteJoint,
+*SET, LastNode,
+*SET, LastElementType,
+*SET, SpringDamper
+*SET, SpringDumperRealConst
+*SET, ClampDiskSplinde,
+*SET, ShellDisk,
+*SET, NodeNumShaft, 
+*SET, NodeStartShaft, 
+*SET, NodeEndShaft, 
+*SET, BeamShaft,
+!Exit Macro
 /EOF
-
-!-----------------------------------------
-! Inserimento delle omega
-!-----------------------------------------
-
-! Plot the model
-/view,1,1,1,1 $/vup,1,z
-/eshape,1,1 $/pnum,sect,1
-/num,1 $eplot
-
-
-/solu
-! Setup modal run
-antype,modal
-coriolis,on,,,on
-modopt,qrdamp,nmd,,,on
-
-! Loop on speeds
-*do,i,1,nmspn
-	spn = (i-1)*(mxspn/(nmspn-1))
-	cmomega, BeamOmega,,,spn
-	cmomega, DiscOmega,,,spn
-	cmomega, HubOmega,,,spn
-	mxpand,nmd,,,yes
-	solve
-*enddo
