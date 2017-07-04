@@ -51,6 +51,11 @@ FINISH
 !other parameters
 *SET, NumberDivisonSurface, 24	!division cone's area
 
+!change view - isometric
+/VIEW,1,1,1,1   
+/ANG,1  
+/REP,FAST   
+
 /COM, -----------------------------------------------
 /COM,  MODEL DEFINITION
 /COM, -----------------------------------------------
@@ -183,17 +188,17 @@ N, LastNode + 1, kx(BaseBearing1), SegmentRadius(6)+50e-3, kz(BaseBearing1)
 *GET, NodeBearing1, NODE, , NUM, MAX
 *USE, distancenode.mac, NodeBearing1, NodeBearing2
 
-!Set local system and start macro rotor
-!*GET, LocalSystem, CDSY, , NUM, MAX
-!*SET, RotorLocalSystem, LocalSystem + 100
-!CLOCAL, RotorLocalSystem, 0,  Lt/7*6, SegmentRadius(6)+50e-3, kz(BaseBearing1), , , 90
-!CSYS, RotorLocalSystem
-
+!Set local systems
 *USE, relativereferencesystem.mac, 1, 0, Lt/7*6, SegmentRadius(6)+50e-3, kz(BaseBearing1), , , 90
 *USE, relativereferencesystem.mac, 2, 0, Lt/7*6, SegmentRadius(6)+50e-3, kz(BaseBearing2), , , 90 
+
+!Enter local system - z-positive
 CSYS, LocalSystem_1
-/COM, -------------------ENTER MACRO-----------------
+
+!create rotorblock
 *USE, rotor.mac, NodeBearing1, NodeBearing2, DistancePoint, LocalSystem_1, LocalSystem_2
+
+!return principal Reference system
 CSYS, 0
 SAVE
 
@@ -205,17 +210,20 @@ SAVE
 *GET, LastElementType, ETYP, , NUM, MAX
 *SET, RigidLink, LastElementType + 1
 ET, RigidLink, MPC184
+!0 - rigid link block 3 d.o.f (x, y, z)
+!1 - beam block 6 d.o.f (x, y, z, rx, ry, rz)
+KEYOPT, RigidLink, 1, 1
 KEYOPT, RigidLink, 2, 0
 
 !material for rigid link
 *GET, MaterialNum, MAT, , NUM, MAX
 *SET, RigidLinkMaterial, MaterialNum + 1
-MP, EX, RigidLinkMaterial, SteelEyounG
-MP, NUXY, RigidLinkMaterial, SteelNi
-MAT, RigidLinkMaterial
-TYPE, RigidLink
+!MP, EX, RigidLinkMaterial, SteelEyounG
+!MP, NUXY, RigidLinkMaterial, SteelNi
+!MAT, RigidLinkMaterial
 
 !create element
+TYPE, RigidLink
 KSEL,S,KP,,BaseBearing1
 NSLK,S
 *GET, LastNode, NODE, , NUM, MAX
@@ -233,6 +241,12 @@ E, LastNode, NodeEnd
 *SET, NodeBearing2,
 *SET, LastNode,
 *SET, i,
+
+!change view - isometric
+EPLOT
+/VIEW,1,1,1,1
+/ANG,1
+/REP,FAST
 
 /COM, ------------------------------------------------
 /COM,  BOUNDARY CONDITION
@@ -264,17 +278,8 @@ Acel, , 9.81		!gravitational acceleration
 SOLVE
 FINISH
 
-! >>>> POSTPROCESSING <<<<
-/POST1  
-PLDISP, 1    
-*use, generateimages.mac
-PLNSOL,  U, SUM,  0, 1.0
-*use, generateimages.mac
-PLNSOL,  S, EQV,  0, 1.0
-*use, generateimages.mac
-
 /COM, ------------------------------------------------
-/COM,  MODAL ANALYSIS
+/COM,  Modal analysis
 /COM, ------------------------------------------------
 ! >>>> SOLUTION <<<<
 /SOLU    
@@ -309,3 +314,4 @@ PLDISP				!Displays modal shape
 *CFCLOS
 
 FINISH
+/EXIT, ALL
