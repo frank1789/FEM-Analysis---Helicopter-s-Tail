@@ -1,6 +1,4 @@
-
 # FEM Analysis - Helicopter's Tail
-
 
 Study of vibrational tail helicopter behavior [Eurocopter AS350](https://it.wikipedia.org/wiki/Aérospatiale_AS_350_Écureuil) :helicopter:, where all historical and other information is available.
 
@@ -21,11 +19,11 @@ Study of vibrational tail helicopter behavior [Eurocopter AS350](https://it.wiki
 |Maximum speed  	| 	287 km/h|
 |Range	        	| 	476 km	|
 |service ceiling 	| 	6100 m  |
-    
+
 
 ## Shell model
-The geometric model is shared among three different configuration where was enfatizated a different approach to evalute the repsonce of structural elemtents in different condition of approximation. Infact the [first model](first_model) case is an evalution of the simple model where considering only tail like as a cantilever beam. 
-While in the [second case](#2ndmodel) considering also the trasmission shaft rigidly linked at the tail and the presence of a lumped mass to simulate the persence of the block of rotor in the proximity the end of tail. 
+The geometric model is shared among three different configuration where was enfatizated a different approach to evalute the repsonce of structural elemtents in different condition of approximation. Infact the [first model](first_model) case is an evalution of the simple model where considering only tail like as a cantilever beam.
+While in the [second case](#2ndmodel) considering also the trasmission shaft rigidly linked at the tail and the presence of a lumped mass to simulate the persence of the block of rotor in the proximity the end of tail.
 Finally consider a [third model](#3rdmodel) where we considering the shaft's weight is distributed along the lenght of tail like as lumped mass, we consider as before another concentrated mass to represent the block of rotor at the tail's end.
 
 ***
