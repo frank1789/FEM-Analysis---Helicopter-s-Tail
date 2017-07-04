@@ -1,0 +1,47 @@
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!                                                  !
+!            NODE DISTANCE CALCULATOR              !
+!                                                  !
+!                                                  !
+!PARAMETERS INPUT:                                 !
+!                 ARG1: 1st Node value             !
+!                 ARG2: 2nd Node value             !
+!RETURN:					                       !
+! 		DistancePoint			                   !										   
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+!define local variable
+*GET, Node1CoorX, NODE, ARG1, LOC, X
+*GET, Node1CoorY, NODE, ARG1, LOC, Y
+*GET, Node1CoorZ, NODE, ARG1, LOC, Z
+*GET, Node2CoorX, NODE, ARG2, LOC, X
+*GET, Node2CoorY, NODE, ARG2, LOC, Y
+*GET, Node2CoorZ, NODE, ARG2, LOC, Z
+
+*SET, x_1, Node1CoorX
+*SET, y_1, Node1CoorY
+*SET, z_1, Node1CoorZ
+*SET, x_2, Node2CoorX
+*SET, y_2, Node2CoorY
+*SET, z_2, Node2CoorZ
+
+!calculates the distance between your nodes according to the formula 
+!dist^2=(x_1-x_2)^2+(y_1-y_2)^2+(z_1-z_2)^2
+!Return value DistancePoint
+*SET, DistancePoint, ((x_1-x_2)**2+(y_1-y_2)**2+(z_1-z_2)**2)**(1/2)
+
+!clear local variable
+*SET, Node1CoorX,
+*SET, Node1CoorY,
+*SET, Node1CoorZ,
+*SET, Node2CoorX,
+*SET, Node2CoorY,
+*SET, Node2CoorZ,
+
+*SET, x_1,
+*SET, y_1,
+*SET, z_1,
+*SET, x_2,
+*SET, y_2,
+*SET, z_2,
+/EOF
