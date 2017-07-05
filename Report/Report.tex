@@ -93,7 +93,7 @@
 \lstdefinelanguage{apdl-modified}
 {
 	alsoletter=/*\%,
-	morekeywords={/clear,/filnam,/title,/unit,/inquire,/rep,/ang,/eshape,/replot,/view,/exit,/replo,/plopts,/triad,/efacet,/rgb,/show,/gile,/eof,/solve,/output,/out
+	morekeywords={/clear,/filnam,/title,/unit,/inquire,/rep,/ang,/eshape,/replot,/view,/exit,/replo,/plopts,/triad,/efacet,/rgb,/show,/gile,/eof,/solve,/output,/out,/device
 	},
 	morekeywords={*afun,*dim,*vget,*do,*enddo,*cfopen,*vwrite,*cfclos,*set,
 	 			*get,*use,*abbr,*msg,*if,*else,*endif,*abset,*abcheck,*abfini},
@@ -111,6 +111,7 @@
 	otherkeywords={/angle},
 	keywords=[2]{beam188,beam189,shell181,mpc184,combin14,mass21},
 	keywords=[3]{/prep7,/solu,/post1,/post26},
+	keywords=[5]{ARRAY,TABLE},
 	keywords=[4]{
 				',
 				-,
@@ -179,7 +180,8 @@
 	keywordstyle=[2]\color{darkslateblue},
 	% section
 	keywordstyle=[3]\color{cinnamon},
-	keywordstyle=[4]\color{arylideyellow},
+	keywordstyle=[4]\color{black},
+	keywordstyle=[5]\color{arylideyellow},
 	% style of comments
 	commentstyle=\color{cadmiumgreen}\ttfamily,
 	% style of string
