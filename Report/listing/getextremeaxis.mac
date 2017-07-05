@@ -1,0 +1,56 @@
+!CMGRP, RotorBlockGrouped, BeamOmega, DiscOmega, HubOmega
+
+!CMOMEGA, CM_NAME, OMEGAX, OMEGAY, OMEGAZ, X1, Y1, Z1, X2, Y2, Z2
+!Specifies the rotational velocity of an element component about a user-defined rotational axis.
+!SOLUTION: Inertia
+
+!CM_NAME
+!The name of the element component.
+
+!OMEGAX, OMEGAY, OMEGAZ
+!If the X2, Y2, Z2 fields are not defined, OMEGAX, OMEGAY, and OMEGAZ specify the components of
+!the rotational velocity vector in the global Cartesian X, Y, Z directions.
+
+!If the X2, Y2, Z2 fields are defined, only OMEGAX is required. OMEGAX specifies the scalar
+!rotational velocity about the rotational axis. The rotational direction of OMEGAX is designated
+!either positive or negative, and is determined by the right hand rule.
+
+!X1, Y1, Z1
+!If the X2, Y2, Z2 fields are defined,X1, Y1, and Z1 define the coordinates of the beginning
+!point of the rotational axis vector. Otherwise, X1, Y1, and Z1 are the coordinates of a point
+!through which the rotational axis passes.
+
+!X2, Y2, Z2
+!The coordinates of the end point of the rotational axis vector.
+
+!Change RF
+CSYS,  LocalSystem_1
+WPCSYS, -1
+
+!Select node
+NSEL, S, LOC, Y, , 0, shftlen + dskthk
+NSEL, R, LOC, z, , 0, 0
+*GET, StartNode, NODE, , NUM, MIN
+*GET, EndNode, NODE, , NUM, MAX
+ALLSEL,ALL
+CSYS, 0
+WPCSYS, -1
+!Plot nodes
+NPLOT
+*DO, j, StartNode, EndNode
+	/COM, %j%
+*ENDDO
+
+!define local variable
+*GET, Node1CoorX, NODE, StartNode, LOC, X
+*GET, Node1CoorY, NODE, StartNode, LOC, Y
+*GET, Node1CoorZ, NODE, StartNode, LOC, Z
+*GET, Node2CoorX, NODE, EndNode, LOC, X
+*GET, Node2CoorY, NODE, EndNode, LOC, Y
+*GET, Node2CoorZ, NODE, EndNode, LOC, Z
+/COM,===============================================
+/COM, CMOMEGA, ROTOR, OMEGAX, OMEGAY, OMEGAZ,
+/COM, %Node1CoorX%, %Node1CoorY%, %Node1CoorZ%,
+/COM, %Node2CoorX%, %Node2CoorY%, %Node2CoorZ%
+/COM,===============================================
+/EOF
