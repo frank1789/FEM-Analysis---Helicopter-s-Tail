@@ -188,6 +188,10 @@
 	stringstyle=\color{darkpastelpurple}\ttfamily,
 }
 
+%====Lista Simboli ======================
+\usepackage{nomencl}
+\makenomenclature
+
 %========================================
 % TESTO DELLA TESI
 %========================================
@@ -205,12 +209,12 @@
 	\input{start}
 	\input{shell}
 	% Inserite qui gli altri capitoli:
-
 	\input{conclusione}
-	\lstlistoflistings
+	\input{code}
 	% === Bibliografia ====================================
+	\lstlistoflistings
+	\listoffigures
 	\newpage
 	\bibliographystyle{IEEEtran}
 	\bibliography{bibliografia-tesi.bib}
-	\input{code}
 \end{document}
