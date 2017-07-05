@@ -2,3 +2,19 @@
 \.DS_Store
 
 *.html
+
+*.gz
+
+*.toc
+
+*.out
+
+*.log
+
+*.lol
+
+*.bbl
+
+*.aux
+
+*.blg
