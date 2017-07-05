@@ -5,7 +5,7 @@
 !                                                                     !
 !PARAMETERS INPUT:                                                    !
 !               ARG1: Number new reference system RF                  !
-!               ARG2: KCS - Coordinate system type                    !                           !
+!               ARG2: KCS - Coordinate system type                    !
 !				        ARG3: x - Location (in the active coordinate system)  !
 !					            of the origin of the new coordinate system      !
 !				        ARG4: y - Location (in the active coordinate system)  !
