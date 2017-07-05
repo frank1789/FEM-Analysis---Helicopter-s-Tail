@@ -1,4 +1,4 @@
-﻿!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !                                                                     !
 !                CREATE AXIS REVOLTION FOR COMPONENT                  !
 !                                                                     !
@@ -17,7 +17,7 @@
 
 !If the X2, Y2, Z2 fields are defined, only OMEGAX is required. OMEGAX specifies the scalar 
 !rotational velocity about the rotational axis. The rotational direction of OMEGAX is designated 
-!either positive or negative, and is determined by the "right hand rule."
+!either positive or negative, and is determined by the right hand rule.
 
 !X1, Y1, Z1
 !If the X2, Y2, Z2 fields are defined,X1, Y1, and Z1 define the coordinates of the beginning 
