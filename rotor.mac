@@ -6,8 +6,8 @@
 !PARAMETERS INPUT:                                 !
 !               ARG1: 1st node value               !
 !               ARG2: 2nd node value               !
-!				ARG3: pass distance between 	   !
-!						previous nodes			   !
+!		ARG3: pass distance between 	   !
+!		      previous nodes		   !
 !               ARG4: Local reference frame        !
 !               ARG5: Local reference frame        !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -28,11 +28,6 @@
 /COM, -----------------------------------------------
 /COM,  MODEL DEFINITION -SHAFT
 /COM, -----------------------------------------------
-!***Bearing ground nodes
-!N, ARG1,
-!N, ARG2,
-
-!***Shaft defintion 
 !1st part
 *GET, NodeMax, NODE, , NUM, MAX
 *SET, NodeStart, NodeMax + 1
@@ -40,6 +35,7 @@ N, NodeStart,
 N, NodeStart + 8, ARG3 $ /COM, %NodeStart + 8%, %ARG3%
 *GET, NodeEnd, NODE, , NUM, MAX
 FILL, NodeStart, NodeEnd
+
 !2nd part
 *GET, NodeMax, NODE, , NUM, MAX
 N, NodeMax+19, dskoff
@@ -240,32 +236,4 @@ SAVE
 !clear parameters
 *SET, LastElementType,
 *SET, RevoluteJoint, 
-
-/COM, --------------------END MACRO------------------
 /EOF
-
-!-----------------------------------------
-! Inserimento delle omega
-!-----------------------------------------
-
-! Plot the model
-/view,1,1,1,1 $/vup,1,z
-/eshape,1,1 $/pnum,sect,1
-/num,1 $eplot
-
-
-/solu
-! Setup modal run
-antype,modal
-coriolis,on,,,on
-modopt,qrdamp,nmd,,,on
-
-! Loop on speeds
-*do,i,1,nmspn
-	spn = (i-1)*(mxspn/(nmspn-1))
-	cmomega, BeamOmega,,,spn
-	cmomega, DiscOmega,,,spn
-	cmomega, HubOmega,,,spn
-	mxpand,nmd,,,yes
-	solve
-*enddo

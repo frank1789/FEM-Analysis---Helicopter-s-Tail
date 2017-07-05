@@ -1,11 +1,15 @@
-!CMGRP, RotorBlockGrouped, BeamOmega, DiscOmega, HubOmega
+﻿!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!                                                                     !
+!                CREATE AXIS REVOLTION FOR COMPONENT                  !
+!                                                                     !
+!                                                                     !
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 !CMOMEGA, CM_NAME, OMEGAX, OMEGAY, OMEGAZ, X1, Y1, Z1, X2, Y2, Z2
 !Specifies the rotational velocity of an element component about a user-defined rotational axis.
 !SOLUTION: Inertia
 
-!CM_NAME
-!The name of the element component.
+!CM_NAME - The name of the element component.
 
 !OMEGAX, OMEGAY, OMEGAZ
 !If the X2, Y2, Z2 fields are not defined, OMEGAX, OMEGAY, and OMEGAZ specify the components of 
@@ -13,7 +17,7 @@
 
 !If the X2, Y2, Z2 fields are defined, only OMEGAX is required. OMEGAX specifies the scalar 
 !rotational velocity about the rotational axis. The rotational direction of OMEGAX is designated 
-!either positive or negative, and is determined by the “right hand rule.”
+!either positive or negative, and is determined by the "right hand rule."
 
 !X1, Y1, Z1
 !If the X2, Y2, Z2 fields are defined,X1, Y1, and Z1 define the coordinates of the beginning 
@@ -35,6 +39,7 @@ NSEL, R, LOC, z, , 0, 0
 ALLSEL,ALL
 CSYS, 0
 WPCSYS, -1
+
 !Plot nodes
 NPLOT
 *DO, j, StartNode, EndNode
