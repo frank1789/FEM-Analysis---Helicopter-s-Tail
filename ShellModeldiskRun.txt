@@ -204,7 +204,7 @@ SAVE
 
 /COM, -------------------------------------------------
 /COM,  RIGID LINK
-/COM,  create revolute joint to connect shfat and tail
+/COM,  create connection shfat and tail
 /COM, -------------------------------------------------
 !define element rigid link
 *GET, LastElementType, ETYP, , NUM, MAX
@@ -220,7 +220,8 @@ KEYOPT, RigidLink, 2, 0
 *SET, RigidLinkMaterial, MaterialNum + 1
 !MP, EX, RigidLinkMaterial, SteelEyounG
 !MP, NUXY, RigidLinkMaterial, SteelNi
-!MAT, RigidLinkMaterial
+MP, DENS, RigidLinkMaterial,0
+MAT, RigidLinkMaterial
 
 !create element
 TYPE, RigidLink
@@ -267,16 +268,8 @@ FINISH
 SAVE
 
 /COM, ------------------------------------------------
-/COM,  PRELIMINARY STATIC ANALYSIS - PRESTRESS
+/COM,  MODAL ANALISYS
 /COM, ------------------------------------------------
-! >>>> SOLUTION <<<<
-/SOLU
-ANTYPE, STATIC, NEW	!Preliminary static analysis
-PSTRES, ON		!Includes prestress effects
-Acel, , 9.81		!gravitational acceleration
-
-SOLVE
-FINISH
 
 ! >>>>> ANALISYS PARAMETRS <<<<<
 *SET, nmd, 10 		! Number of modes
@@ -291,9 +284,10 @@ FINISH
 !get value for axis X1, Y1, Z1 <-> X2, Y2, Z2
 *USE, getextremeaxis.mac
 
+
 /SOLU
 !Setup modal run
-ANTYPE, MODAL
+ANTYPE, MODAL, NEW
 CORIOLIS, ON, , , ON
 MODOPT, QRDAMP, nmd, , , ON
 
@@ -313,25 +307,29 @@ MODOPT, QRDAMP, nmd, , , ON
 	/COM,===============================================
 	CMOMEGA, %CM_Name%, OMEGAX, OMEGAY, OMEGAZ, Node1CoorX, Node1CoorY, Node1CoorZ, Node2CoorX, Node2CoorY, Node2CoorZ
 	MXPAND, nmd, , , YES
+	BCSOPTION,,OUTOFCORE,,,PERFORMANCE
 	SOLVE
 	*ABCHECK, progress, Loop On Speed - progress: %progress% %
 *ENDDO
 *ABFINI
 FINISH
 
-/post1
+/POST1
 ! Plot/List Campbell Diagrams
-/gropts,view,2
-/yrange,0,100
-/xrange,0,4000
-plcamp,,1,rpm
-prcamp,,1,rpm
-
-! Plot orbit
-set,1,2
-plorb
-! Animate whirl
-set,3,1
-plnsol,u,sum
-anharm
-finish
+/GROPTS,VIEW,2
+/YRANGE,0,100
+/XRANGE,0,4000
+/SHOW,PNG
+/GFILE, 2400,
+PLCAMP,,1,RPM,,%CM_Name%
+PRCAMP,,1,RPM,,%CM_Name%
+/SHOW,CLOSE
+  
+! plot orbit
+!SET,3,1
+!PLORB
+! animate whirl
+SET,3,1
+PLNSOL,U,SUM
+ANHARM
+FINISH
