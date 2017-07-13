@@ -8,9 +8,9 @@
 !               ARG2: Coordinate system type                          !
 !				ARG3: pass distance between previous nodes			  !
 !               ARG4: Local reference frame                           !
-!				ARG3: x - Location (in the active coordinate system)  ! 
+!				ARG3: x - Location (in the active coordinate system)  !
 !					  of the origin of the new coordinate system      !
-!				ARG4: y - Location (in the active coordinate system)  ! 
+!				ARG4: y - Location (in the active coordinate system)  !
 !                     of the origin of the new coordinate system      !
 !				ARG5: z - Location (in the active coordinate system)  !
 !                     of the origin of the new coordinate system      !
@@ -26,7 +26,7 @@
 !Defines a local coordinate system relative to the active coordinate system.
 !DATABASE: Coordinate System
 !KCN
-!Arbitrary reference number assigned to this coordinate system. Must be greater than 10. 
+!Arbitrary reference number assigned to this coordinate system. Must be greater than 10.
 !A coordinate system previously defined with this number will be redefined.
 
 !KCS

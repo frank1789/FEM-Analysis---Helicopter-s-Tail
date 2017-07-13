@@ -7,7 +7,7 @@
 !                 ARG1: 1st Node value             !
 !                 ARG2: 2nd Node value             !
 !RETURN:					   !
-! 		DistancePoint			   !										   
+! 		DistancePoint			   !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 !define local variable
@@ -25,7 +25,7 @@
 *SET, y_2, Node2CoorY
 *SET, z_2, Node2CoorZ
 
-!calculates the distance between your nodes according to the formula 
+!calculates the distance between your nodes according to the formula
 !dist^2=(x_1-x_2)^2+(y_1-y_2)^2+(z_1-z_2)^2
 !Return value DistancePoint
 *SET, DistancePoint, ((x_1-x_2)**2+(y_1-y_2)**2+(z_1-z_2)**2)**(1/2)
