@@ -16,7 +16,7 @@ FINISH
 *SET, Pi, ACOS(-1)		!Pi constant
 *AFUN, DEG     			!Specify units for angular measures [DEG], specify after function *AFUN
 *SET, eps, 10e-3		!precision interval
-						
+
 ! >>>>> MATERIAL PROPERTIES <<<<<
 !*** steel
 *SET, SteelEyounG, 205e9			![Pa] Young's modulus
@@ -52,9 +52,9 @@ FINISH
 *SET, NumberDivisonSurface, 24	!division cone's area
 
 !change view - isometric
-/VIEW,1,1,1,1   
-/ANG,1  
-/REP,FAST   
+/VIEW,1,1,1,1
+/ANG,1
+/REP,FAST
 
 /COM, -----------------------------------------------
 /COM,  MODEL DEFINITION
@@ -95,7 +95,7 @@ K, MaxKp+2, Lt/7*i, RadEndTail, 0
 *GET, StartNumberLine, line, 0, num, min				!extract first number line
 *GET, NumberLine, line, 0, count 					!count lines
 *GET, StartNumberLine, line, 0, num, min				!extract first number line
-LSEL, S, LOC, X, 0, Lt 
+LSEL, S, LOC, X, 0, Lt
 AROTAT, ALL, , , , , , 1, 2, 360, NumberDivisonSurface			!generate cone
 
 !divide line in array straight line and curved line
@@ -120,11 +120,11 @@ MP, NUXY, 1, SteelNi
 MP, DENS, 1, SteelDensity
 
 !***Horizzontal Stabilizer
-SECTYPE,  1, BEAM, RECT, HorizzontalStabilizer, 0  
-SECOFFSET, CENT 
+SECTYPE,  1, BEAM, RECT, HorizzontalStabilizer, 0
+SECOFFSET, CENT
 SECDATA, HorizStabBase, HorizStabHeigth
 
-*GET, LenghtStraighLine, 'PARM', StraighLine, DIM, X 
+*GET, LenghtStraighLine, 'PARM', StraighLine, DIM, X
 LSEL, S, LINE, , StraighLine(1), StraighLine(LenghtStraighLine)
 LESIZE, all, E_length_ct
 LATT, 1, , 1, , , , 1
@@ -134,11 +134,11 @@ LSEL, NONE
 /REPLO
 
 !***stiffners
-SECTYPE,  2, BEAM, RECT, Stiffeners, 0  
+SECTYPE,  2, BEAM, RECT, Stiffeners, 0
 SECOFFSET, ORIG
 SECDATA, StiffnerBase, StiffnerHeight
 
-*GET, LenghtAcrLine, 'PARM', AcrLine, DIM, X 
+*GET, LenghtAcrLine, 'PARM', AcrLine, DIM, X
 LSEL, S, LINE, , AcrLine(1), AcrLine(LenghtAcrLine)
 LESIZE, ALL, , , , 3
 LATT, 1, , 1, , , , 2
@@ -148,7 +148,7 @@ LSEL, NONE
 
 !***Mantle
 !set material properties and element
-ET, 2, SHELL181 
+ET, 2, SHELL181
 KEYOPT, 2, 3, 2
 KEYOPT, 2, 8, 2
 
@@ -161,11 +161,11 @@ SECOFFSET, top
 
 TYPE, 2
 SECNUM, 3
-AESIZE, ALL, E_length_ct, 
-MSHAPE, 0, 2D 
+AESIZE, ALL, E_length_ct,
+MSHAPE, 0, 2D
 MSHKEY, 1
 AMESH, ALL
-SAVE
+
 
 /COM, ------------------------------------------------
 /COM,  COMPLETE MODEL
@@ -184,13 +184,13 @@ ALLSEL,ALL
 N, LastNode + 1, kx(BaseBearing2), SegmentRadius(6)+50e-3, kz(BaseBearing2)
 *GET, NodeBearing2, NODE, , NUM, MAX
 *GET, LastNode, NODE, , NUM, MAX
-N, LastNode + 1, kx(BaseBearing1), SegmentRadius(6)+50e-3, kz(BaseBearing1) 
+N, LastNode + 1, kx(BaseBearing1), SegmentRadius(6)+50e-3, kz(BaseBearing1)
 *GET, NodeBearing1, NODE, , NUM, MAX
 *USE, distancenode.mac, NodeBearing1, NodeBearing2
 
 !Set local systems
 *USE, relativereferencesystem.mac, 1, 0, Lt/7*6, SegmentRadius(6)+50e-3, kz(BaseBearing1), , , 90
-*USE, relativereferencesystem.mac, 2, 0, Lt/7*6, SegmentRadius(6)+50e-3, kz(BaseBearing2), , , 90 
+*USE, relativereferencesystem.mac, 2, 0, Lt/7*6, SegmentRadius(6)+50e-3, kz(BaseBearing2), , , 90
 
 !Enter local system - z-positive
 CSYS, LocalSystem_1
@@ -200,7 +200,7 @@ CSYS, LocalSystem_1
 
 !return principal Reference system
 CSYS, 0
-SAVE
+
 
 /COM, -------------------------------------------------
 /COM,  RIGID LINK
@@ -236,7 +236,7 @@ NSLK,S
 E, LastNode, NodeEnd
 
 !clear parmaters
-*SET, BaseBearing1, 
+*SET, BaseBearing1,
 *SET, BaseBearing2,
 *SET, NodeBearing1,
 *SET, NodeBearing2,
@@ -253,19 +253,18 @@ EPLOT
 /COM,  BOUNDARY CONDITION
 /COM, ------------------------------------------------
 ALLSEL, ALL
-LSEL, S, LOC, Y, -(RadBaseTail*2)+eps, (RadBaseTail*2)+eps 
+LSEL, S, LOC, Y, -(RadBaseTail*2)+eps, (RadBaseTail*2)+eps
 LSEL, S, LOC, x, 0, 0
 *GET, MinBaseTailLine, line, 0, num, min
 *GET, MaxBaseTailLine, line, 0, num, max
 *DO, i, MinBaseTailLine, MaxBaseTailLine, 8
 	DL, i, , ALL, 0
 *ENDDO
-SAVE 
 
 !calc mass
 *USE, calcmass.mac, StrJobname(1)
 FINISH
-SAVE
+
 
 /COM, ------------------------------------------------
 /COM,  MODAL ANALISYS
@@ -284,8 +283,13 @@ SAVE
 !get value for axis X1, Y1, Z1 <-> X2, Y2, Z2
 *USE, getextremeaxis.mac
 
-
 /SOLU
+EQSLV, ICCG
+DSPOPTION,SEQORDER,FORCE,4096,,PERFORMANCE
+BCSOPTION,SEQORDER,FORCE,4096,,PERFORMANCE
+OUTPR,ALL,ALL,  
+OUTRES,ALL,ALL, 
+
 !Setup modal run
 ANTYPE, MODAL, NEW
 CORIOLIS, ON, , , ON
@@ -301,7 +305,7 @@ MODOPT, QRDAMP, nmd, , , ON
 	*SET, OMEGAZ, 0
 	!CMOMEGA, CM_NAME, OMEGAX, OMEGAY, OMEGAZ, X1, Y1, Z1, X2, Y2, Z2
 	/COM,===============================================
-	/COM, CMOMEGA, %CM_Name%, %OMEGAX%, %OMEGAY%, %OMEGAZ%, 
+	/COM, CMOMEGA, %CM_Name%, %OMEGAX%, %OMEGAY%, %OMEGAZ%,
 	/COM, %Node1CoorX%, %Node1CoorY%, %Node1CoorZ%,
 	/COM, %Node2CoorX%, %Node2CoorY%, %Node2CoorZ%
 	/COM,===============================================
@@ -314,7 +318,10 @@ MODOPT, QRDAMP, nmd, , , ON
 *ABFINI
 FINISH
 
+*DIM,ModalFreq,ARRAY,10,1
+
 /POST1
+file,%StrJobname(1)%,rst
 ! Plot/List Campbell Diagrams
 /GROPTS,VIEW,2
 /YRANGE,0,100
@@ -322,14 +329,29 @@ FINISH
 /SHOW,PNG
 /GFILE, 2400,
 PLCAMP,,1,RPM,,%CM_Name%
+*DO, z, 1, nmd, 1
+	*GET, omegacamp, CAMP, z, FREQ, 1
+	ModalFreq(z,1) = omegacamp
+	*IF, z, gt, nmd-1, then
+ 		*GET, omegacamp, CAMP,z-1, FREQ, 2
+ 		ModalFreq(z,1) = omegacamp
+ 	*Endif
+*ENDDO
 PRCAMP,,1,RPM,,%CM_Name%
 /SHOW,CLOSE
-  
+
+*CFOPEN, 'ModalFreq-%StrJobname(1)%', 'txt'
+ *VWRITE, 'Num', 'Omega'
+  (7x, A8, 3X, A8)	
+  *VWRITE, sequ, ModalFreq(1,1)
+   (F12.0, F12.5)
+*CFCLOS
+
 ! plot orbit
 !SET,3,1
 !PLORB
 ! animate whirl
-SET,3,1
+set,3,1
 PLNSOL,U,SUM
 ANHARM
 FINISH
