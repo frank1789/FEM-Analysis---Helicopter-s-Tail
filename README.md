@@ -1,4 +1,4 @@
-[![License: MIT](https://img.shields.io/badge/license-MIT-orange.svg)](https://opensource.org/licenses/MIT)
+[![License: MIT](https://img.shields.io/badge/license-MIT-orange.svg)](LICENSE.md)
 
 # FEM Analysis - Helicopter's Tail
 
