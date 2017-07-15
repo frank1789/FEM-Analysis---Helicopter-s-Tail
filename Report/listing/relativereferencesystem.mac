@@ -1,20 +1,18 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !                                                                     !
-!            CREATE NEW LOCAL REFERENCE SYSTEM                        !
+!              CREATE NEW LOCAL REFERENCE SYSTEM                      !
 !                                                                     !
 !                                                                     !
 !PARAMETERS INPUT:                                                    !
 !               ARG1: Number new reference system RF                  !
-!               ARG2: Coordinate system type                          !
-!				ARG3: pass distance between previous nodes			  !
-!               ARG4: Local reference frame                           !
-!				ARG3: x - Location (in the active coordinate system)  !
-!					  of the origin of the new coordinate system      !
-!				ARG4: y - Location (in the active coordinate system)  !
+!               ARG2: KCS - Coordinate system type                    !
+!				        ARG3: x - Location (in the active coordinate system)  !
+!					            of the origin of the new coordinate system      !
+!				        ARG4: y - Location (in the active coordinate system)  !
 !                     of the origin of the new coordinate system      !
-!				ARG5: z - Location (in the active coordinate system)  !
+!				        ARG5: z - Location (in the active coordinate system)  !
 !                     of the origin of the new coordinate system      !
-!				ARG6: First rotation about local Z                    !
+!				        ARG6: First rotation about local Z                    !
 !                     (positive X toward Y)                           !
 !               ARG7: Second rotation about local X                   !
 !                     (positive Y toward Z)                           !
@@ -24,20 +22,19 @@
 
 !CLOCAL, KCN, KCS, XL, YL, ZL, THXY, THYZ, THZX
 !Defines a local coordinate system relative to the active coordinate system.
-!DATABASE: Coordinate System
+
 !KCN
 !Arbitrary reference number assigned to this coordinate system. Must be greater than 10.
 !A coordinate system previously defined with this number will be redefined.
 
-!KCS
-!Coordinate system type:
+!KCS - Coordinate system type:
 !0 or CART - Cartesian
 !1 or CYLIN - Cylindrical (circular or elliptical)
 !2 or SPHE - Spherical (or spheroidal)
 !3 or TORO - Toroidal
 
-!XL, YL, ZL
-!Location (in the active coordinate system) of the origin of the new coordinate system (R, θ, Z for cylindrical, R, θ,Φ for spherical or toroidal).
+!XL, YL, ZL - Location (in the active coordinate system) of the origin of the
+!new coordinate system (R, θ, Z for cylindrical, R, θ,Φ for spherical or toroidal).
 
 !THXY - First rotation about local Z (positive X toward Y)
 !THYZ - Second rotation about local X (positive Y toward Z)

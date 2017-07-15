@@ -1,8 +1,8 @@
-/COM,---------------------------------------------------------------------------------
-/COM,PROBLEM: MODAL ANALYSIS of the helicopter's TAIL BOOM
-/COM,---------------------------------------------------------------------------------
-/COM,Natural frequencies and modal shapes of an helicopter's tail boom
-/COM,---------------------------------------------------------------------------------
+/COM, ---------------------------------------------------------------------------------
+/COM,  PROBLEM: MODAL ANALYSIS of the helicopter's TAIL BOOM
+/COM, ---------------------------------------------------------------------------------
+/COM,  Natural frequencies and modal shapes of an helicopter's tail boom
+/COM, ---------------------------------------------------------------------------------
 
 FINISH
 /CLEAR,START,NEW
@@ -15,13 +15,13 @@ FINISH
 ! >>>>> MODEL PARAMETERS <<<<<
 *SET,Pi,ACOS(-1)		!Pi constant
 *AFUN,DEG     			!Specify units for angular measures [DEG],specify after function *AFUN
-*SET,eps,10e-3			!precision interval
+*SET,eps,10e-3		!precision interval
 
 ! >>>>> MATERIAL PROPERTIES <<<<<
 !*** steel
-*SET,SteelEyounG,205e9		![Pa] Young's modulus
-*SET,SteelNi,0.29			!Poisson's ratio
-*SET,SteelDensity,7850		![Kg/m^3]
+*SET,SteelEyounG,205e9			![Pa] Young's modulus
+*SET,SteelNi,0.29				!Poisson's ratio
+*SET,SteelDensity,7850			![Kg/m^3]
 
 !*** Aluminium
 *SET,AluminiumEyounG,64e9 		![Pa] Young's modulus
@@ -57,7 +57,7 @@ FINISH
 /REP,FAST
 
 /COM,-----------------------------------------------
-/COM,MODEL DEFINITION
+/COM, MODEL DEFINITION
 /COM,-----------------------------------------------
 ! >>>> DEFINE GEOMETRY <<<<
 ! Reduced integration Timoshenko beam element,with quadratic shape functions
@@ -67,17 +67,17 @@ K,1,0,0,0
 K,2,5,0,0
 
 ! create keypoints
-K,3,0,RadBaseTail,0							!start keypoint tails
-*GET,MaxKp,KP,0,num,max 					!extract max keypoint
-*SET,StartKpTail,MaxKp 						!store in variable
-*DIM,SegmentRadius,ARRAY,7,1				!store in array radius of segment distance between 0 - Y before rotating
+K,3,0,RadBaseTail,0				!start keypoint tails
+*GET,MaxKp,KP,0,num,max 		!extract max keypoint
+*SET,StartKpTail,MaxKp 			!store in variable
+*DIM,SegmentRadius,ARRAY,7,1	!store in array radius of segment distance between 0 - Y before rotating
 *DO,i,1,7,1
-	*GET,MaxKp,KP,0,NUM,MAX 							!extract max keypoint
+	*GET,MaxKp,KP,0,NUM,MAX 	!extract max keypoint
 	K,MaxKp+1,Lt/7*i,RadBaseTail-Lt/7*i*tan(alpha),0	!create keypoint
 	SegmentRadius(i) = RadBaseTail-Lt/7*i*tan(alpha)
 *ENDDO
-*GET,MaxKp,KP,0,num,max 					!extract max keypoint
-*SET,EndKpTail,MaxKp						!store in variable end's tail
+*GET,MaxKp,KP,0,num,max 		!extract max keypoint
+*SET,EndKpTail,MaxKp			!store in variable end's tail
 
 !define keypoint mantle'tail
 K,Maxkp+1,0,RadBaseTail,0
@@ -120,7 +120,7 @@ MP,NUXY,1,SteelNi
 MP,DENS,1,SteelDensity
 
 !***Horizzontal Stabilizer
-SECTYPE,1,BEAM,RECT,HorizzontalStabilizer,0
+SECTYPE, 1,BEAM,RECT,HorizzontalStabilizer,0
 SECOFFSET,CENT
 SECDATA,HorizStabBase,HorizStabHeigth
 
@@ -134,7 +134,7 @@ LSEL,NONE
 /REPLO
 
 !***stiffners
-SECTYPE,2,BEAM,RECT,Stiffeners,0
+SECTYPE, 2,BEAM,RECT,Stiffeners,0
 SECOFFSET,ORIG
 SECDATA,StiffnerBase,StiffnerHeight
 
@@ -165,10 +165,10 @@ AESIZE,ALL,E_length_ct,
 MSHAPE,0,2D
 MSHKEY,1
 AMESH,ALL
-
+SAVE
 
 /COM,------------------------------------------------
-/COM,COMPLETE MODEL
+/COM, COMPLETE MODEL
 /COM,------------------------------------------------
 
 !Selct base keypoint and node
@@ -200,11 +200,11 @@ CSYS,LocalSystem_1
 
 !return principal Reference system
 CSYS,0
-
+SAVE
 
 /COM,-------------------------------------------------
-/COM,RIGID LINK
-/COM,create connection shfat and tail
+/COM, RIGID LINK
+/COM, create revolute joint to connect shfat and tail
 /COM,-------------------------------------------------
 !define element rigid link
 *GET,LastElementType,ETYP,,NUM,MAX
@@ -220,8 +220,7 @@ KEYOPT,RigidLink,2,0
 *SET,RigidLinkMaterial,MaterialNum + 1
 !MP,EX,RigidLinkMaterial,SteelEyounG
 !MP,NUXY,RigidLinkMaterial,SteelNi
-MP,DENS,RigidLinkMaterial,0
-MAT,RigidLinkMaterial
+!MAT,RigidLinkMaterial
 
 !create element
 TYPE,RigidLink
@@ -250,7 +249,7 @@ EPLOT
 /REP,FAST
 
 /COM,------------------------------------------------
-/COM,BOUNDARY CONDITION
+/COM, BOUNDARY CONDITION
 /COM,------------------------------------------------
 ALLSEL,ALL
 LSEL,S,LOC,Y,-(RadBaseTail*2)+eps,(RadBaseTail*2)+eps
@@ -260,101 +259,54 @@ LSEL,S,LOC,x,0,0
 *DO,i,MinBaseTailLine,MaxBaseTailLine,8
 	DL,i,,ALL,0
 *ENDDO
+SAVE
 
 !calc mass
 *USE,calcmass.mac,StrJobname(1)
 FINISH
-
+SAVE
 
 /COM,------------------------------------------------
-/COM,MODAL ANALISYS
+/COM, PRELIMINARY STATIC ANALYSIS - PRESTRESS
 /COM,------------------------------------------------
-
-! >>>>> ANALISYS PARAMETRS <<<<<
-*SET,nmd,10 		! Number of modes
-*SET,nmspn,8 		! Number of speeds
-*SET,mxspn,2000 	! Max Omega (rpm)
-
-!get element component about a user-defined rotational
-!in this case there is only one component
-*GET,NumberComponet,'COMP',,NCOMP
-*GET,RotorBlock,'COMP',NumberComponet,NAME
-
-!get value for axis X1,Y1,Z1 <-> X2,Y2,Z2
-*USE,getextremeaxis.mac
-
 /SOLU
-EQSLV,ICCG
-PRED, OFF
-ANTYPE,MODAL			!Setup modal run
-CORIOLIS,ON,,,ON
-MODOPT,QRDAMP,nmd,,,ON
-MXPAND,nmd,,,YES
-
-*ABSET,Loop On Speed - progress: 0%,Bar
-! loop on speeds
-*DO,i,1,nmspn
-	*SET,progress,i/nmspn*100
-	spn = (i-1)*(mxspn/(nmspn-1))
-	*SET,OMEGAX,spn
-	*SET,OMEGAY,0
-	*SET,OMEGAZ,0
-	!CMOMEGA,CM_NAME,OMEGAX,OMEGAY,OMEGAZ,X1,Y1,Z1,X2,Y2,Z2
-	/COM,===============================================
-	/COM,CMOMEGA,%CM_Name%,%OMEGAX%,%OMEGAY%,%OMEGAZ%,
-	/COM, %Node1CoorX%, %Node1CoorY%, %Node1CoorZ%,
-	/COM, %Node2CoorX%, %Node2CoorY%, %Node2CoorZ%
-	/COM,===============================================
-	CMOMEGA,%CM_Name%,OMEGAX,OMEGAY,OMEGAZ,Node1CoorX,Node1CoorY,Node1CoorZ,Node2CoorX,Node2CoorY,Node2CoorZ
-	SOLVE
-	*ABCHECK,progress,Loop On Speed - progress: %progress% %
-*ENDDO
-*ABFINI
+ANTYPE,STATIC,NEW	!Preliminary static analysis
+PSTRES,ON			!Includes prestress effects
+Acel,,9.81			!gravitational acceleration
+SOLVE
 FINISH
 
-*DIM,ModalFreq,ARRAY,10,1
+/COM,------------------------------------------------
+/COM, Modal analysis
+/COM,------------------------------------------------
+/SOLU
+ANTYPE,MODAL,NEW
+PSTRES,ON				! Includes prestress effects
+MODOPT,LANB,10			! First 10 modes are extracted
+LUMPM,OFF				! lumped/consistent mass matrix
+MXPAND,10,,,Yes			! First 10 modes are expanded,calculate element stress
+SOLVE
+FINISH
 
+! >>>> POSTPROCESSING <<<<
 /POST1
-file,%StrJobname(1)%,rst
-! Plot/List Campbell Diagrams
-/GROPTS,VIEW,2
-/YRANGE,0,100
-/XRANGE,0,mxspn
-/SHOW,PNG
-/GFILE,2400,
-PLCAMP,,1,RPM,,%CM_Name%
-*DO,z,1,nmd,1
-	*GET,omegacamp,CAMP,z,FREQ,1
-	ModalFreq(z,1) = omegacamp
-	*IF,z,GT,nmd-1,then
- 		*GET,omegacamp,CAMP,z-1,FREQ,2
- 		ModalFreq(z,1) = omegacamp
- 	*ENDIF
-*ENDDO
-PRCAMP,,1,RPM,,%CM_Name%
-! print other order
-/NOERASE
-	PLCAMP,,2,RPM,,%CM_Name%  ! plot campbell diagram with 2nd order excitation
-	PRCAMP,,2,RPM,,%CM_Name%
-	PLCAMP,,3,RPM,,%CM_Name%  ! plot campbell diagram with 3rd order excitation
-	PRCAMP,,3,RPM,,%CM_Name%
-	PLCAMP,,4,RPM,,%CM_Name%  ! plot campbell diagram with 4th order excitation
-	PRCAMP,,4,RPM,,%CM_Name%
-/ERASE
-/SHOW,CLOSE
+SET,LIST			!List natural frequencies
+SET,1,1				!Loads first mode
+PLDISP				!Displays modal shape
 
+*DIM,ModalFreq,ARRAY,10,1
+*Do,i,1,10,1
+ *GET,omega,MODE,i,FREQ
+	ModalFreq(i,1) = omega
+	*SET,omega,
+*ENDDO
+
+*SET,omega,
 *CFOPEN,'ModalFreq-%StrJobname(1)%','txt'
- *VWRITE,'Num','Omega'
-  (7x,A8,3X,A8)
+ *VWRITE,'Num','omega'
+  (8x,A8,4X,A8,)
   *VWRITE,sequ,ModalFreq(1,1)
    (F12.0,F12.5)
 *CFCLOS
 
-! plot orbit
-!SET,3,1
-!PLORB
-! animate whirl
-set,3,1
-PLNSOL,U,SUM
-ANHARM
 FINISH

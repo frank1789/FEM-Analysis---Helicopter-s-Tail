@@ -16,25 +16,25 @@ FINISH
 *SET, Pi, ACOS(-1)		!Pi constant
 *AFUN, DEG     			!Specify units for angular measures [DEG], specify after function *AFUN
 *SET, eps, 10e-3		!precision interval
-
+						
 ! >>>>> MATERIAL PROPERTIES <<<<<
 !*** steel
-*SET, SteelEyounG, 205e9		![Pa] Young's modulus
+*SET, SteelEyounG, 205e9			![Pa] Young's modulus
 *SET, SteelNi, 0.29				!Poisson's ratio
-*SET, SteelDensity, 7850		![Kg/m^3]
+*SET, SteelDensity, 7850			![Kg/m^3]
 
 !*** Aluminium
-*SET, AluminiumEyounG, 64e9 	![Pa] Young modulus
-*SET, AluminiumNi, 0.34			!Poisson ratio
-*SET, AluminiumDensity, 2700 	![Kg/m^3]
+*SET, AluminiumEyounG, 64e9 			![Pa] Young's modulus
+*SET, AluminiumNi, 0.34				!Poisson's ratio
+*SET, AluminiumDensity, 2700 			![Kg/m^3]
 
 !*** Element size
-*SET, E_length_ct, 50e-3		![m]
+*SET, E_length_ct, 50e-3			![m]
 
 !geometric parameter
 *SET, Lt, 5.2					![m] total tail lenght
-*SET, RadBaseTail, 0.65/2		![m]
-*SET, RadEndTail, 0.10/2		![m]
+*SET, RadBaseTail, 0.65/2			![m]
+*SET, RadEndTail, 0.10/2			![m]
 *SET, alpha, atan((RadBaseTail-RadEndTail)/Lt) 	![deg]
 
 !geometric parameters section stiffner
@@ -46,12 +46,12 @@ FINISH
 *SET, HorizStabHeigth, 0.0015
 
 !geometric parameter mantle
-*SET, ThichknessMantle, 5e-4 	![m]
+*SET, ThichknessMantle, 5e-4 			![m]
 
 !mass Lumped
 *SET, MassShaft, 7				![kg] concentrated mass shaft
 *SET, MassRotor, 30				![kg] concentrated mass motorblock
-*SET, J0, 1						![kg*m^2] concentrated inertia motorblock
+*SET, J0, 1					![kg*m^2] concentrated inertia motorblock
 
 !other parameters
 *SET, NumberDivisonSurface, 24	!division cone's area
@@ -68,15 +68,15 @@ K, 2, 5, 0, 0
 
 ! create keypoints
 K, 3, 0, RadBaseTail, 0						!start keypoint tails
-*GET, MaxKp, KP, 0, num, max 				!extract max keypoint
+*GET, MaxKp, KP, 0, num, max 					!extract max keypoint
 *SET, StartKpTail, MaxKp 					!store in variable
-*DIM, SegmentRadius, ARRAY, 7, 1			!store in array radius of segment distance between 0 - Y before rotating
+*DIM, SegmentRadius, ARRAY, 7, 1				!store in array radius of segment distance between 0 - Y before rotating
 *DO, i, 1, 7, 1
-	*GET, MaxKp, KP, 0, num, max 			!extract max keypoint
+	*GET, MaxKp, KP, 0, num, max 				!extract max keypoint
 	K, MaxKp+1, Lt/7*i, RadBaseTail-Lt/7*i*tan(alpha), 0	!create keypoint
 	SegmentRadius(i) = RadBaseTail-Lt/7*i*tan(alpha)
 *ENDDO
-*GET, MaxKp, KP, 0, num, max 				!extract max keypoint
+*GET, MaxKp, KP, 0, num, max 					!extract max keypoint
 *SET, EndKpTail, MaxKp						!store in variable end's tail
 SAVE
 
@@ -89,22 +89,22 @@ SAVE
 *DO, j, StartKpTail, EndKpTail-1, 1
 	L, j, j+1
 *ENDDO
-*GET, LenghtLineRference, LINE, 1, leng 	!extract lenght segment line's cone generator
+*GET, LenghtLineRference, LINE, 1, leng 			!extract lenght segment line's cone generator
 
 ! generate cone
-*GET, NumberLine, line, 0, count 			!count lines
-*GET, StartNumberLine, line, 0, num, min	!extract first number line
-LSEL, S, LOC, X, 0, Lt
+*GET, NumberLine, line, 0, count 				!count lines
+*GET, StartNumberLine, line, 0, num, min			!extract first number line
+LSEL, S, LOC, X, 0, Lt 
 AROTAT, ALL, , , , , , 1, 2, 360, NumberDivisonSurface		!generate cone
 SAVE
 
 !divide line in array straight line and curved line
 !to manage in next step meshing of elements
-*GET, NumberLine, line, 0, count 			!count lines
+*GET, NumberLine, line, 0, count 				!count lines
 *DIM, StraighLine, ARRAY, NumberLine, 2
 *DIM, ArchLine, ARRAY, NumberLine, 2
-*DO, n, StartNumberLine, NumberLine, 1
-	*GET, LenghtLine, LINE, n, leng,
+*DO, n, StartNumberLine, NumberLine, 1	
+	*GET, LenghtLine, LINE, n, leng, 
 	*IF, LenghtLineRference, EQ, LenghtLine, THEN
 		StraighLine(n, 1) = n
 		StraighLine(n, 2) = LenghtLine
@@ -135,11 +135,11 @@ ConnectionKp(1, 2) =tmp2
 	!clear temp variable
 	*SET, tmp1,
 	*SET, tmp2,
-*ENDDO
+*ENDDO 
 SAVE
 
-/VIEW,1,1,1,1
-/ANG,1
+/VIEW,1,1,1,1   
+/ANG,1  
 /REP,FAST
 LPLOT
 *USE, generateimages.mac
@@ -153,8 +153,8 @@ MP, NUXY, 1, SteelNi
 MP, DENS, 1, SteelDensity
 
 !***Horizzontal STabilizer
-SECTYPE,   1, BEAM, RECT, HorizzontalStabilizer, 0
-SECOFFSET, CENT
+SECTYPE,   1, BEAM, RECT, HorizzontalStabilizer, 0  
+SECOFFSET, CENT 
 SECDATA, HorizStabBase, HorizStabHeigth
 
 LSEL, S, LINE, , 1, LastStraightLine
@@ -165,7 +165,7 @@ LSEL, NONE
 /REPLO
 
 !***stiffners
-SECTYPE,   2, BEAM, RECT, Stiffeners, 0
+SECTYPE,   2, BEAM, RECT, Stiffeners, 0  
 SECOFFSET, ORIG
 SECDATA, StiffnerBase, StiffnerHeight
 
@@ -179,12 +179,12 @@ LSEL, NONE
 /VIEW, 1, 1, 1, 1
 /ANG, 1
 /REP, FAST
-EPLOT
+EPLOT  
 *USE, generateimages.mac, StrJobname(1)
 
 !***Mantle
 ! set material properties and element
-ET, 2, SHELL181
+ET, 2, SHELL181   
 KEYOPT, 2, 3, 2
 KEYOPT, 2, 8, 1
 
@@ -193,12 +193,12 @@ MP, NUXY, 2, AluminiumNi
 MP, DENS, 2, AluminiumDensity
 SECT, 3, SHELL, , mantle
 SECDATA, ThichknessMantle, 2, 0.0, 3
-SECOFFSET, TOP
+SECOFFSET, TOP 
 
 TYPE, 2
 SECNUM, 3
-AESIZE, ALL, E_length_ct,
-MSHAPE, 0, 2D
+AESIZE, ALL, E_length_ct, 
+MSHAPE, 0, 2D 
 MSHKEY, 1
 AMESH, ALL
 SAVE
@@ -206,7 +206,7 @@ SAVE
 /VIEW, 1, 1, 1, 1
 /ANG, 1
 /REP, FAST
-EPLOT
+EPLOT  
 *USE, generateimages.mac
 
 !define shaft and support
@@ -228,9 +228,9 @@ SAVE
 !***Shaft lumped mass
 *DIM, ConnectionShaftSupportNode, ARRAY, 8, 3
 *GET, KpShaftDimension,'PARM',KPSHAFT,DIM,X
-ET, 4, MASS21, , ,2
-R, 4, MassShaft/8
-TYPE, 4
+ET, 4, MASS21, , ,2        
+R, 4, MassShaft/8                
+TYPE, 4                     
 REAL, 4
 *DO, i, 1, KpShaftDimension, 1
 	*GET,LastNode,NODE,,NUM,MAX
@@ -244,7 +244,7 @@ SAVE
 !***gearbox lumped
 ET, 5, MASS21, , , 3        !2D mass with rotary inertia
 R, 5, MassRotor, J0
-TYPE, 5
+TYPE, 5                     
 REAL, 5
 E, ConnectionShaftSupportNode(7, 1)
 
@@ -261,43 +261,43 @@ TYPE, 3
 	KSEL, s, KP, , KpShaft(i)
 	NSLK, s
 	*GET, NodeShaft, node, , num, max
-	*SET, NodeShaft,
+	*SET, NodeShaft,  
 	KSEL, ALL
 	KSEL, s, KP, , ConnectionKp(i, 1)
 	NSLK, s
 	*GET, NodeSupport1, node, , num, max
 	ConnectionShaftSupportNode(i, 2) = NodeSupport1
-	*SET, NodeSupport1,
+	*SET, NodeSupport1,  
 	KSEL, ALL
 	KSEL, s, KP, , ConnectionKp(i, 2)
 	NSLK, s
 	*GET, NodeSupport2, node, , num, max
 	ConnectionShaftSupportNode(i, 3) = NodeSupport2
-	*SET, NodeSupport2,
+	*SET, NodeSupport2, 
 	E, ConnectionShaftSupportNode(i, 1), ConnectionShaftSupportNode(i, 2)
 	E, ConnectionShaftSupportNode(i, 1), ConnectionShaftSupportNode(i, 3)
 *ENDDO
 SAVE
 
 EPLOT
-/VIEW, 1, , , 1
-/ANG, 1
-/REP, FAST
+/VIEW, 1, , , 1 
+/ANG, 1  
+/REP, FAST   
 *USE, generateimages.mac
-/VIEW, 1, 1, 1, 1
-/ANG, 1
+/VIEW, 1, 1, 1, 1   
+/ANG, 1  
 /REP, FAST
 *USE, generateimages.mac
 
 !***Boundary conditions at base of tail
 ALLSEL, ALL
-LSEL, S, LOC, Y, -(RadBaseTail*2)+eps, (RadBaseTail*2)+eps
+LSEL, S, LOC, Y, -(RadBaseTail*2)+eps, (RadBaseTail*2)+eps 
 LSEL, S, LOC, x, 0, 0
 *GET, MinBaseTailLine, line, 0, num, min
 *GET, MaxBaseTailLine, line, 0, num, max
 *DO, i, MinBaseTailLine, MaxBaseTailLine, 8
 	DL, i, , ALL, 0
-*ENDDO
+*ENDDO 
 
 *USE, calcmass.mac, StrJobname(1)
 FINISH
@@ -305,6 +305,7 @@ FINISH
 /COM, ------------------------------------------------
 /COM,  Preliminary static analysis - Prestress
 /COM, ------------------------------------------------
+! >>>> SOLUTION <<<<
 /SOLU
 ANTYPE, STATIC, NEW	!Preliminary static analysis
 PSTRES, ON		!Includes prestress effects
@@ -315,8 +316,8 @@ SOLVE
 FINISH
 
 ! >>>> POSTPROCESSING <<<<
-/POST1
-PLDISP, 1
+/POST1  
+PLDISP, 1    
 *use, generateimages.mac
 PLNSOL,  U, SUM,  0, 1.0
 *use, generateimages.mac
@@ -326,12 +327,13 @@ PLNSOL,  S, EQV,  0, 1.0
 /COM, ------------------------------------------------
 /COM,  Modal analysis
 /COM, ------------------------------------------------
-/SOLU
+! >>>> SOLUTION <<<<
+/SOLU    
 ANTYPE, MODAL, NEW
 PSTRES, ON				! Includes prestress effects
-MODOPT, LANB, 10		! First 10 modes are extracted
+MODOPT, LANB, 10			! First 10 modes are extracted
 LUMPM, ON				! lumped/consistent mass matrix
-MXPAND, 10, , , Yes		! First 10 modes are expanded, calculate element stress
+MXPAND, 10, , , Yes			! First 10 modes are expanded, calculate element stress
 
 SOLVE
 FINISH
@@ -352,7 +354,7 @@ PLDISP				!Displays modal shape
 *SET, omega,
 *CFOPEN, 'ModalFreq-%StrJobname(1)%', 'txt'
  *VWRITE, 'Num', 'omega'
-  (8x, A8, 4X, A8,)
+  (8x, A8, 4X, A8,)	
   *VWRITE, sequ, ModalFreq(1,1)
    (F12.0, F12.5)
 *CFCLOS

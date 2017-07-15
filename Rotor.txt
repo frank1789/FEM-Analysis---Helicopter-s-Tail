@@ -28,7 +28,7 @@ CSYS, 100
 *SET, MaxKp, 0
 *use, airfoilgen.mac, LocalSystem, MaxKp
 CSYS, 0
-/COM, restore default Working Plane 
+/COM, restore default Working Plane
 SAVE
 
 CLOCAL, 200, 0, DiscRadius*cos(210)+0.003, DiscRadius*sin(210)+0.003, 0, 0, 90, 120
@@ -37,7 +37,7 @@ CSYS, 200
 *GET, MaxKp, KP, , num, max
 *use, airfoilgen.mac, LocalSystem, MaxKp
 CSYS, 0
-/COM, restore default Working Plane 
+/COM, restore default Working Plane
 SAVE
 
 CLOCAL, 300, 0, 0, DiscRadius*1-0.003, 0, 0, 90
@@ -46,32 +46,32 @@ CSYS, 300
 *GET, MaxKp, KP, , num, max
 *use, airfoilgen.mac, LocalSystem, MaxKp
 CSYS, 0
-/COM, restore default Working Plane 
-*SET, MaxKp, 
+/COM, restore default Working Plane
+*SET, MaxKp,
 SAVE
 
 ALLSEL, ALL
-/VIEW, 1, , , 1 
-/ANG, 1  
-/REP, FAST 
+/VIEW, 1, , , 1
+/ANG, 1
+/REP, FAST
 SAVE
 
 !***disc support rotor
-/PREP7  
+/PREP7
 CYL4, 0, 0, DiscRadius
 ASEL,S,LOC,X,0
 ASEL,r,LOC,Y,0
 ASEL,r,LOC,Z,0
 *GET,RotorDisc,AREA,,NUM,MAX
-VOFFST, RotorDisc, 0.025, , 
-VOFFST, RotorDisc, -0.025, , 
+VOFFST, RotorDisc, 0.025, ,
+VOFFST, RotorDisc, -0.025, ,
 SAVE
 ALLSEL,ALL
 VADD, ALL
 *GET, Volumes, volu, , count
 /com, number volumes: %volumes%
 *STAT, Volumes
-*SET, Volumes, 
+*SET, Volumes,
 SAVE
 
 ! >>>>> MESHING <<<<<

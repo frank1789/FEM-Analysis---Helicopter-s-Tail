@@ -2,12 +2,11 @@
 !                                                  !
 !            NODE DISTANCE CALCULATOR              !
 !                                                  !
-!                                                  !
 !PARAMETERS INPUT:                                 !
 !                 ARG1: 1st Node value             !
 !                 ARG2: 2nd Node value             !
-!RETURN:					                       !
-! 		DistancePoint			                   !
+!RETURN:					   !
+! 		DistancePoint			   !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 !define local variable
@@ -37,7 +36,6 @@
 *SET, Node2CoorX,
 *SET, Node2CoorY,
 *SET, Node2CoorZ,
-
 *SET, x_1,
 *SET, y_1,
 *SET, z_1,

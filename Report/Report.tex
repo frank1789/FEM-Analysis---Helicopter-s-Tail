@@ -22,7 +22,7 @@
 \usepackage[english]{babel}
 \usepackage{ae}
 \usepackage{relsize}
-\usepackage{csquotes} 
+\usepackage{csquotes}
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{mathdots}
@@ -49,12 +49,6 @@
 \usepackage[font=small,labelfont=bf]{caption}
 \usepackage{wrapfig}
 
-
-% === Per gli algoritmi ===================================
-\usepackage{algorithmicx}
-\usepackage[ruled]{algorithm}
-\usepackage{algpseudocode}
-
 % === Per le tabelle ====================================
 \usepackage{tabularx}
 \usepackage{array}
@@ -69,14 +63,135 @@
 \patchcmd{\thebibliography}{\list}{\begin{multicols}{2}\smaller\list}{}{}
 \appto{\endthebibliography}{\end{multicols}}
 %==Per le figure latex===================================
-%Package e librerie per TikZ e PGF, le librerie non sono tutte necessarie a questo documento LATEX.
-     \usepackage{tikz,fp,ifthen,fullpage,pgfmath,xparse,tikz-dimline}
-     \usetikzlibrary{decorations,backgrounds,fit,calc,through}
-     \usetikzlibrary{arrows,shadows,shapes}
-     \usetikzlibrary{fadings,patterns,mindmap}
-     \usepackage{pgfplots}
+%Package e librerie per TikZ e PGF,le librerie non sono tutte necessarie a questo documento LATEX.
+\usepackage{tikz,fp,ifthen,fullpage,pgfmath,xparse,tikz-dimline}
+\usetikzlibrary{decorations,backgrounds,fit,calc,through}
+\usetikzlibrary{arrows,shadows,shapes}
+\usetikzlibrary{fadings,patterns,mindmap}
+\usepackage{pgfplots}
 \pgfplotsset{compat=1.13}
-      
+
+% === Per gli algoritmi ===================================
+\usepackage{algorithmicx}
+\usepackage[ruled]{algorithm}
+\usepackage{algpseudocode}
+\usepackage{xcolor}
+\usepackage{listings}
+
+% === APDL STYLE LANGUAGE ==================================
+\newcommand{\listingautocaption}[2][]{%
+\lstinputlisting[caption={\texttt{\detokenize{#2}}},#1]{#2}%
+}
+%colori per il linguaggio
+\definecolor{darkpastelpurple}{rgb}{0.59,0.44,0.84}
+\definecolor{halfgray}{gray}{0.55}
+\definecolor{arylideyellow}{rgb}{0.91,0.84,0.42}
+\definecolor{cadmiumgreen}{rgb}{0.0,0.42,0.24}
+\definecolor{ceruleanblue}{rgb}{0.16,0.32,0.75}
+\definecolor{cinnamon}{rgb}{0.82,0.41,0.12}
+\definecolor{darkslateblue}{rgb}{0.28,0.24,0.55}
+\lstdefinelanguage{apdl-modified}
+{
+	alsoletter=/*\%,
+	morekeywords={/clear,/filnam,/title,/unit,/inquire,/rep,/ang,/eshape,/replot,/view,/exit,/replo,/plopts,/triad,/efacet,/rgb,/show,/gile,/eof,/solve,/output,/out,/device
+	},
+	morekeywords={*afun,*dim,*vget,*do,*enddo,*cfopen,*vwrite,*cfclos,*set,
+	 			*get,*use,*abbr,*msg,*if,*else,*endif,*abset,*abcheck,*abfini},
+	morekeywords={start,new,finish,si,antype,static,set,deg,num,max,min,dim,
+				count,line,llist,lplot,pngr,fast,leng,arotat,allsel,lsel,s,a,r,u ,
+	 			none,acel,pstres,dl,mxpand,modopt,lumpm,d,save,eplot,modal,plnsol,
+	 			sum,eqv,loc,eq,then,k,n,e,et,mp,ex,nuxy,dens,latt,lmesh,lesise,
+	 			sectype,secoffset,secdata,keyopt,mshkey,ksel,nesl,lsel,kp,
+				node,line,sect,mshape,amesh,aesize,secnum,type,real,
+				mat,nslk,nsel,cyl4,wpcsys,csys,wpoffs,wprota,cerig,
+				secjoint,joint,revo,esel,cm,elem,ui,x,y,z,
+				lesize,solve,pldisp,sequ,l,mode,freq,coriolis,qrdamp,
+				wpstyle,fill,secd,nsll,clocal,outpr,elform,elprep,nplot,psolve,
+				secp,ncomp,cdsys,rect,csolid,etyp},
+	otherkeywords={/angle},
+	keywords=[2]{beam188,beam189,shell181,mpc184,combin14,mass21},
+	keywords=[3]{/prep7,/solu,/post1,/post26},
+	keywords=[5]{ARRAY,TABLE},
+	keywords=[4]{
+				',
+				-,
+				",
+				\%,
+				(,
+				),
+				,,
+				.,
+				:,
+				;,
+				?,
+				^,
+				−,
+				+,
+				<,
+				=,
+				>,
+				e,
+	},
+	%define string
+	morestring=[b]\%,
+	morestring=[b]',%
+	morestring=[b]",%
+	morestring=[s]{r'}{'},% `raw' strings
+	morestring=[s]{r"}{"},% `raw' strings
+	morestring=[s][\color{red}\bfseries]{\%}{\%},% `raw' strings
+	sensitive=false,% keywords are not case-sensitive
+	%define comment
+	morecomment=[l]{!},
+	morecomment=[l]{/COM},
+}
+\lstset{
+	%Frame style
+	frame=single,
+	rulecolor=\color{black},
+	%number style
+	numbers=left,
+	numberstyle=\tiny\color{halfgray},
+	%space and special character
+	showspaces=false,
+	showstringspaces=false,
+	showstringspaces=false,
+	breaklines=true,
+	%input path
+	inputpath={{./listing/}},
+	extendedchars=true,
+	literate=
+	{á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+	{Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+	{à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
+	{À}{{\`A}}1 {È}{{\'E}}1 {Ì}{{\`I}}1 {Ò}{{\`O}}1 {Ù}{{\`U}}1
+	{ä}{{\"a}}1 {ë}{{\"e}}1 {ï}{{\"i}}1 {ö}{{\"o}}1 {ü}{{\"u}}1
+	{Ä}{{\"A}}1 {Ë}{{\"E}}1 {Ï}{{\"I}}1 {Ö}{{\"O}}1 {Ü}{{\"U}}1
+	{â}{{\^a}}1 {ê}{{\^e}}1 {î}{{\^i}}1 {ô}{{\^o}}1 {û}{{\^u}}1
+	{Â}{{\^A}}1 {Ê}{{\^E}}1 {Î}{{\^I}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1
+	{œ}{{\oe}}1 {Œ}{{\OE}}1 {æ}{{\ae}}1 {Æ}{{\AE}}1 {ß}{{\ss}}1
+	{ç}{{\c c}}1 {Ç}{{\c C}}1 {ø}{{\o}}1 {å}{{\r a}}1 {Å}{{\r A}}1
+	{€}{{\EUR}}1 {£}{{\pounds}}1 {θ}{{$\theta$}}1 {Φ}{{$\Phi$}}1,
+	% defie style
+	basicstyle=\scriptsize\ttfamily,
+	% style of keyword
+	% keyword
+	keywordstyle=\color{ceruleanblue}\bfseries\ttfamily,
+	%type elements
+	keywordstyle=[2]\color{darkslateblue},
+	% section
+	keywordstyle=[3]\color{cinnamon},
+	keywordstyle=[4]\color{black},
+	keywordstyle=[5]\color{arylideyellow},
+	% style of comments
+	commentstyle=\color{cadmiumgreen}\ttfamily,
+	% style of string
+	stringstyle=\color{darkpastelpurple}\ttfamily,
+}
+
+%====Lista Simboli ======================
+\usepackage{nomencl}
+\makenomenclature
+
 %========================================
 % TESTO DELLA TESI
 %========================================
@@ -94,12 +209,12 @@
 	\input{start}
 	\input{shell}
 	% Inserite qui gli altri capitoli:
-
 	\input{conclusione}
-
+	\input{code}
 	% === Bibliografia ====================================
+	\lstlistoflistings
+	\listoffigures
 	\newpage
 	\bibliographystyle{IEEEtran}
 	\bibliography{bibliografia-tesi.bib}
-
 \end{document}

@@ -16,7 +16,7 @@ FINISH
 *SET, Pi, ACOS(-1)		!Pi constant
 *AFUN, DEG     			!Specify units for angular measures [DEG], specify after function *AFUN
 *SET, eps, 10e-3		!precision interval
-
+						
 ! >>>>> MATERIAL PROPERTIES <<<<<
 !*** steel
 *SET, SteelEyounG, 205e9			![Pa] Young's modulus
@@ -90,7 +90,7 @@ K, MaxKp+2, Lt/7*i, RadEndTail, 0
 *GET, StartNumberLine, line, 0, num, min				!extract first number line
 *GET, NumberLine, line, 0, count 					!count lines
 *GET, StartNumberLine, line, 0, num, min				!extract first number line
-LSEL, S, LOC, X, 0, Lt
+LSEL, S, LOC, X, 0, Lt 
 AROTAT, ALL, , , , , , 1, 2, 360, NumberDivisonSurface			!generate cone
 
 !divide line in array straight line and curved line
@@ -107,7 +107,7 @@ LSEL, ALL
 /VIEW, 1, 1, 1, 1
 /ANG, 1
 /REP, FAST
-LPLOT
+LPLOT  
 *USE, generateimages.mac
 
 ! >>>> MESH <<<<
@@ -119,11 +119,11 @@ MP, NUXY, 1, SteelNi
 MP, DENS, 1, SteelDensity
 
 !***Horizzontal Stabilizer
-SECTYPE,  1, BEAM, RECT, HorizzontalStabilizer, 0
-SECOFFSET, CENT
+SECTYPE,  1, BEAM, RECT, HorizzontalStabilizer, 0  
+SECOFFSET, CENT 
 SECDATA, HorizStabBase, HorizStabHeigth
 
-*GET, LenghtStraighLine, 'PARM', StraighLine, DIM, X
+*GET, LenghtStraighLine, 'PARM', StraighLine, DIM, X 
 LSEL, S, LINE, , StraighLine(1), StraighLine(LenghtStraighLine)
 LESIZE, all, E_length_ct
 LATT, 1, , 1, , , , 1
@@ -133,11 +133,11 @@ LSEL, NONE
 /REPLO
 
 !***stiffners
-SECTYPE,  2, BEAM, RECT, Stiffeners, 0
+SECTYPE,  2, BEAM, RECT, Stiffeners, 0  
 SECOFFSET, ORIG
 SECDATA, StiffnerBase, StiffnerHeight
 
-*GET, LenghtAcrLine, 'PARM', AcrLine, DIM, X
+*GET, LenghtAcrLine, 'PARM', AcrLine, DIM, X 
 LSEL, S, LINE, , AcrLine(1), AcrLine(LenghtAcrLine)
 LESIZE, ALL, , , , 3
 LATT, 1, , 1, , , , 2
@@ -148,12 +148,12 @@ LSEL, NONE
 /VIEW, 1, 1, 1, 1
 /ANG, 1
 /REP, FAST
-EPLOT
+EPLOT  
 *USE, generateimages.mac
 
 !***Mantle
 !set material properties and element
-ET, 2, SHELL181
+ET, 2, SHELL181   
 MP, EX, 2, AluminiumEyounG
 MP, NUXY, 2, AluminiumNi
 MP, DENS, 2, AluminiumDensity
@@ -163,21 +163,21 @@ SECOFFSET, top
 
 TYPE, 2
 SECNUM, 3
-AESIZE, ALL, E_length_ct,
-MSHAPE, 0, 2D
+AESIZE, ALL, E_length_ct, 
+MSHAPE, 0, 2D 
 MSHKEY, 1
 AMESH, ALL
 SAVE
 
 /VIEW, 1, 1, 1, 1
 /ANG, 1
-/REP, FAST
+/REP, FAST   
 EPLOT
 *USE, generateimages.mac
 
 !***Boundary conditions at base of tail
 ALLSEL, ALL
-LSEL, S, LOC, Y, -(RadBaseTail*2)+eps, (RadBaseTail*2)+eps
+LSEL, S, LOC, Y, -(RadBaseTail*2)+eps, (RadBaseTail*2)+eps 
 LSEL, S, LOC, x, 0, 0
 DL, ALL, , ALL, 0
 
@@ -197,7 +197,7 @@ SOLVE
 FINISH
 
 ! >>>> POSTPROCESSING <<<<
-/POST1
+/POST1  
 PLDISP, 1
 *USE, generateimages.mac
 PLNSOL, U, SUM, 0, 1.0
@@ -210,7 +210,7 @@ PLNSOL, S, EQV, 0, 1.0
 /COM,  Modal analysis
 /COM, ------------------------------------------------
 ! >>>> SOLUTION <<<<
-/SOLU
+/SOLU    
 ANTYPE, MODAL, NEW
 PSTRES, ON				! Includes prestress effects
 MODOPT, LANB, 10			! First 10 modes are extracted
@@ -236,7 +236,7 @@ PLDISP				!Displays modal shape
 *SET, omega,
 *CFOPEN, 'ModalFreq-%StrJobname(1)%', 'txt'
  *VWRITE, 'Num', 'omega'
-  (8x, A8, 4X, A8,)
+  (8x, A8, 4X, A8,)	
   *VWRITE, sequ, ModalFreq(1,1)
    (F12.0, F12.5)
 *CFCLOS

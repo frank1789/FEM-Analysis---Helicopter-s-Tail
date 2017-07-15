@@ -1,0 +1,238 @@
+! ---------------------------------------------------------------------------------
+! PROBLEM: MODAL ANALYSIS of the helicopter's TAIL BOOM
+! ...................................................................
+! Natural frequencies and modal shapes of an helicopter's tail boom
+! ---------------------------------------------------------------------------------
+
+FINISH
+/CLEAR, START, NEW
+/FILNAM, Helicopter_tail
+/TITLE, Helicopter's tail boom modal analysis
+!/CWD, 'C:\Users\Utente\Qsync\LM Meccatronica\II ANNO MAGISTRALE\II semestre (2016)\Modeling and Design with FEM (M. Benedetti)\2017\HELICOPTERS TAIL VIBRATION PROJECT\ANSYS MODELS\tailboom_BEAM188'
+
+
+! >>>>> MODEL PARAMETERS <<<<<
+Pi = ACOS(-1) !Greek Pi constant
+*AFUN,DEG     !Specify units for angular measures [DEG]
+              !*AFUN va messa DOPO la definizione di Pi
+eps = 10e-3
+
+! >>>>> MATERIAL PROPERTIES <<<<<
+E_Young = 205e9   ! Young's modulus, Pa
+ni  = 0.29	       ! Poisson's ratio
+rho = 7850	      ! Kg/m3
+
+! >>>>> LONGERON PARAMETERS	  <<<<<
+Ri_l = 12e-3     !m Inner radius
+Ro_l = 14e-3     !m Outer radius
+E_length_l = 50e-3 !m Angle of rotation wrt X axis of CLOCAL 100
+
+!Cross-tubes parameters
+Ri_ct = 4.5e-3     !m Inner radius
+Ro_ct = 6e-3     !m Outer radius
+E_length_ct = 25e-3 !m
+
+!Lower longeron
+Lt  = 4800e-3    !m total tail lenght
+L1  =  700e-3    !m triangular section side lenght (at the root)
+L5  =  75e-3
+w1 = Lt/10    !m
+alpha = 10  ! deg
+
+!Upper longerons
+beta =  4 ! deg atan((Hh-L1*sin(Pi/3))/(Lt-L4))
+gamma = atan((L1/2-L5)/((Lt)/cos(beta)))  ! deg
+
+
+
+!------------------------------------------------
+! MODEL DEFINITION
+!-----------------------------------------------
+! Reduced integration Timoshenko beam element
+! with quadratic shape functions
+
+/PREP7
+ET,1,BEAM188,,,2
+
+! Longerons sectype
+SECTYPE,1,BEAM,CTUBE
+SECDATA,Ri_l,Ro_l
+SECCONTROL,,,,1.280
+
+! Cross-tubes sectype
+SECTYPE,2,beam,CTUBE
+SECDATA,Ri_ct,Ro_ct
+SECCONTROL,,,,0.390
+
+! Cross-tubes sectype
+SECTYPE,3,beam,CSOLID
+SECDATA,0.032/2
+
+! Material properties
+MP,EX,1,E_Young
+MP,NUXY,1,ni
+MP,DENS,1,rho
+
+
+! KEY POINTS DEFINITION
+/PNUM,LINE,1
+/PNUM,KP,1
+
+! LOWER LONGERON
+K,100
+K,101,0,0,w1
+L,100,101
+!Lower longeron RF
+CLOCAL,100,CART,0,0,w1,,-alpha
+CSYS,100
+
+*DO,j,1,7,1
+	K,101+j,0,0,(((Lt-w1)/cos(alpha))/7)*j
+	L,100+j,101+j
+*ENDDO
+
+CSYS,0
+! meshing the lower longeron
+LESIZE,all,E_length_l
+LATT,1,,1,,,,1
+LMESH,all
+LSEL,U,LINE,,all !unselect the last created part (convinient)
+
+
+! UPPER (positive X) LONGERON
+CSYS,0
+K,200,+L1*cos(60),+L1*sin(60),0
+CLOCAL,200,CART,+L1/2,+L1*sin(60),0,,-beta,-gamma
+CSYS,200
+
+K,201,0,0,w1/cos(beta)/cos(gamma)
+L,200,201
+*DO,j,1,7,1
+	K,201+j,0,0,w1/cos(beta)/cos(gamma)+(((Lt-w1)/cos(beta)/cos(gamma))/7)*j
+	L,200+j,201+j
+*ENDDO
+CSYS,0
+! meshing the upper positive X longeron
+LESIZE,all,E_length_l
+LATT,1,,1,,,,1
+LMESH,all
+LSEL,U,LINE,,all !unselect the last created part (convinient)
+
+
+
+! UPPER (negative X) LONGERON
+CSYS,0
+K,300,-L1*cos(60),+L1*sin(60),0
+CLOCAL,300,CART,-L1/2,+L1*sin(60),0,,-beta,+gamma
+CSYS,300
+K,301,0,0,w1/cos(beta)/cos(gamma)
+L,300,301
+*DO,j,1,7,1
+	K,301+j,0,0,w1/cos(beta)/cos(gamma)+(((Lt-w1)/cos(beta)/cos(gamma))/7)*j
+	L,300+j,301+j
+*ENDDO
+CSYS,0
+! meshing the upper positive X longeron
+LESIZE,all,E_length_l
+LATT,1,,1,,,,1
+LMESH,all
+LSEL,U,LINE,,all !unselect the last created part (convinient)
+
+
+CSYS,0
+!K,400,0,0.05+L1*sin(60),0
+!K,401,0,0.05+L1*sin(60)+w1*tan(beta),w1
+K,400,0,+L1*sin(60),0
+K,401,0,+L1*sin(60)+w1*tan(beta),w1
+CLOCAL,400,CART,0,+L1*sin(60),0,,-beta,0
+CSYS,400
+!L,400,401
+
+*DO,j,1,7,1
+	!K,401+j,0,0.05,w1/cos(beta)+(((Lt-w1)/cos(beta))/7)*j
+	K,401+j,0,0,w1/cos(beta)+(((Lt-w1)/cos(beta))/7)*j
+*ENDDO
+
+
+
+! TRIANGULAR-TUBES ELEMENTS
+CSYS,0
+*DO,j,0,8,1
+	L,100+j,200+j
+	L,100+j,300+j
+	L,200+j,400+j
+	L,400+j,300+j
+*ENDDO
+
+! CROSS ELEMENTS
+*DO,j,0,7,1
+	L,200+j,101+j
+	L,300+j,101+j
+*ENDDO
+
+! UPPER CROSS ELEMENTS
+*DO,j,0,7,1
+	L,200+j,300+j+1
+*ENDDO
+
+! meshing the upper positive X longeron
+LESIZE,all,E_length_ct
+LATT,1,,1,,,,2
+LMESH,all
+LSEL,U,LINE,,all !unselect the last created part (convinient)
+
+ALLSEL,ALL
+
+/ESHAPE,1		!displays shell thickness
+eplot
+
+
+FINISH
+
+!------------------------------------------------
+! Preliminary static analysis
+!------------------------------------------------
+/SOLU
+ANTYPE,STATIC	! Analisi statica preliminare
+PSTRES,ON		!Includes prestress effects
+
+!gravitational acceleration
+Acel,,9.81
+
+!------------------------------------------------
+! Boundary conditions
+!------------------------------------------------
+CSYS,0
+KSEL,s,KP,,100
+KSEL,a,KP,,200
+KSEL,a,KP,,300
+NSLK,S
+D,all,ALL
+D,all,UZ,0,,,,ROTX,ROTY
+
+ALLSELL,ALL,ALL
+
+SOLVE
+FINISH
+
+
+!------------------------------------------------
+! Analysis type and options
+!------------------------------------------------
+/SOLU
+ANTYPE,MODAL		! Modal analysis
+PSTRES,ON			!Includes prestress effects
+MODOPT,LANB,10		! First 10 modes are extracted
+LUMPM,OFF			! lumped/consistent mass matrix
+MXPAND,10,,,Yes		! First 10 modes are expanded, calculate element stress
+
+SOLVE
+FINISH
+
+!------------------------------------------------
+! PostProcessing
+!------------------------------------------------
+/POST1
+SET,LIST		!List natural frequencies
+SET,1,1			!Loads first mode
+PLDISP		!Displays modal shape
