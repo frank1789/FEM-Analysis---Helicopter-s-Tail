@@ -6,7 +6,7 @@
 
 FINISH
 /CLEAR,START,NEW
-/FILNAM,ShellmodelRotor
+!/FILNAM,ShellmodelRotor
 /TITLE,Helicopter tail boom modal analysis shell model
 /UNIT,SI
 /INQUIRE,StrJobname,JOBNAME
@@ -260,11 +260,10 @@ LSEL,S,LOC,x,0,0
 *DO,i,MinBaseTailLine,MaxBaseTailLine,8
 	DL,i,,ALL,0
 *ENDDO
-
+SAVE
 !calc mass
 *USE,calcmass.mac,StrJobname(1)
 FINISH
-
 
 /COM,------------------------------------------------
 /COM,MODAL ANALISYS
@@ -283,39 +282,49 @@ FINISH
 !get value for axis X1,Y1,Z1 <-> X2,Y2,Z2
 *USE,getextremeaxis.mac
 
-/SOLU
-EQSLV,ICCG
-PRED, OFF
-ANTYPE,MODAL			!Setup modal run
-CORIOLIS,ON,,,ON
-MODOPT,QRDAMP,nmd,,,ON
-MXPAND,nmd,,,YES
-
-*ABSET,Loop On Speed - progress: 0%,Bar
-! loop on speeds
-*DO,i,1,nmspn
-	*SET,progress,i/nmspn*100
-	spn = (i-1)*(mxspn/(nmspn-1))
-	*SET,OMEGAX,spn
-	*SET,OMEGAY,0
-	*SET,OMEGAZ,0
-	!CMOMEGA,CM_NAME,OMEGAX,OMEGAY,OMEGAZ,X1,Y1,Z1,X2,Y2,Z2
-	/COM,===============================================
-	/COM,CMOMEGA,%CM_Name%,%OMEGAX%,%OMEGAY%,%OMEGAZ%,
-	/COM, %Node1CoorX%, %Node1CoorY%, %Node1CoorZ%,
-	/COM, %Node2CoorX%, %Node2CoorY%, %Node2CoorZ%
-	/COM,===============================================
-	CMOMEGA,%CM_Name%,OMEGAX,OMEGAY,OMEGAZ,Node1CoorX,Node1CoorY,Node1CoorZ,Node2CoorX,Node2CoorY,Node2CoorZ
-	SOLVE
-	*ABCHECK,progress,Loop On Speed - progress: %progress% %
-*ENDDO
-*ABFINI
 FINISH
+/SOLU
+PRED, OFF
+EQSLV,ICCG
+OUTRES,ALL
+OUTPR,ALL
+CORIOLIS,ON,,,ON 	! Turn on RD
+CAMPBELL,RSTP 		!tell ANSYS to save rst
+*DO,i,1,nmspn 		!loop on speeds
+spn = (i-1)*(mxspn/(nmspn-1))
+*SET,OMEGAX,spn
+*SET,OMEGAY,0
+*SET,OMEGAZ,0
+FINISH
+/SOLU
+ANTYPE,STATIC 		!Prestress run
+PSTRES,ON
+ACEL,,9.81
+CMOMEGA,%CM_Name%,OMEGAX,OMEGAY,OMEGAZ,Node1CoorX,Node1CoorY,Node1CoorZ,Node2CoorX,Node2CoorY,Node2CoorZ
+SOLVE
+FINISH
+/SOLU
+ANTYPE,MODAL 		!Modal run
+PSTRES,ON
+spn = (i-1)*(mxspn/(nmspn-1))
+*SET,OMEGAX,spn
+*SET,OMEGAY,0
+*SET,OMEGAZ,0
+CMOMEGA,%CM_Name%,OMEGAX,OMEGAY,OMEGAZ,Node1CoorX,Node1CoorY,Node1CoorZ,Node2CoorX,Node2CoorY,Node2CoorZ
+MODOPT,QRDAMP,NMD,,,ON
+MXPAND,NMD
+SOLVE
+*ENDDO
 
-*DIM,ModalFreq,ARRAY,10,1
+
+/COM,------------------------------------------------
+/COM,POST PROCESSING
+/COM,------------------------------------------------
+
 
 /POST1
-file,%StrJobname(1)%,rst
+file,,rst
+*DIM,ModalFreq,ARRAY,10,1
 ! Plot/List Campbell Diagrams
 /GROPTS,VIEW,2
 /YRANGE,0,100
