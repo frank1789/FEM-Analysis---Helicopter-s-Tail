@@ -1,8 +1,9 @@
+[![License: MIT](https://img.shields.io/badge/license-MIT-orange.svg)](https://opensource.org/licenses/MIT)
 # FEM Analysis - Helicopter's Tail
 
 Study of vibrational tail helicopter behavior [Eurocopter AS350](https://it.wikipedia.org/wiki/Aérospatiale_AS_350_Écureuil) :helicopter:, where all historical and other information is available.
 
-|General characteristics|		|
+|**General characteristics**|		|
 |-----------------------|--------------:|
 |Length   		|	 12.94 m|
 |Height			|	  3.34 m|
@@ -10,12 +11,10 @@ Study of vibrational tail helicopter behavior [Eurocopter AS350](https://it.wiki
 |Empty weight		| 	1220 kg |
 |Max takeoff weight 	| 	2250 kg |
 |capability		|	 2500 kg|
-|Propulsion		|		|
-|-----------------------|--------------:|
+|**Propulsion**		|		|
 |Powerplant	  	| 1 x Turbine<br> Turbomeca Arriel 1D1|
 |Power			|	  546 kW|
-|Performance		|		|
-|-----------------------|--------------:|
+|**Performance**		|		|
 |Maximum speed  	| 	287 km/h|
 |Range	        	| 	476 km	|
 |service ceiling 	| 	6100 m  |
@@ -55,3 +54,19 @@ Finally consider a [third model](#3rdmodel) where we considering the shaft's wei
 
 ## Report
 The complete report about dynamic analisys for tailboom helicopter is aviable [here](https://github.com/frank1789/FEM-Analysis---Helicopter-s-Tail/)
+
+## Authors
+
+* **Francesco Argentieri** - *shell model and rotordynamics* 
+* **Lorenzo Beatrici** - *truss model*
+* **Luca Nicolodi** - *truss model*
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+
+## Acknowledgments
+
+* ANSYS Mechanical APDL Rotordynamic Analysis Guide
+* Introduction to APDL - second editon
+* etc
