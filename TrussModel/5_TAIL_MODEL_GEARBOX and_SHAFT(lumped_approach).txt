@@ -18,13 +18,13 @@ q=7
 Pi = ACOS(-1) !Greek Pi constant
 *AFUN,DEG     !Specify units for angular measures [DEG], *AFUN va messa DOPO la definizione di Pi
 eps = 10e-3
-			  			  
+
 ! >>>>> MATERIAL PROPERTIES <<<<<
 E_Young = 205e9   	! Young's modulus, Pa
 ni  = 0.29	       	! Poisson's ratio
 rho = 7850	      	! Kg/m3
 
-! >>>>> LONGERON PARAMETERS	  <<<<<  
+! >>>>> LONGERON PARAMETERS	  <<<<<
 Ri_l = 12e-3     	!m Inner radius
 Ro_l = 14e-3     	!m Outer radius
 n_div_l = q
@@ -46,7 +46,7 @@ beta =  4 ! deg atan((Hh-L1*sin(Pi/3))/(Lt-L4))
 gamma = atan((L1/2-L5)/((Lt)/cos(beta)))  ! deg
 
 ! Added mass
-m_shaft = 7 
+m_shaft = 7
 m_rotor = 30			!concentrated mass (kg)
 J0= 1			!concentrated inertia (kg m^2)
 
@@ -62,7 +62,7 @@ ET,1,BEAM188,,,2
 ! Longerons sectype
 SECTYPE,1,BEAM,CTUBE
 SECDATA,Ri_l,Ro_l,12
-SECCONTROL,,,,1.280 
+SECCONTROL,,,,1.280
 
 ! Cross-tubes sectype
 SECTYPE,2,beam,CTUBE
@@ -161,7 +161,7 @@ CSYS,400
 *ENDDO
 
 
-! TRIANGULAR-TUBES ELEMENTS 
+! TRIANGULAR-TUBES ELEMENTS
 CSYS,0
 *DO,j,0,8,1
 	L,100+j,200+j
@@ -193,8 +193,8 @@ ALLSEL,ALL
 eplot
 
 ET,3,MASS21,,,3        !2D mass with rotary inertia
-R,3,m_rotor/3,J0                
-TYPE,3                     
+R,3,m_rotor/3,J0
+TYPE,3
 REAL,3
 KSEL,s,KP,,308
 NSLK,s
@@ -210,8 +210,8 @@ NSLK,s
 E,node_numb3
 
 ET,4,MASS21,,,2        !2D mass
-	R,4,m_shaft/7                
-	TYPE,4                     
+	R,4,m_shaft/7
+	TYPE,4
 	REAL,4
 *DO,k,1,7,1
 	KSEL,s,KP,,400+k
@@ -221,8 +221,8 @@ ET,4,MASS21,,,2        !2D mass
 *ENDDO
 
 FINISH
-/VIEW,1,1,1,1   
-/ANG,1  
+/VIEW,1,1,1,1
+/ANG,1
 /REP,FAST
 *USE, generateimages.mac
 
@@ -230,7 +230,7 @@ FINISH
 /COM, ------------------------------------------------
 /COM,  Preliminary static analysis
 /COM, ------------------------------------------------
-/SOLU    
+/SOLU
 ANTYPE,STATIC	! Analisi statica preliminare
 LUMPM,ON
 PSTRES,ON		!Includes prestress effects
@@ -247,7 +247,7 @@ KSEL,a,KP,,200
 KSEL,a,KP,,300
 NSLK,S
 D,all,ALL
-!D,all,UZ,0,,,,ROTX,ROTY	
+!D,all,UZ,0,,,,ROTX,ROTY
 
 ALLSELL,ALL,ALL
 
@@ -255,8 +255,8 @@ SOLVE
 FINISH
 
 ! >>>> POSTPROCESSING <<<<
-/POST1  
-PLDISP, 1    
+/POST1
+PLDISP, 1
 *use, generateimages.mac
 PLNSOL,  U, SUM,  0, 1.0
 *use, generateimages.mac
@@ -267,7 +267,7 @@ PLNSOL,  S, EQV,  0, 1.0
 /COM, ------------------------------------------------
 /COM,  Analysis type and options
 /COM, ------------------------------------------------
-/SOLU    
+/SOLU
 ANTYPE,MODAL		! Modal analysis
 PSTRES,ON			! Includes prestress effects
 MODOPT,LANB,10		! First 10 modes are extracted
@@ -295,7 +295,7 @@ PLDISP			!Displays modal shape
 
 *CFOPEN, 'ModalFreq-%StrJobname(1)%', 'txt'
  *VWRITE, 'Num', 'Omega'
-  (7x, A8, 3X, A8)	
+  (7x, A8, 3X, A8)
   *VWRITE, sequ, ModalFreq(1,1)
    (F12.0, F12.5)
 *CFCLOS

@@ -19,22 +19,22 @@ FINISH
 
 ! >>>>> MATERIAL PROPERTIES <<<<<
 !*** steel
-*SET, SteelEyounG, 205e9			![Pa] Young's modulus
+*SET, SteelEyounG, 205e9		![Pa] Young's modulus
 *SET, SteelNi, 0.29				!Poisson's ratio
-*SET, SteelDensity, 7850			![Kg/m^3]
+*SET, SteelDensity, 7850		![Kg/m^3]
 
 !*** Aluminium
-*SET, AluminiumEyounG, 64e9 			![Pa] Young's modulus
-*SET, AluminiumNi, 0.34				!Poisson's ratio
-*SET, AluminiumDensity, 2700 			![Kg/m^3]
+*SET, AluminiumEyounG, 64e9 	![Pa] Young modulus
+*SET, AluminiumNi, 0.34			!Poisson ratio
+*SET, AluminiumDensity, 2700 	![Kg/m^3]
 
 !*** Element size
-*SET, E_length_ct, 50e-3			![m]
+*SET, E_length_ct, 50e-3		![m]
 
 !geometric parameter
 *SET, Lt, 5.2					![m] total tail lenght
-*SET, RadBaseTail, 0.65/2			![m]
-*SET, RadEndTail, 0.10/2			![m]
+*SET, RadBaseTail, 0.65/2		![m]
+*SET, RadEndTail, 0.10/2		![m]
 *SET, alpha, atan((RadBaseTail-RadEndTail)/Lt) 	![deg]
 
 !geometric parameters section stiffner
@@ -46,12 +46,12 @@ FINISH
 *SET, HorizStabHeigth, 0.0015
 
 !geometric parameter mantle
-*SET, ThichknessMantle, 5e-4 			![m]
+*SET, ThichknessMantle, 5e-4 	![m]
 
 !mass Lumped
 *SET, MassShaft, 7				![kg] concentrated mass shaft
 *SET, MassRotor, 30				![kg] concentrated mass motorblock
-*SET, J0, 1					![kg*m^2] concentrated inertia motorblock
+*SET, J0, 1						![kg*m^2] concentrated inertia motorblock
 
 !other parameters
 *SET, NumberDivisonSurface, 24	!division cone's area
@@ -68,15 +68,15 @@ K, 2, 5, 0, 0
 
 ! create keypoints
 K, 3, 0, RadBaseTail, 0						!start keypoint tails
-*GET, MaxKp, KP, 0, num, max 					!extract max keypoint
+*GET, MaxKp, KP, 0, num, max 				!extract max keypoint
 *SET, StartKpTail, MaxKp 					!store in variable
-*DIM, SegmentRadius, ARRAY, 7, 1				!store in array radius of segment distance between 0 - Y before rotating
+*DIM, SegmentRadius, ARRAY, 7, 1			!store in array radius of segment distance between 0 - Y before rotating
 *DO, i, 1, 7, 1
-	*GET, MaxKp, KP, 0, num, max 				!extract max keypoint
+	*GET, MaxKp, KP, 0, num, max 			!extract max keypoint
 	K, MaxKp+1, Lt/7*i, RadBaseTail-Lt/7*i*tan(alpha), 0	!create keypoint
 	SegmentRadius(i) = RadBaseTail-Lt/7*i*tan(alpha)
 *ENDDO
-*GET, MaxKp, KP, 0, num, max 					!extract max keypoint
+*GET, MaxKp, KP, 0, num, max 				!extract max keypoint
 *SET, EndKpTail, MaxKp						!store in variable end's tail
 SAVE
 
@@ -89,18 +89,18 @@ SAVE
 *DO, j, StartKpTail, EndKpTail-1, 1
 	L, j, j+1
 *ENDDO
-*GET, LenghtLineRference, LINE, 1, leng 			!extract lenght segment line's cone generator
+*GET, LenghtLineRference, LINE, 1, leng 	!extract lenght segment line's cone generator
 
 ! generate cone
-*GET, NumberLine, line, 0, count 				!count lines
-*GET, StartNumberLine, line, 0, num, min			!extract first number line
+*GET, NumberLine, line, 0, count 			!count lines
+*GET, StartNumberLine, line, 0, num, min	!extract first number line
 LSEL, S, LOC, X, 0, Lt
 AROTAT, ALL, , , , , , 1, 2, 360, NumberDivisonSurface		!generate cone
 SAVE
 
 !divide line in array straight line and curved line
 !to manage in next step meshing of elements
-*GET, NumberLine, line, 0, count 				!count lines
+*GET, NumberLine, line, 0, count 			!count lines
 *DIM, StraighLine, ARRAY, NumberLine, 2
 *DIM, ArchLine, ARRAY, NumberLine, 2
 *DO, n, StartNumberLine, NumberLine, 1
@@ -305,7 +305,6 @@ FINISH
 /COM, ------------------------------------------------
 /COM,  Preliminary static analysis - Prestress
 /COM, ------------------------------------------------
-! >>>> SOLUTION <<<<
 /SOLU
 ANTYPE, STATIC, NEW	!Preliminary static analysis
 PSTRES, ON		!Includes prestress effects
@@ -327,13 +326,12 @@ PLNSOL,  S, EQV,  0, 1.0
 /COM, ------------------------------------------------
 /COM,  Modal analysis
 /COM, ------------------------------------------------
-! >>>> SOLUTION <<<<
 /SOLU
 ANTYPE, MODAL, NEW
 PSTRES, ON				! Includes prestress effects
-MODOPT, LANB, 10			! First 10 modes are extracted
+MODOPT, LANB, 10		! First 10 modes are extracted
 LUMPM, ON				! lumped/consistent mass matrix
-MXPAND, 10, , , Yes			! First 10 modes are expanded, calculate element stress
+MXPAND, 10, , , Yes		! First 10 modes are expanded, calculate element stress
 
 SOLVE
 FINISH

@@ -6,8 +6,8 @@
 !PARAMETERS INPUT:                                 !
 !               ARG1: 1st node value               !
 !               ARG2: 2nd node value               !
-!		ARG3: pass distance between 	   !
-!		      previous nodes		   !
+!		ARG3: pass distance between 	           !
+!		      previous nodes		               !
 !               ARG4: Local reference frame        !
 !               ARG5: Local reference frame        !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

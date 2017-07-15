@@ -16,13 +16,13 @@ Pi = ACOS(-1) !Greek Pi constant
 *AFUN,DEG     !Specify units for angular measures [DEG]
               !*AFUN va messa DOPO la definizione di Pi
 eps = 10e-3
-			  			  
+
 ! >>>>> MATERIAL PROPERTIES <<<<<
 E_Young = 205e9   ! Young's modulus, Pa
 ni  = 0.29	       ! Poisson's ratio
 rho = 7850	      ! Kg/m3
 
-! >>>>> LONGERON PARAMETERS	  <<<<<  
+! >>>>> LONGERON PARAMETERS	  <<<<<
 Ri_l = 12e-3     !m Inner radius
 Ro_l = 14e-3     !m Outer radius
 E_length_l = 50e-3 !m Angle of rotation wrt X axis of CLOCAL 100
@@ -57,12 +57,12 @@ ET,1,BEAM188,,,2
 ! Longerons sectype
 SECTYPE,1,BEAM,CTUBE
 SECDATA,Ri_l,Ro_l
-SECCONTROL,,,,1.280 
+SECCONTROL,,,,1.280
 
 ! Cross-tubes sectype
 SECTYPE,2,beam,CTUBE
 SECDATA,Ri_ct,Ro_ct
-SECCONTROL,,,,0.390 
+SECCONTROL,,,,0.390
 
 ! Cross-tubes sectype
 SECTYPE,3,beam,CSOLID
@@ -155,7 +155,7 @@ CSYS,400
 
 
 
-! TRIANGULAR-TUBES ELEMENTS 
+! TRIANGULAR-TUBES ELEMENTS
 CSYS,0
 *DO,j,0,8,1
 	L,100+j,200+j
@@ -192,7 +192,7 @@ FINISH
 !------------------------------------------------
 ! Preliminary static analysis
 !------------------------------------------------
-/SOLU    
+/SOLU
 ANTYPE,STATIC	! Analisi statica preliminare
 PSTRES,ON		!Includes prestress effects
 
@@ -208,7 +208,7 @@ KSEL,a,KP,,200
 KSEL,a,KP,,300
 NSLK,S
 D,all,ALL
-D,all,UZ,0,,,,ROTX,ROTY	
+D,all,UZ,0,,,,ROTX,ROTY
 
 ALLSELL,ALL,ALL
 
@@ -219,7 +219,7 @@ FINISH
 !------------------------------------------------
 ! Analysis type and options
 !------------------------------------------------
-/SOLU    
+/SOLU
 ANTYPE,MODAL		! Modal analysis
 PSTRES,ON			!Includes prestress effects
 MODOPT,LANB,10		! First 10 modes are extracted

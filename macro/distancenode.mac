@@ -6,8 +6,8 @@
 !PARAMETERS INPUT:                                 !
 !                 ARG1: 1st Node value             !
 !                 ARG2: 2nd Node value             !
-!RETURN:					   !
-! 		DistancePoint			   !
+!RETURN:					                       !
+! 		DistancePoint			                   !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 !define local variable
