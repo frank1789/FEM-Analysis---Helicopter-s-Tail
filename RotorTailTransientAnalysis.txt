@@ -10,7 +10,6 @@ FINISH
 /TITLE, Tail_Rotor_disk
 *USE,testperson.mac
 
-
 ! >>>>> MODEL PARAMETERS <<<<<
 shftlen = 0.50
 shftdia = 0.05
@@ -18,7 +17,7 @@ dskoff = shftlen
 brngoff = 0.12
 dskdia = 1.912/2
 d_i = 1.75/2
-dskthk = 0.02
+dskthk = 0.15
 bstf = 378e+7 ! Brng Stiffness
 nmd = 10      ! Number of modes
 nmspn = 8     ! Number of speeds
@@ -33,34 +32,35 @@ MP,DENS,1,2810
 MP,NUXY,1,0.33
 
 ! Build model nodes
-n,1
-n,8,brngoff
-fill,1,8
-n,19,dskoff
-fill,8,19
+N,1
+N,8,brngoff
+FILL,1,8
+N,19,dskoff
+FILL,8,19
 N,20,nx(19) + 0.02
 
 
 ! Bearing ground nodes
-n,101,
-n,201,
-n,110,nx(8)
-n,210,nx(8)
+N,101,
+N,201,
+N,110,NX(8)
+N,210,NX(8)
 
 ! Use 188 elements, solid
-et,1,188,,,2
-sectype,1,beam,csolid
-secdata,shftdia/2
+ET,1,BEAM188,,,2
+SECTYPE,1,BEAM,CSOLID
+SECDATA,shftdia/2
 ! Make elements
-secnum,1
-type,1 $mat,1
-real,1
-e,1,2
-egen,18,1,1
+SECNUM,1
+TYPE,1 
+MAT,1
+REAL,1
+E,1,2
+EGEN,18,1,1
 
 ! Disk
 CSYS,0
-WPOFFS, nx(20), ny(20), nz(20)
+WPOFFS, NX(20), NY(20), NZ(20)
 WPROTA,,,90
 /VIEW,1,1,1,1
 CYL4,0,0,d_i/2,0,dskdia/2,360
@@ -92,19 +92,19 @@ NSEL,A,NODE,,20
 CERIG,20,ALL,ALL
 ALLSEL,ALL,ALL
 
-
-
-
 ! Bearings
 ET,4,COMBIN14,,2  !1-D longitudinal spring-damper (UY degree of freedom)
 ET,5,COMBIN14,,3  !1-D longitudinal spring-damper (UZ degree of freedom)
 R,4,bstf
 
-type,4 $real,4
-e,1,101 $e,8,110
-type,5 $real,4
-e,1,201 $e,8,210
-
+TYPE,4 
+REAL,4
+E,1,101 
+E,8,110
+TYPE,5 
+REAL,4
+E,1,201 
+E,8,210
 
 ! Fix axial and rotational DOF at ends
 D,1,UX 
@@ -116,7 +116,6 @@ D,101,ALL
 D,201,ALL
 D,110,ALL 
 D,210,ALL
-
 SAVE
 
 ! Plot the model
