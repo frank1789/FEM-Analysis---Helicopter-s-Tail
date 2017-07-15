@@ -1,4 +1,5 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-orange.svg)](https://opensource.org/licenses/MIT)
+
 # FEM Analysis - Helicopter's Tail
 
 Study of vibrational tail helicopter behavior [Eurocopter AS350](https://it.wikipedia.org/wiki/Aérospatiale_AS_350_Écureuil) :helicopter:, where all historical and other information is available.
@@ -57,9 +58,15 @@ The complete report about dynamic analisys for tailboom helicopter is aviable [h
 
 ## Authors
 
-* **Francesco Argentieri** - *shell model and rotordynamics* 
-* **Lorenzo Beatrici** - *truss model*
-* **Luca Nicolodi** - *truss model*
+* **Francesco Argentieri**
+    + macro code
+    + shell model  
+    + rotordynamics: modal analisys 
+    + harmonic anlaysis: transient  
+* **Lorenzo Beatrici**
+    + truss model 
+* **Luca Nicolodi** 
+    + truss model
 
 ## License
 
