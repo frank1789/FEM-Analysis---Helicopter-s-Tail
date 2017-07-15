@@ -1,13 +1,13 @@
 /COM, ---------------------------------------------------------------------------------
-/COM, PROBLEM: MODEL of the TAIL ROTOR DISK
-/COM, ...................................................................
+/COM, ROTOR DISK MODAL & TRANSIENT ANALISYS
+/COM, ---------------------------------------------------------------------------------
 /COM, cantilevered disk-spindle system
 /COM, ---------------------------------------------------------------------------------
 
 FINISH
 /CLEAR, START, NEW
 /FILNAM, Tail_Rotor_disk
-/TITLE, Tail_Rotor_disk
+/TITLE, Tail rotor disk
 *USE,testperson.mac
 
 ! >>>>> MODEL PARAMETERS <<<<<
@@ -125,8 +125,10 @@ SAVE
 /pnum,sect,1
 /num,1 $eplot
 
-
-
+/COM,----------------------------------------------
+/COM, Modal A\nalysis
+/COM,----------------------------------------------
+/TITLE, Tail rotor disk - Modal Analysis
 /SOLU
 ! Setup modal run
 ANTYPE,MODAL
@@ -175,6 +177,7 @@ FINISH
 /COM,-------------------------------
 /COM,Transient Analisys
 /COM,-------------------------------
+/TITLE, Tail rotor disk - Transient Analisys
 *SET, PI, ACOS(-1)
 spin = spn*pi/30
 tinc = 0.5e-3
