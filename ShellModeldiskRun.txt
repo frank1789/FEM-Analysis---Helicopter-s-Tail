@@ -284,17 +284,12 @@ FINISH
 *USE,getextremeaxis.mac
 
 /SOLU
-!EQSLV,ICCG
-!PCGOPT,5 ,,no,,on,OOC,
-!DSPOPTION,SEQORDER,FORCE,4096,,PERFORMANCE
-!BCSOPTION,SEQORDER,FORCE,4096,,PERFORMANCE
-!OUTPR,ALL,ALL,
-!OUTRES,ALL,ALL,
-
-!Setup modal run
-ANTYPE,MODAL
+EQSLV,ICCG
+PRED, OFF
+ANTYPE,MODAL			!Setup modal run
 CORIOLIS,ON,,,ON
 MODOPT,QRDAMP,nmd,,,ON
+MXPAND,nmd,,,YES
 
 *ABSET,Loop On Speed - progress: 0%,Bar
 ! loop on speeds
@@ -307,12 +302,10 @@ MODOPT,QRDAMP,nmd,,,ON
 	!CMOMEGA,CM_NAME,OMEGAX,OMEGAY,OMEGAZ,X1,Y1,Z1,X2,Y2,Z2
 	/COM,===============================================
 	/COM,CMOMEGA,%CM_Name%,%OMEGAX%,%OMEGAY%,%OMEGAZ%,
-	/COM,%Node1CoorX%,%Node1CoorY%,%Node1CoorZ%,
-	/COM,%Node2CoorX%,%Node2CoorY%,%Node2CoorZ%
+	/COM, %Node1CoorX%, %Node1CoorY%, %Node1CoorZ%,
+	/COM, %Node2CoorX%, %Node2CoorY%, %Node2CoorZ%
 	/COM,===============================================
 	CMOMEGA,%CM_Name%,OMEGAX,OMEGAY,OMEGAZ,Node1CoorX,Node1CoorY,Node1CoorZ,Node2CoorX,Node2CoorY,Node2CoorZ
-	MXPAND,nmd,,,YES
-	BCSOPTION,,OUTOFCORE,,,PERFORMANCE
 	SOLVE
 	*ABCHECK,progress,Loop On Speed - progress: %progress% %
 *ENDDO
