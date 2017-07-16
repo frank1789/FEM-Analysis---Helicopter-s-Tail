@@ -1,13 +1,15 @@
-/COM, ---------------------------------------------------------------------------------
+/COM,----------------------------------------------
 /COM, ROTOR DISK MODAL & TRANSIENT ANALISYS
-/COM, ---------------------------------------------------------------------------------
+/COM,----------------------------------------------
 /COM, cantilevered disk-spindle system
-/COM, ---------------------------------------------------------------------------------
+/COM,----------------------------------------------
 
 FINISH
 /CLEAR, START, NEW
-/FILNAM, Tail_Rotor_disk
+/FILNAM, ModalAnalisys
 /TITLE, Tail rotor disk
+/UNIT,SI
+/INQUIRE,StrJobname,JOBNAME
 *USE,testperson.mac
 
 ! >>>>> MODEL PARAMETERS <<<<<
@@ -31,6 +33,9 @@ MP,EX,1,71.7e+9
 MP,DENS,1,2810
 MP,NUXY,1,0.33
 
+/COM, -----------------------------------------------
+/COM,  MODEL DEFINITION -SHAFT
+/COM, -----------------------------------------------
 ! Build model nodes
 N,1
 N,8,brngoff
@@ -39,32 +44,32 @@ N,19,dskoff
 FILL,8,19
 N,20,nx(19) + 0.02
 
-
 ! Bearing ground nodes
 N,101,
 N,201,
 N,110,NX(8)
 N,210,NX(8)
 
-! Use 188 elements, solid
+! Use 188 elements
 ET,1,BEAM188,,,2
 SECTYPE,1,BEAM,CSOLID
 SECDATA,shftdia/2
 ! Make elements
 SECNUM,1
-TYPE,1 
+TYPE,1
 MAT,1
 REAL,1
 E,1,2
 EGEN,18,1,1
 
-! Disk
+/COM, -----------------------------------------------
+/COM,  MESH - SHAFT
+/COM, -----------------------------------------------
 CSYS,0
 WPOFFS, NX(20), NY(20), NZ(20)
 WPROTA,,,90
 /VIEW,1,1,1,1
 CYL4,0,0,d_i/2,0,dskdia/2,360
-
 
 ET,2,SHELL181
 SECTYPE,2,SHELL
@@ -76,8 +81,7 @@ MSHKEY,0
 ESIZE,0.02
 AMESH,ALL
 
-
-! ** clamp between disk and spindle
+!*** clamp between disk and spindle
 ET,3,MASS21
 R,3,10,10,10,8.59E-2,4.295E-2,4.295E-2
 TYPE,3
@@ -92,45 +96,51 @@ NSEL,A,NODE,,20
 CERIG,20,ALL,ALL
 ALLSEL,ALL,ALL
 
-! Bearings
+/COM, -----------------------------------------------
+/COM,  BEARINGS
+/COM, -----------------------------------------------
 ET,4,COMBIN14,,2  !1-D longitudinal spring-damper (UY degree of freedom)
 ET,5,COMBIN14,,3  !1-D longitudinal spring-damper (UZ degree of freedom)
 R,4,bstf
 
-TYPE,4 
+TYPE,4
 REAL,4
-E,1,101 
+E,1,101
 E,8,110
-TYPE,5 
+TYPE,5
 REAL,4
-E,1,201 
+E,1,201
 E,8,210
 
-! Fix axial and rotational DOF at ends
-D,1,UX 
+/COM, -----------------------------------------------
+/COM,  BOUNDARY CONDITION
+/COM, -----------------------------------------------
+D,1,UX
 D,1,ROTX
-D,8,UX 
+D,8,UX
 D,4,ROTX
 ! Fix Brng ground nodes
-D,101,ALL 
+D,101,ALL
 D,201,ALL
-D,110,ALL 
+D,110,ALL
 D,210,ALL
 SAVE
 
+EPLOT
 ! Plot the model
-/view,1,1,1,1 $
-/vup,1,z
-/eshape,1,1 $
-/pnum,sect,1
-/num,1 $eplot
+/VIEW,1,1,1,1
+*USE, generateimages.mac
+/VUP,1,z
+*USE, generateimages.mac
 
-/COM,----------------------------------------------
-/COM, Modal A\nalysis
-/COM,----------------------------------------------
 /TITLE, Tail rotor disk - Modal Analysis
+/COM,----------------------------------------------
+/COM, Modal Analysis
+/COM,----------------------------------------------
+/COM, Setup modal run
+/COM,----------------------------------------------
+
 /SOLU
-! Setup modal run
 ANTYPE,MODAL
 CORIOLIS,ON,,,ON
 MODOPT,QRDAMP,nmd,,,ON
@@ -144,24 +154,61 @@ MODOPT,QRDAMP,nmd,,,ON
 FINISH
 SAVE
 
+/COM,----------------------------------------------
+/COM, Modal Analysis
+/COM,----------------------------------------------
+/COM, Post Processing
+/COM,----------------------------------------------
 
 /POST1
 ! Plot/List Campbell Diagrams
 /GROPTS,VIEW,1
 /YRANGE,0,100
 /XRANGE,0,spn
-/VIEW,1,,,1 
-/ANG,1  
-/REP,FAST 
+/VIEW,1,,,1
+/ANG,1
+/REP,FAST
 /SHOW,PNG
 /GFILE,2400,
 PLCAMP,,1,RPM
 PRCAMP,,1,RPM
-/SHOW, CLOSE
+/SHOW,CLOSE
+!store modal frequencies
+PLCAMP,,1,RPM
+PRCAMP,,1,RPM
+*GET, NumModes, CAMP,,NBMO
+*DIM,ModalFreq,ARRAY,NumModes,1
+*DO,i,1,NumModes,1
+	*GET,OmegaCamp,CAMP,i,FREQ,1
+	ModalFreq(i,1) = OmegaCamp
+*ENDDO
 
-/VIEW,1,1,1,1   
-/ANG,1  
-/REP,FAST 
+! print other order
+/SHOW,PNG
+/GFILE,2400,
+PLCAMP,,1,RPM
+PRCAMP,,1,RPM
+/NOERASE
+	PLCAMP,,2,RPM,,  ! plot campbell diagram with 2nd order excitation
+	PRCAMP,,2,RPM,,
+	PLCAMP,,3,RPM,,  ! plot campbell diagram with 3rd order excitation
+	PRCAMP,,3,RPM,,
+	PLCAMP,,4,RPM,,  ! plot campbell diagram with 4th order excitation
+	PRCAMP,,4,RPM,,
+/ERASE
+/SHOW,CLOSE
+
+!store data in file
+*CFOPEN,'ModalFreq-%StrJobname(1)%','txt'
+ *VWRITE,'Num','Omega'
+  (7x,A8,3X,A8)
+  *VWRITE,sequ,ModalFreq(1,1)
+   (F12.0,F12.5)
+*CFCLOS
+
+/VIEW,1,1,1,1
+/ANG,1
+/REP,FAST
 ! Plot orbit
 SET,3,1
 PLORB
@@ -170,16 +217,20 @@ PLORB
 SET,3,1
 PLNSOL,U,SUM
 *USE, generateimages.mac
-ANHARM
-
+/vup,1,z
+*USE, generateimages.mac
+!ANHARM
 FINISH
+SAVE
 
-/COM,-------------------------------
-/COM,Transient Analisys
-/COM,-------------------------------
 /TITLE, Tail rotor disk - Transient Analisys
+/FILNAM, TransientAnalisys
+/COM,----------------------------------------------
+/COM, TRANSIENT ANALISYS
+/COM,----------------------------------------------
+
 *SET, PI, ACOS(-1)
-spin = spn*pi/30
+spin = mxspn*pi/30
 tinc = 0.5e-3
 tend = 4
 spindot = spin/tend
@@ -189,11 +240,11 @@ f0 = unb*dskdia
 
 *dim,spinTab,table,nbp,,,TIME
 *dim,rotTab, table,nbp,,,TIME
-*dim,fxTab,  table,nbp,,,TIME
+*dim,fzTab,  table,nbp,,,TIME
 *dim,fyTab,  table,nbp,,,TIME
 *vfill,spinTab(1,0),ramp,0,tinc
 *vfill,rotTab(1,0), ramp,0,tinc
-*vfill,fxTab(1,0),  ramp,0,tinc
+*vfill,fzTab(1,0),  ramp,0,tinc
 *vfill,fyTab(1,0),  ramp,0,tinc
 tt = 0
 *DO,iloop,1,nbp
@@ -204,7 +255,7 @@ tt = 0
    rotTab(iloop,1) = rotVal
    sinr = sin(rotVal)
    cosr = cos(rotVal)
-   fxTab(iloop,1)= f0*(-spin2*sinr + spindot*cosr)
+   fzTab(iloop,1)= f0*(-spin2*sinr + spindot*cosr)
    fyTab(iloop,1)= f0*( spin2*cosr + spindot*sinr)
    tt   = tt + tinc
 *ENDDO
@@ -214,36 +265,63 @@ FINI
 /SOLU
 ANTYPE,TRANSIENT
 
-TIME,TEND
+TIME,tend
 DELTIM,tinc,tinc/10,tinc*10
 KBC,0
 CORIOLIS,ON,,,ON
-OMEGA,spin,,
-F,5,FX,%fxTab%
-F,5,FY,%fyTab%
+OMEGA,spin
+F,248,FY,%fyTab%
+F,248,FZ,%fzTab%
 OUTRES,ALL,ALL
 SOLVE
-FINI
+FINISH
+SAVE
 
+/PBC,ALL, ,1
+/REP
+*USE, generateimages.mac
 
+/COM,----------------------------------------------
+/COM, TRANSIENT ANALYSIS
+/COM,----------------------------------------------
+/COM, Post Processing
+/COM,----------------------------------------------
+
+/VIEW,1,,,1
+/ANG,1
+/REPLOT
 ! ** generate response graphs
 /POST26
-NSOL,2,5,U,X,UXdisk 
-PROD,3,2,2  
-NSOL,4,5,U,Y,UYdisk 
-PROD,5,4,4  
-ADD,6,3,5   
+/XRANGE,0,tend
+
+NSOL,2,19,U,Z,UZdisk
+PROD,3,2,2
+NSOL,4,19,U,Y,UYdisk
+PROD,5,4,4
+ADD,6,3,5
 SQRT,7,6,,,Ampl_At_Disk
-/AXLAB,Y,Displacement (m) 
-/show,JPEG
-plvar,7
+/AXLAB,Y,Displacement (m)
+PLVAR,7
+EXTREME,7
+/VIEW,1,,,1
+/ANG,1
+/REP,FAST
+/SHOW,PNG
+/GFILE,2400,
+PLVAR,7
 EXTREME,7
 /show,CLOSE
 
-esol,8,4,5,smisc,32,Sy_At_Disk
-esol,9,4,5,smisc,34,Sz_At_Disk
+esol,8,18,19,smisc,32,Sy_At_Disk
+esol,9,18,19,smisc,34,Sz_At_Disk
 /axlab,y,Bending Stresses (N/m2)
-/show,JPEG
-plvar,8,9
+/VIEW,1,,,1
+/ANG,1
+/REP,FAST
+PLVAR,8,9
+EXTREME,8,9
+/SHOW,PNG
+/GFILE,2400,
+PLVAR,8,9
 EXTREME,8,9
 /show,CLOSE
