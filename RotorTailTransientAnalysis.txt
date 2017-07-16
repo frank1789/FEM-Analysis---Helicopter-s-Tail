@@ -290,7 +290,8 @@ SAVE
 /VIEW,1,,,1
 /ANG,1
 /REPLOT
-! ** generate response graphs
+
+!generate response graphs
 /POST26
 /XRANGE,0,tend
 
@@ -310,11 +311,12 @@ EXTREME,7
 /GFILE,2400,
 PLVAR,7
 EXTREME,7
-/show,CLOSE
+/SHOW,CLOSE
 
-esol,8,18,19,smisc,32,Sy_At_Disk
-esol,9,18,19,smisc,34,Sz_At_Disk
-/axlab,y,Bending Stresses (N/m2)
+ESOL,8,18,19,SMISC,32,Sy_At_Disk
+ESOL,9,18,19,SMISC,34,Sz_At_Disk
+
+/AXLAB,Y,Bending Stresses (N/m^2)
 /VIEW,1,,,1
 /ANG,1
 /REP,FAST
@@ -324,4 +326,5 @@ EXTREME,8,9
 /GFILE,2400,
 PLVAR,8,9
 EXTREME,8,9
-/show,CLOSE
+/SHOW,CLOSE
+FINISH
