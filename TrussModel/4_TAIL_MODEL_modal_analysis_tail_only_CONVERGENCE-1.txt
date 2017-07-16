@@ -8,12 +8,12 @@ FINISH
 /CLEAR, START, NEW
 /FILNAM, Helicopter_tail
 /TITLE, Helicopter's tail boom modal analysis
-/CWD, 'C:\Users\Utente\Qsync\LM Meccatronica\II ANNO MAGISTRALE\II semestre (2016)\Modeling and Design with FEM (M. Benedetti)\2017\HELICOPTERS PROJECT\ANSYS MODELS\tailboom_BEAM188'
+!/CWD, 'C:\Users\Utente\Qsync\LM Meccatronica\II ANNO MAGISTRALE\II semestre (2016)\Modeling and Design with FEM (M. Benedetti)\2017\HELICOPTERS PROJECT\ANSYS MODELS\tailboom_BEAM188'
 
- *CFOPEN,'C:\Users\Utente\Qsync\LM Meccatronica\II ANNO MAGISTRALE\II semestre (2016)\Modeling and Design with FEM (M. Benedetti)\2017\HELICOPTERS PROJECT\ANSYS MODELS\tailboom_BEAM188\results','txt'
- *VWRITE,'    q','N_ELEM','omega1','omega2',' omega3',' omega4','omega5','omega6',' omega7',' omega8',' omega9',' omega10'
-  (A8,2X,A8,6X,A8,4X,A8,4X,A8,4X,A8,4X,A8,4X,A8,4X,A8,4X,A8,4X,A8,4X,A8,4X)
- *CFCLOS
+! *CFOPEN,'C:\Users\Utente\Qsync\LM Meccatronica\II ANNO MAGISTRALE\II semestre (2016)\Modeling and Design with FEM (M. Benedetti)\2017\HELICOPTERS PROJECT\ANSYS MODELS\tailboom_BEAM188\results','txt'
+! *VWRITE,'    q','N_ELEM','omega1','omega2',' omega3',' omega4','omega5','omega6',' omega7',' omega8',' omega9',' omega10'
+ ! (A8,2X,A8,6X,A8,4X,A8,4X,A8,4X,A8,4X,A8,4X,A8,4X,A8,4X,A8,4X,A8,4X,A8,4X)
+! *CFCLOS
 
 
 *DO,q,1,12,1
@@ -263,10 +263,10 @@ SET,1,1			!Loads first mode
 *GET,N_ELEM,ELEM,0,COUNT
 
 
-*CFOPEN,'C:\Users\Utente\Qsync\LM Meccatronica\II ANNO MAGISTRALE\II semestre (2016)\Modeling and Design with FEM (M. Benedetti)\2017\HELICOPTERS PROJECT\ANSYS MODELS\tailboom_BEAM188\results','txt',,append
-  *VWRITE,q,N_ELEM,omega1,omega2,omega3,omega4,omega5,omega6,omega7,omega8,omega9,omega10
-   (F6.0,F12.0,F12.03,F12.03,F12.03,F12.03,F12.03,F12.03,F12.03,F12.03,F12.03,F12.03)
-*CFCLOS
+!*CFOPEN,'C:\Users\Utente\Qsync\LM Meccatronica\II ANNO MAGISTRALE\II semestre (2016)\Modeling and Design with FEM (M. Benedetti)\2017\HELICOPTERS PROJECT\ANSYS MODELS\tailboom_BEAM188\results','txt',,append
+!  *VWRITE,q,N_ELEM,omega1,omega2,omega3,omega4,omega5,omega6,omega7,omega8,omega9,omega10
+!   (F6.0,F12.0,F12.03,F12.03,F12.03,F12.03,F12.03,F12.03,F12.03,F12.03,F12.03,F12.03)
+!*CFCLOS
 
  finish
  parsav,scalar,parametri,parm
