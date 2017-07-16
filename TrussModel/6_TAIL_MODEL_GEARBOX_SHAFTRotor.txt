@@ -6,6 +6,361 @@
 
 FINISH
 /CLEAR, START, NEW
+/FILNAM, TrussTailLumped
+/TITLE, Helicopter's tail boom modal analysis
+/UNIT, SI
+/INQUIRE, StrJobname, JOBNAME
+*USE, testperson.mac
+
+q=7
+
+! >>>>> MODEL PARAMETERS <<<<<
+Pi = ACOS(-1) !Greek Pi constant
+*AFUN,DEG     !Specify units for angular measures [DEG], *AFUN va messa DOPO la definizione di Pi
+eps = 10e-3
+
+! >>>>> MATERIAL PROPERTIES <<<<<
+E_Young = 205e9   	! Young's modulus, Pa
+ni  = 0.29	       	! Poisson's ratio
+rho = 7850	      	! Kg/m3
+
+! >>>>> LONGERON PARAMETERS	  <<<<<
+Ri_l = 12e-3     	!m Inner radius
+Ro_l = 14e-3     	!m Outer radius
+n_div_l = q
+
+!Cross-tubes parameters
+Ri_ct = 4.5e-3     	!m Inner radius
+Ro_ct = 6e-3     	!m Outer radius
+n_div_ct = q
+
+!Lower longeron
+Lt  = 4800e-3    	!m total tail lenght
+L1  =  700e-3    	!m triangular section side lenght (at the root)
+L5  =  75e-3
+w1 = Lt/10    		!m
+alpha = 10  		!deg
+
+!Upper longerons
+beta =  4 ! deg atan((Hh-L1*sin(Pi/3))/(Lt-L4))
+gamma = atan((L1/2-L5)/((Lt)/cos(beta)))  ! deg
+
+! Added mass
+m_shaft = 7
+m_rotor = 30			!concentrated mass (kg)
+J0= 1			!concentrated inertia (kg m^2)
+
+/COM, ------------------------------------------------
+/COM,  MODEL DEFINITION
+/COM, -----------------------------------------------
+! Reduced integration Timoshenko beam element
+! with quadratic shape functions
+
+/PREP7
+ET,1,BEAM188,,,2
+
+! Longerons sectype
+SECTYPE,1,BEAM,CTUBE
+SECDATA,Ri_l,Ro_l,12
+SECCONTROL,,,,1.280
+
+! Cross-tubes sectype
+SECTYPE,2,beam,CTUBE
+SECDATA,Ri_ct,Ro_ct
+SECCONTROL,,,,0.390
+
+! Material properties
+MP,EX,1,E_Young
+MP,NUXY,1,ni
+MP,DENS,1,rho
+
+
+! KEY POINTS DEFINITION
+/PNUM,LINE,1
+/PNUM,KP,1
+
+! LOWER LONGERON
+K,100
+K,101,0,0,w1
+L,100,101
+!Lower longeron RF
+CLOCAL,100,CART,0,0,w1,,-alpha
+CSYS,100
+
+*DO,j,1,7,1
+	K,101+j,0,0,(((Lt-w1)/cos(alpha))/7)*j
+	L,100+j,101+j
+*ENDDO
+CSYS,0
+K,109,0,0.9418665,4.800000+0.15
+K,110,0,0.9917447+0.005,4.800000+0.075
+L,108,109
+
+CSYS,0
+! meshing the lower longeron
+LESIZE,all,,,n_div_l
+LATT,1,,1,,,,1
+LMESH,all
+LSEL,U,LINE,,all !unselect the last created part (convinient)
+
+
+! UPPER (positive X) LONGERON
+CSYS,0
+K,200,+L1*cos(60),+L1*sin(60),0
+CLOCAL,200,CART,+L1/2,+L1*sin(60),0,,-beta,-gamma
+CSYS,200
+
+K,201,0,0,w1/cos(beta)/cos(gamma)
+L,200,201
+*DO,j,1,7,1
+	K,201+j,0,0,w1/cos(beta)/cos(gamma)+(((Lt-w1)/cos(beta)/cos(gamma))/7)*j
+	L,200+j,201+j
+*ENDDO
+L,208,109
+CSYS,0
+! meshing the upper positive X longeron
+LESIZE,all,,,n_div_l
+LATT,1,,1,,,,1
+LMESH,all
+LSEL,U,LINE,,all !unselect the last created part (convinient)
+
+
+
+! UPPER (negative X) LONGERON
+CSYS,0
+K,300,-L1*cos(60),+L1*sin(60),0
+CLOCAL,300,CART,-L1/2,+L1*sin(60),0,,-beta,+gamma
+CSYS,300
+K,301,0,0,w1/cos(beta)/cos(gamma)
+L,300,301
+*DO,j,1,7,1
+	K,301+j,0,0,w1/cos(beta)/cos(gamma)+(((Lt-w1)/cos(beta)/cos(gamma))/7)*j
+	L,300+j,301+j
+*ENDDO
+L,308,109
+CSYS,0
+! meshing the upper positive X longeron
+LESIZE,all,,,n_div_l
+LATT,1,,1,,,,1
+LMESH,all
+LSEL,U,LINE,,all !unselect the last created part (convinient)
+
+
+CSYS,0
+!K,400,0,0.05+L1*sin(60),0
+!K,401,0,0.05+L1*sin(60)+w1*tan(beta),w1
+K,400,0,+L1*sin(60),0
+K,401,0,+L1*sin(60)+w1*tan(beta),w1
+CLOCAL,400,CART,0,+L1*sin(60),0,,-beta,0
+CSYS,400
+!L,400,401
+
+*DO,j,1,7,1
+	!K,401+j,0,0.05,w1/cos(beta)+(((Lt-w1)/cos(beta))/7)*j
+	K,401+j,0,0,w1/cos(beta)+(((Lt-w1)/cos(beta))/7)*j
+*ENDDO
+
+
+! TRIANGULAR-TUBES ELEMENTS
+CSYS,0
+*DO,j,0,8,1
+	L,100+j,200+j
+	L,100+j,300+j
+	L,200+j,400+j
+	L,400+j,300+j
+*ENDDO
+
+! CROSS ELEMENTS
+*DO,j,0,7,1
+	L,200+j,101+j
+	L,300+j,101+j
+*ENDDO
+
+! UPPER CROSS ELEMENTS
+*DO,j,0,7,1
+	L,200+j,300+j+1
+*ENDDO
+
+! meshing the upper positive X longeron
+LESIZE,all,,,n_div_ct
+LATT,1,,1,,,,2
+LMESH,all
+LSEL,U,LINE,,all !unselect the last created part (convinient)
+
+ALLSEL,ALL
+
+/ESHAPE,1		!displays shell thickness
+eplot
+
+ET,3,MASS21,,,3        !2D mass with rotary inertia
+R,3,m_rotor/3,J0
+TYPE,3
+REAL,3
+KSEL,s,KP,,308
+NSLK,s
+*GET,node_numb1,NODE,,NUM,MAX
+E,node_numb1
+KSEL,s,KP,,109
+NSLK,s
+*GET,node_numb2,NODE,,NUM,MAX
+E,node_numb2
+KSEL,s,KP,,208
+NSLK,s
+*GET,node_numb3,NODE,,NUM,MAX
+E,node_numb3
+
+ET,4,MASS21,,,2        !2D mass
+	R,4,m_shaft/7
+	TYPE,4
+	REAL,4
+*DO,k,1,7,1
+	KSEL,s,KP,,400+k
+	NSLK,s
+	*GET,node_numb,NODE,,NUM,MAX
+	E,node_numb
+*ENDDO
+
+/COM, ------------------------------------------------
+/COM,  COMPLETE MODEL
+/COM, ------------------------------------------------
+CSYS,0
+!Selct base keypoint and node
+KSEL, S, KP,, 308
+*GET, BaseBearing1, KP, , NUM, MAX
+KSEL, S, KP,, 208
+*GET, BaseBearing2, KP, , NUM, MAX
+ALLSEL,ALL
+
+!create node for rigid link
+*GET, LastNode, NODE, , NUM, MAX
+N, LastNode + 1, kx(BaseBearing2), ky(BaseBearing2)+0.10, kz(BaseBearing2)
+*GET, NodeBearing2, NODE, , NUM, MAX
+*GET, LastNode, NODE, , NUM, MAX
+N, LastNode + 1, kx(BaseBearing1),ky(BaseBearing1)+0.10, kz(BaseBearing1)
+*GET, NodeBearing1, NODE, , NUM, MAX
+*USE, distancenode.mac, NodeBearing1, NodeBearing2
+
+!Set local systems
+*USE, relativereferencesystem.mac, 1, 0, kx(BaseBearing1), ky(BaseBearing1)+0.10, kz(BaseBearing1) , ,90 ,
+*USE, relativereferencesystem.mac, 2, 0, kx(BaseBearing2), ky(BaseBearing2)+0.10, kz(BaseBearing2), ,90 ,
+
+!Enter local system - z-positive
+CSYS, LocalSystem_1
+
+!create rotorblock
+*USE, rotor.mac, NodeBearing1, NodeBearing2, DistancePoint, LocalSystem_1, LocalSystem_2
+
+!return principal Reference system
+CSYS, 0
+
+/COM, -------------------------------------------------
+/COM,  RIGID LINK
+/COM,  create connection shfat and tail
+/COM, -------------------------------------------------
+!define element rigid link
+*GET, LastElementType, ETYP, , NUM, MAX
+*SET, RigidLink, LastElementType + 1
+ET, RigidLink, MPC184
+!0 - rigid link block 3 d.o.f (x, y, z)
+!1 - beam block 6 d.o.f (x, y, z, rx, ry, rz)
+KEYOPT, RigidLink, 1, 1
+KEYOPT, RigidLink, 2, 0
+
+!material for rigid link
+*GET, MaterialNum, MAT, , NUM, MAX
+*SET, RigidLinkMaterial, MaterialNum + 1
+MP, DENS, RigidLinkMaterial,0
+MAT, RigidLinkMaterial
+
+!create element
+TYPE, RigidLink
+KSEL,S,KP,,BaseBearing1
+NSLK,S
+*GET, LastNode, NODE, , NUM, MAX
+E, LastNode, NodeStart
+ALLSEL,ALL
+KSEL,S,KP,,BaseBearing2
+NSLK,S
+*GET, LastNode, NODE, , NUM, MAX
+E, LastNode, NodeEnd
+
+!clear parmaters
+*SET, BaseBearing1,
+*SET, BaseBearing2,
+*SET, NodeBearing1,
+*SET, NodeBearing2,
+*SET, LastNode,
+*SET, i,
+
+FINISH
+/VIEW,1,1,1,1
+/ANG,1
+/REP,FAST
+*USE, generateimages.mac
+*USE, getextremeaxis.mac
+
+
+/COM, ------------------------------------------------
+/COM,  Preliminary static analysis
+/COM, ------------------------------------------------
+/SOLU
+
+!------------------------------------------------
+! Boundary conditions
+!------------------------------------------------
+CSYS,0
+KSEL,s,KP,,100
+KSEL,a,KP,,200
+KSEL,a,KP,,300
+DK,ALL, ,0, , , ,ALL, , , , ,
+allsel all
+
+/COM, ------------------------------------------------
+/COM,  Analysis type and options
+/COM, ------------------------------------------------
+
+ANTYPE,MODAL		! Modal analysis
+!PSTRES,ON			! Includes prestress effects
+MODOPT,LANB,10		! First 10 modes are extracted
+!LUMPM,ON			! lumped/consistent mass matrix
+MXPAND,10,,,Yes		! First 10 modes are expanded, calculate element stress
+
+SOLVE
+FINISH
+
+!------------------------------------------------
+! PostProcessing
+!------------------------------------------------
+/POST1
+SET,LIST		!List natural frequencies
+SET,1,1			!Loads first mode
+PLDISP			!Displays modal shape
+
+*DIM,ModalFreq,ARRAY,10,1
+*Do, i, 1, 10, 1
+ *GET, omega, MODE, i, FREQ
+	ModalFreq(i,1)= omega
+*set,omega,
+*ENDDO
+*set,omega,
+
+*CFOPEN, 'ModalFreq-%StrJobname(1)%', 'txt'
+ *VWRITE, 'Num', 'Omega'
+  (7x, A8, 3X, A8)
+  *VWRITE, sequ, ModalFreq(1,1)
+   (F12.0, F12.5)
+*CFCLOS
+
+FINISH
+
+/COM, ---------------------------------------------------------------------------------
+/COM, PROBLEM: MODAL ANALYSIS of the helicopter's TAIL BOOM
+/COM, ---------------------------------------------------------------------------------
+/COM, Natural frequencies and modal shapes of an helicopter's tail boom
+/COM, ---------------------------------------------------------------------------------
+
+FINISH
+/CLEAR, START, NEW
 /FILNAM, TrussTailLumpedRotorRun
 /TITLE, Helicopter's tail boom modal analysis
 /UNIT, SI
@@ -412,4 +767,3 @@ set,3,1
 PLNSOL,U,SUM
 ANHARM
 FINISH
-
