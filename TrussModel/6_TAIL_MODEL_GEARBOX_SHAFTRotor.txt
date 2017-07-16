@@ -6,7 +6,7 @@
 
 FINISH
 /CLEAR, START, NEW
-/FILNAM, TrussTailLumped
+/FILNAM, TrussTailLumpedRotorDisk
 /TITLE, Helicopter's tail boom modal analysis
 /UNIT, SI
 /INQUIRE, StrJobname, JOBNAME
