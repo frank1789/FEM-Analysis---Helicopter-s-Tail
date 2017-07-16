@@ -61,12 +61,16 @@ The complete report about dynamic analisys for tailboom helicopter is aviable [h
 * **Francesco Argentieri**
     + macro code
     + shell model  
-    + rotordynamics: modal analisys 
-    + harmonic anlaysis: transient  
+    + rotordynamics: 
+        + modal analisys
+        + harmonic anlaysis - transient
+    + report
 * **Lorenzo Beatrici**
-    + truss model 
+    + truss model
+    + report
 * **Luca Nicolodi** 
     + truss model
+    + report
 
 ## License
 
