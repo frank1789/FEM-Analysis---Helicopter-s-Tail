@@ -1,3 +1,4 @@
+
 /COM, ---------------------------------------------------------------------------------
 /COM, PROBLEM: MODAL ANALYSIS of the helicopter's TAIL BOOM
 /COM, ---------------------------------------------------------------------------------
@@ -6,7 +7,7 @@
 
 FINISH
 /CLEAR, START, NEW
-/FILNAM, TrussTailLumped
+/FILNAM, TrussTailLumpedRotorRun
 /TITLE, Helicopter's tail boom modal analysis
 /UNIT, SI
 /INQUIRE, StrJobname, JOBNAME
@@ -144,7 +145,6 @@ LESIZE,all,,,n_div_l
 LATT,1,,1,,,,1
 LMESH,all
 LSEL,U,LINE,,all !unselect the last created part (convinient)
-
 
 CSYS,0
 !K,400,0,0.05+L1*sin(60),0
@@ -315,40 +315,113 @@ KSEL,a,KP,,300
 DK,ALL, ,0, , , ,ALL, , , , ,
 allsel all
 
-/COM, ------------------------------------------------
-/COM,  Analysis type and options
-/COM, ------------------------------------------------
-
-ANTYPE,MODAL		! Modal analysis
-!PSTRES,ON			! Includes prestress effects
-MODOPT,LANB,10		! First 10 modes are extracted
-!LUMPM,ON			! lumped/consistent mass matrix
-MXPAND,10,,,Yes		! First 10 modes are expanded, calculate element stress
-
-SOLVE
+!calc mass
+*USE,calcmass.mac,StrJobname(1)
 FINISH
 
-!------------------------------------------------
-! PostProcessing
-!------------------------------------------------
-/POST1
-SET,LIST		!List natural frequencies
-SET,1,1			!Loads first mode
-PLDISP			!Displays modal shape
+/COM,------------------------------------------------
+/COM,MODAL ANALISYS
+/COM,------------------------------------------------
 
-*DIM,ModalFreq,ARRAY,10,1
-*Do, i, 1, 10, 1
- *GET, omega, MODE, i, FREQ
-	ModalFreq(i,1)= omega
-*set,omega,
+! >>>>> ANALISYS PARAMETRS <<<<<
+*SET,nmd,10 		! Number of modes
+*SET,nmspn,8 		! Number of speeds
+*SET,mxspn,2000 	! Max Omega (rpm)
+
+!get element component about a user-defined rotational
+!in this case there is only one component
+*GET,NumberComponet,'COMP',,NCOMP
+*GET,RotorBlock,'COMP',NumberComponet,NAME
+
+!get value for axis X1,Y1,Z1 <-> X2,Y2,Z2
+*USE,getextremeaxis.mac
+
+/SOLU
+EQSLV,ICCG
+PRED, OFF
+ANTYPE,MODAL,NEW			!Setup modal run
+CORIOLIS,ON,,,ON
+MODOPT,QRDAMP,nmd,,,ON
+MXPAND,nmd,,,YES
+
+*ABSET,Loop On Speed - progress: 0%,Bar
+! loop on speeds
+*DO,i,1,nmspn
+	*SET,progress,i/nmspn*100
+	spn = (i-1)*(mxspn/(nmspn-1))
+	*SET,OMEGAX,spn
+	*SET,OMEGAY,0
+	*SET,OMEGAZ,0
+	!CMOMEGA,CM_NAME,OMEGAX,OMEGAY,OMEGAZ,X1,Y1,Z1,X2,Y2,Z2
+	/COM,===============================================
+	/COM,CMOMEGA,%CM_Name%,%OMEGAX%,%OMEGAY%,%OMEGAZ%,
+	/COM, %Node1CoorX%, %Node1CoorY%, %Node1CoorZ%,
+	/COM, %Node2CoorX%, %Node2CoorY%, %Node2CoorZ%
+	/COM,===============================================
+	CMOMEGA,%CM_Name%,OMEGAX,OMEGAY,OMEGAZ,Node1CoorX,Node1CoorY,Node1CoorZ,Node2CoorX,Node2CoorY,Node2CoorZ
+	SOLVE
+	*ABCHECK,progress,Loop On Speed - progress: %progress% %
 *ENDDO
-*set,omega,
+*ABFINI
+FINISH
 
-*CFOPEN, 'ModalFreq-%StrJobname(1)%', 'txt'
- *VWRITE, 'Num', 'Omega'
-  (7x, A8, 3X, A8)
-  *VWRITE, sequ, ModalFreq(1,1)
-   (F12.0, F12.5)
+/COM,----------------------------------------------
+/COM, Modal Analysis
+/COM,----------------------------------------------
+/COM, Post Processing
+/COM,----------------------------------------------
+
+/POST1
+file,%StrJobname(1)%,rst
+! Plot/List Campbell Diagrams
+/GROPTS,VIEW,2
+/YRANGE,0,100
+/XRANGE,0,mxspn
+/SHOW,PNG
+/GFILE,2400,
+PLCAMP,,1,RPM,,%CM_Name%
+PRCAMP,,1,RPM,,%CM_Name%
+/SHOW,CLOSE
+
+PLCAMP,,1,RPM,,%CM_Name%
+PRCAMP,,1,RPM,,%CM_Name%
+!store data in array
+*GET, NumModes, CAMP,,NBMO
+*DIM,ModalFreq,ARRAY,NumModes,1
+*DO,i,1,NumModes,1
+	*GET,OmegaCamp,CAMP,i,FREQ,1
+	ModalFreq(i,1) = OmegaCamp
+*ENDDO
+
+! print other order
+/SHOW,PNG
+/GFILE,2400,
+PLCAMP,,1,RPM,,%CM_Name%
+PRCAMP,,1,RPM,,%CM_Name%
+! print other order
+/NOERASE
+PLCAMP,,2,RPM,,%CM_Name%  ! plot campbell diagram with 2nd order excitation
+PRCAMP,,2,RPM,,%CM_Name%
+PLCAMP,,3,RPM,,%CM_Name%  ! plot campbell diagram with 3rd order excitation
+PRCAMP,,3,RPM,,%CM_Name%
+PLCAMP,,4,RPM,,%CM_Name%  ! plot campbell diagram with 4th order excitation
+PRCAMP,,4,RPM,,%CM_Name%
+/ERASE
+/SHOW,CLOSE
+
+*CFOPEN,'ModalFreq-%StrJobname(1)%','txt'
+ *VWRITE,'Num','Omega'
+  (7x,A8,3X,A8)
+  *VWRITE,sequ,ModalFreq(1,1)
+   (F12.0,F12.5)
 *CFCLOS
 
+! plot orbit
+!SET,3,1
+!PLORB
+! animate whirl
+set,3,1
+PLNSOL,U,SUM
+*USE,generateimages.mac
+!ANHARM
 FINISH
