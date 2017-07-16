@@ -218,9 +218,8 @@ KEYOPT,RigidLink,2,0
 !material for rigid link
 *GET,MaterialNum,MAT,,NUM,MAX
 *SET,RigidLinkMaterial,MaterialNum + 1
-!MP,EX,RigidLinkMaterial,SteelEyounG
-!MP,NUXY,RigidLinkMaterial,SteelNi
-!MAT,RigidLinkMaterial
+MP,DENS,RigidLinkMaterial,0
+MAT,RigidLinkMaterial
 
 !create element
 TYPE,RigidLink

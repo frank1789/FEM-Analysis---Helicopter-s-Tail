@@ -330,8 +330,6 @@ KEYOPT,RigidLink,2,0
 !material for rigid link
 *GET,MaterialNum,MAT,,NUM,MAX
 *SET,RigidLinkMaterial,MaterialNum + 1
-!MP,EX,RigidLinkMaterial,SteelEyounG
-!MP,NUXY,RigidLinkMaterial,SteelNi
 MP,DENS,RigidLinkMaterial,0
 MAT,RigidLinkMaterial
 
@@ -376,7 +374,6 @@ LSEL,S,LOC,x,0,0
 !calc mass
 *USE,calcmass.mac,StrJobname(1)
 FINISH
-
 
 /COM,------------------------------------------------
 /COM,MODAL ANALISYS
