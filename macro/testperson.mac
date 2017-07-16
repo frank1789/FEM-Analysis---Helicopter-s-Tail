@@ -9,7 +9,7 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 WPSTYLE, , , , , , , , 0
-/PLOPTS, INFO, 2
+/PLOPTS, INFO, 3
 /PLOPTS, LEG1, 1
 /PLOPTS, LEG2, 1
 /PLOPTS, LEG3, 1
@@ -22,4 +22,5 @@ WPSTYLE, , , , , , , , 0
 /PLOPTS, WP, 0
 /PLOPTS, DATE, 0
 /TRIAD, ORIG
+/ESHAPE,1,1
 /REPLOT
