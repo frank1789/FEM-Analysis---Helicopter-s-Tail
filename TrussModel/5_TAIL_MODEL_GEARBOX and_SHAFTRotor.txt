@@ -721,7 +721,11 @@ MXPAND,nmd,,,YES
 *ABFINI
 FINISH
 
-*DIM,ModalFreq,ARRAY,10,1
+/COM,----------------------------------------------
+/COM, Modal Analysis
+/COM,----------------------------------------------
+/COM, Post Processing
+/COM,----------------------------------------------
 
 /POST1
 file,%StrJobname(1)%,rst
@@ -732,23 +736,32 @@ file,%StrJobname(1)%,rst
 /SHOW,PNG
 /GFILE,2400,
 PLCAMP,,1,RPM,,%CM_Name%
-*DO,z,1,nmd,1
-	*GET,omegacamp,CAMP,z,FREQ,1
-	ModalFreq(z,1) = omegacamp
-	*IF,z,GT,nmd-1,then
- 		*GET,omegacamp,CAMP,z-1,FREQ,2
- 		ModalFreq(z,1) = omegacamp
- 	*ENDIF
+PRCAMP,,1,RPM,,%CM_Name%
+/SHOW,CLOSE
+
+PLCAMP,,1,RPM,,%CM_Name%
+PRCAMP,,1,RPM,,%CM_Name%
+!store data in array
+*GET, NumModes, CAMP,,NBMO
+*DIM,ModalFreq,ARRAY,NumModes,1
+*DO,i,1,NumModes,1
+	*GET,OmegaCamp,CAMP,i,FREQ,1
+	ModalFreq(i,1) = OmegaCamp
 *ENDDO
+
+! print other order
+/SHOW,PNG
+/GFILE,2400,
+PLCAMP,,1,RPM,,%CM_Name%
 PRCAMP,,1,RPM,,%CM_Name%
 ! print other order
 /NOERASE
-	PLCAMP,,2,RPM,,%CM_Name%  ! plot campbell diagram with 2nd order excitation
-	PRCAMP,,2,RPM,,%CM_Name%
-	PLCAMP,,3,RPM,,%CM_Name%  ! plot campbell diagram with 3rd order excitation
-	PRCAMP,,3,RPM,,%CM_Name%
-	PLCAMP,,4,RPM,,%CM_Name%  ! plot campbell diagram with 4th order excitation
-	PRCAMP,,4,RPM,,%CM_Name%
+PLCAMP,,2,RPM,,%CM_Name%  ! plot campbell diagram with 2nd order excitation
+PRCAMP,,2,RPM,,%CM_Name%
+PLCAMP,,3,RPM,,%CM_Name%  ! plot campbell diagram with 3rd order excitation
+PRCAMP,,3,RPM,,%CM_Name%
+PLCAMP,,4,RPM,,%CM_Name%  ! plot campbell diagram with 4th order excitation
+PRCAMP,,4,RPM,,%CM_Name%
 /ERASE
 /SHOW,CLOSE
 
@@ -765,18 +778,6 @@ PRCAMP,,1,RPM,,%CM_Name%
 ! animate whirl
 set,3,1
 PLNSOL,U,SUM
-ANHARM
+*USE,generateimages.mac
+!ANHARM
 FINISH
-
-
-
-
-
-
-
-
-
-
-
-
-
