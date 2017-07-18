@@ -428,20 +428,31 @@ FINISH
 /COM,----------------------------------------------
 
 /POST1
-file,%StrJobname(1)%,rst
 ! Plot/List Campbell Diagrams
-/GROPTS,VIEW,2
+/GROPTS,VIEW,1
 /YRANGE,0,100
-/XRANGE,0,mxspn
+/XRANGE,0,spn
+/VIEW,1,,,1
+/ANG,1
+/REP,FAST
 /SHOW,PNG
-/GFILE,2400,
-PLCAMP,,1,RPM,,%CM_Name%
-PRCAMP,,1,RPM,,%CM_Name%
-/SHOW,CLOSE
 
 PLCAMP,,1,RPM,,%CM_Name%
 PRCAMP,,1,RPM,,%CM_Name%
-!store data in array
+/SHOW,CLOSE
+!store modal frequencies
+PLCAMP,,1,RPM,,%CM_Name%
+PRCAMP,,1,RPM,,%CM_Name%
+
+!extract critical speed
+*DIM,VeloCrit,ARRAY,nmd,1
+*DO,i,1,nmd,1
+	*GET, VelCrit, CAMP,i, VCRI
+	VeloCrit(i,1) = VelCrit
+*ENDDO
+*SET, i,
+
+!extrac vibration modes
 *GET, NumModes, CAMP,,NBMO
 *DIM,ModalFreq,ARRAY,NumModes,1
 *DO,i,1,NumModes,1
@@ -454,30 +465,40 @@ PRCAMP,,1,RPM,,%CM_Name%
 /GFILE,2400,
 PLCAMP,,1,RPM,,%CM_Name%
 PRCAMP,,1,RPM,,%CM_Name%
-! print other order
 /NOERASE
-PLCAMP,,2,RPM,,%CM_Name%  ! plot campbell diagram with 2nd order excitation
-PRCAMP,,2,RPM,,%CM_Name%
-PLCAMP,,3,RPM,,%CM_Name%  ! plot campbell diagram with 3rd order excitation
-PRCAMP,,3,RPM,,%CM_Name%
-PLCAMP,,4,RPM,,%CM_Name%  ! plot campbell diagram with 4th order excitation
-PRCAMP,,4,RPM,,%CM_Name%
+	PLCAMP,,2,RPM,,%CM_Name%  ! plot campbell diagram with 2nd order excitation
+	PRCAMP,,2,RPM,,%CM_Name%
+	PLCAMP,,3,RPM,,%CM_Name%  ! plot campbell diagram with 3rd order excitation
+	PRCAMP,,3,RPM,,%CM_Name%
+	PLCAMP,,4,RPM,,%CM_Name%  ! plot campbell diagram with 4th order excitation
+	PRCAMP,,4,RPM,,%CM_Name%
 /ERASE
 /SHOW,CLOSE
 
+!store data in file
 *CFOPEN,'ModalFreq-%StrJobname(1)%','txt'
  *VWRITE,'Num','Omega'
   (7x,A8,3X,A8)
   *VWRITE,sequ,ModalFreq(1,1)
    (F12.0,F12.5)
 *CFCLOS
+ 
+*CFOPEN,'VelocCritic-%StrJobname(1)%','txt'
+ *VWRITE,'Num', 'Critical'
+  (7x,A8,3X,A8)
+  *VWRITE,sequ,VeloCrit(1,1)
+   (F12.0,3x,F12.5)
+*CFCLOS
 
 ! plot orbit
 !SET,3,1
 !PLORB
 ! animate whirl
+/VIEW,1,1,1,1   
+/ANG,1  
+/REP,FAST  
 set,3,1
 PLNSOL,U,SUM
 *USE,generateimages.mac
-!ANHARM
+ANHARM
 FINISH

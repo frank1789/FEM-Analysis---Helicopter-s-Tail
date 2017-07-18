@@ -176,6 +176,16 @@ PRCAMP,,1,RPM
 !store modal frequencies
 PLCAMP,,1,RPM
 PRCAMP,,1,RPM
+
+!extract critical speed
+*DIM,VeloCrit,ARRAY,4,1
+*DO,i,1,nmd,1
+	*GET, VelCrit, CAMP,i, VCRI
+	VeloCrit(i,1) = VelCrit
+*ENDDO
+*SET, i,
+
+!extrac vibration modes
 *GET, NumModes, CAMP,,NBMO
 *DIM,ModalFreq,ARRAY,NumModes,1
 *DO,i,1,NumModes,1
@@ -204,6 +214,13 @@ PRCAMP,,1,RPM
   (7x,A8,3X,A8)
   *VWRITE,sequ,ModalFreq(1,1)
    (F12.0,F12.5)
+*CFCLOS
+ 
+*CFOPEN,'VelocCritic-%StrJobname(1)%','txt'
+ *VWRITE,'Num', 'Critical'
+  (7x,A8,3X,A8)
+  *VWRITE,sequ,VeloCrit(1,1)
+   (F12.0,3x,F12.5)
 *CFCLOS
 
 /VIEW,1,1,1,1
