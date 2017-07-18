@@ -215,7 +215,7 @@ PRCAMP,,1,RPM
   *VWRITE,sequ,ModalFreq(1,1)
    (F12.0,F12.5)
 *CFCLOS
- 
+
 *CFOPEN,'VelocCritic-%StrJobname(1)%','txt'
  *VWRITE,'Num', 'Critical'
   (7x,A8,3X,A8)
