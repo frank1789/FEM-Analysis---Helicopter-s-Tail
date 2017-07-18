@@ -48,7 +48,7 @@ gamma = atan((L1/2-L5)/((Lt)/cos(beta)))  ! deg
 
 ! Added mass
 m_shaft = 7
-m_rotor = 0			!concentrated mass (kg)
+m_rotor = 0		!concentrated mass (kg)
 J0= 1			!concentrated inertia (kg m^2)
 
 /COM, ------------------------------------------------

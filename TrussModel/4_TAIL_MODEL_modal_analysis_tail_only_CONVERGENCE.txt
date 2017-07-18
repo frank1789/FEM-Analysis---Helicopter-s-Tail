@@ -203,10 +203,8 @@ FINISH
 !------------------------------------------------
 /SOLU
 ANTYPE,STATIC	! Analisi statica preliminare
-PSTRES,ON		!Includes prestress effects
-
-!gravitational acceleration
-Acel,,9.81
+PSTRES,ON	!Includes prestress effects
+Acel,,9.81	!gravitational acceleration
 
 !------------------------------------------------
 ! Boundary conditions
@@ -230,9 +228,9 @@ FINISH
 !------------------------------------------------
 /SOLU
 ANTYPE,MODAL		! Modal analysis
-PSTRES,ON			! Includes prestress effects
+PSTRES,ON		! Includes prestress effects
 MODOPT,LANB,10		! First 10 modes are extracted
-LUMPM,ON			! lumped/consistent mass matrix
+LUMPM,ON		! lumped/consistent mass matrix
 MXPAND,10,,,Yes		! First 10 modes are expanded, calculate element stress
 
 SOLVE

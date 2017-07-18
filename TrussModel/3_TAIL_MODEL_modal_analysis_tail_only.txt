@@ -18,26 +18,26 @@ Pi = ACOS(-1) !Greek Pi constant
 eps = 10e-3
 
 ! >>>>> MATERIAL PROPERTIES <<<<<
-E_Young = 205e9   ! Young's modulus, Pa
-ni  = 0.29	       ! Poisson's ratio
-rho = 7850	      ! Kg/m3
+E_Young = 205e9   	! Young's modulus, Pa
+ni  = 0.29	       	! Poisson's ratio
+rho = 7850	      	! Kg/m3
 
-! >>>>> LONGERON PARAMETERS	  <<<<<
-Ri_l = 12e-3     !m Inner radius
-Ro_l = 14e-3     !m Outer radius
-E_length_l = 50e-3 !m Angle of rotation wrt X axis of CLOCAL 100
+! >>>>> LONGERON PARAMETERS <<<<<
+Ri_l = 12e-3     	!m Inner radius
+Ro_l = 14e-3     	!m Outer radius
+E_length_l = 50e-3 	!m Angle of rotation wrt X axis of CLOCAL 100
 
 !Cross-tubes parameters
-Ri_ct = 4.5e-3     !m Inner radius
-Ro_ct = 6e-3     !m Outer radius
-E_length_ct = 25e-3 !m
+Ri_ct = 4.5e-3     	!m Inner radius
+Ro_ct = 6e-3     	!m Outer radius
+E_length_ct = 25e-3 	!m
 
 !Lower longeron
-Lt  = 4800e-3    !m total tail lenght
-L1  =  700e-3    !m triangular section side lenght (at the root)
+Lt  = 4800e-3    	!m total tail lenght
+L1  =  700e-3    	!m triangular section side lenght (at the root)
 L5  =  75e-3
-w1 = Lt/10    !m
-alpha = 10  ! deg
+w1 = Lt/10    		!m
+alpha = 10  		! deg
 
 !Upper longerons
 beta =  4 ! deg atan((Hh-L1*sin(Pi/3))/(Lt-L4))
@@ -179,14 +179,12 @@ CSYS,0
 LESIZE,all,E_length_ct
 LATT,1,,1,,,,2
 LMESH,all
-LSEL,U,LINE,,all !unselect the last created part (convinient)
+LSEL,U,LINE,,all 	!unselect the last created part (convinient)
 
 ALLSEL,ALL
 
 /ESHAPE,1		!displays shell thickness
 eplot
-
-
 FINISH
 
 !------------------------------------------------
@@ -194,10 +192,8 @@ FINISH
 !------------------------------------------------
 /SOLU
 ANTYPE,STATIC	! Analisi statica preliminare
-PSTRES,ON		!Includes prestress effects
-
-!gravitational acceleration
-Acel,,9.81
+PSTRES,ON	!Includes prestress effects
+Acel,,9.81	!gravitational acceleration
 
 !------------------------------------------------
 ! Boundary conditions
@@ -221,9 +217,9 @@ FINISH
 !------------------------------------------------
 /SOLU
 ANTYPE,MODAL		! Modal analysis
-PSTRES,ON			!Includes prestress effects
+PSTRES,ON		!Includes prestress effects
 MODOPT,LANB,10		! First 10 modes are extracted
-LUMPM,OFF			! lumped/consistent mass matrix
+LUMPM,OFF		! lumped/consistent mass matrix
 MXPAND,10,,,Yes		! First 10 modes are expanded, calculate element stress
 
 SOLVE
@@ -233,6 +229,7 @@ FINISH
 ! PostProcessing
 !------------------------------------------------
 /POST1
-SET,LIST		!List natural frequencies
-SET,1,1			!Loads first mode
+SET,LIST	!List natural frequencies
+SET,1,1		!Loads first mode
 PLDISP		!Displays modal shape
+FINISH
