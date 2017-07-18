@@ -13,18 +13,19 @@ FINISH
 *USE,testperson.mac
 
 ! >>>>> MODEL PARAMETERS <<<<<
-shftlen = 0.50
-shftdia = 0.05
-dskoff = shftlen
-brngoff = 0.12
-dskdia = 1.912/2
-d_i = 1.75/2
-dskthk = 0.15
-bstf = 378e+7 ! Brng Stiffness
-nmd = 10      ! Number of modes
-nmspn = 8     ! Number of speeds
-mxspn = 2000  ! Max Omega (rpm)
-
+*SET, Pi, ACOS(-1)
+*AFUN, DEG
+*SET,shftlen, 0.50
+*SET,shftdia, 0.05
+*SET,dskoff, shftlen
+*SET,brngoff, 0.12
+*SET,dskdia, 1.912/2
+*SET,d_i, 1.75/2
+*SET,dskthk, 0.10
+*SET,bstf, 378e+7 ! Brng Stiffness*SET,
+*SET,nmd, 10      ! Number of modes
+*SET,nmspn, 8     ! Number of speeds
+*SET,mxspn, 2000  ! Max Omega (rpm)
 
 /PREP7
 ! >>>>> MATERIAL PROPERTIES <<<<<
@@ -83,7 +84,7 @@ AMESH,ALL
 
 !*** clamp between disk and spindle
 ET,3,MASS21
-R,3,10,10,10,8.59E-2,4.295E-2,4.295E-2
+R,3,5,5,5,1.776,0.592,0
 TYPE,3
 REAL,3
 MAT,1
@@ -132,6 +133,7 @@ EPLOT
 *USE, generateimages.mac
 /VUP,1,z
 *USE, generateimages.mac
+*USE, calcmass.mac, %StrJobname(1)%
 
 /TITLE, Tail rotor disk - Modal Analysis
 /COM,----------------------------------------------
@@ -146,7 +148,7 @@ CORIOLIS,ON,,,ON
 MODOPT,QRDAMP,nmd,,,ON
 ! Loop on speeds
 *DO,i,1,nmspn
-	spn = (i-1)*(mxspn/(nmspn-1))
+	spn = (i-1)*(((2*mxspn*Pi)/60)/(nmspn-1))
 	OMEGA,spn
 	MXPAND,nmd,,,YES
    SOLVE
@@ -164,7 +166,7 @@ SAVE
 ! Plot/List Campbell Diagrams
 /GROPTS,VIEW,1
 /YRANGE,0,100
-/XRANGE,0,spn
+/XRANGE,0,spn*(60/(2*Pi))
 /VIEW,1,,,1
 /ANG,1
 /REP,FAST
@@ -179,7 +181,7 @@ PRCAMP,,1,RPM
 
 !extract critical speed
 *DIM,VeloCrit,ARRAY,4,1
-*DO,i,1,nmd,1
+*DO,i,1,4,1
 	*GET, VelCrit, CAMP,i, VCRI
 	VeloCrit(i,1) = VelCrit
 *ENDDO
@@ -236,7 +238,7 @@ PLNSOL,U,SUM
 *USE, generateimages.mac
 /vup,1,z
 *USE, generateimages.mac
-!ANHARM
+ANHARM
 FINISH
 SAVE
 
@@ -245,15 +247,13 @@ SAVE
 /COM,----------------------------------------------
 /COM, TRANSIENT ANALISYS
 /COM,----------------------------------------------
-
-*SET, PI, ACOS(-1)
-spin = mxspn*pi/30
-tinc = 0.5e-3
-tend = 4
-spindot = spin/tend
-nbp = nint(tend/tinc) + 1
-unb = 1.e-4
-f0 = unb*dskdia
+*SET,spin, mxspn
+*SET,tinc, 0.5e-3
+*SET,tend, 4
+*SET,spindot, spin/tend
+*SET,nbp, nint(tend/tinc) + 1
+*SET,unb, 1.e-4
+*SET,f0, unb*dskdia
 
 *dim,spinTab,table,nbp,,,TIME
 *dim,rotTab, table,nbp,,,TIME
