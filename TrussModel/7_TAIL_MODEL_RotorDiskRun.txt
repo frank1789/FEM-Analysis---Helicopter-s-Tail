@@ -348,7 +348,7 @@ MXPAND,nmd,,,YES
 ! loop on speeds
 *DO,i,1,nmspn
 	*SET,progress,i/nmspn*100
-	spn = (i-1)*(mxspn/(nmspn-1))
+	spn = (i-1)*(((2*mxspn*Pi)/60)/(nmspn-1))
 	*SET,OMEGAX,spn
 	*SET,OMEGAY,0
 	*SET,OMEGAZ,0
@@ -375,7 +375,7 @@ FINISH
 ! Plot/List Campbell Diagrams
 /GROPTS,VIEW,1
 /YRANGE,0,100
-/XRANGE,0,spn
+/XRANGE,0,spn*(60/(2*Pi))
 /VIEW,1,,,1
 /ANG,1
 /REP,FAST
@@ -425,7 +425,7 @@ PRCAMP,,1,RPM,,%CM_Name%
   *VWRITE,sequ,ModalFreq(1,1)
    (F12.0,F12.5)
 *CFCLOS
- 
+
 *CFOPEN,'VelocCritic-%StrJobname(1)%','txt'
  *VWRITE,'Num', 'Critical'
   (7x,A8,3X,A8)
@@ -437,9 +437,9 @@ PRCAMP,,1,RPM,,%CM_Name%
 !SET,3,1
 !PLORB
 ! animate whirl
-/VIEW,1,1,1,1   
-/ANG,1  
-/REP,FAST  
+/VIEW,1,1,1,1
+/ANG,1
+/REP,FAST
 set,3,1
 PLNSOL,U,SUM
 *USE,generateimages.mac

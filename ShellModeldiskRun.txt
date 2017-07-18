@@ -404,7 +404,7 @@ MXPAND,nmd,,,YES
 ! loop on speeds
 *DO,i,1,nmspn
 	*SET,progress,i/nmspn*100
-	spn = (i-1)*(mxspn/(nmspn-1))
+	spn = (i-1)*(((2*mxspn*Pi)/60)/(nmspn-1))
 	*SET,OMEGAX,spn
 	*SET,OMEGAY,0
 	*SET,OMEGAZ,0
@@ -431,7 +431,7 @@ FINISH
 ! Plot/List Campbell Diagrams
 /GROPTS,VIEW,1
 /YRANGE,0,100
-/XRANGE,0,spn
+/XRANGE,0,spn*(60/(2*Pi))
 /VIEW,1,,,1
 /ANG,1
 /REP,FAST
