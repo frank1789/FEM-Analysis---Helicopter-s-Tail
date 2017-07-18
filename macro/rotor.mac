@@ -20,7 +20,7 @@
 *SET, dskdia, 1.912/2
 *SET, d_i, 1.75/2
 *SET, dskthk, 0.15
-*SET, bstf, 378E+7 	! Brng Stiffness
+*SET, bstf, 378e+7 	! Brng Stiffness
 
 /COM, -----------------------------------------------
 /COM,  MODEL DEFINITION -SHAFT
@@ -37,7 +37,7 @@ FILL, NodeStart, NodeEnd
 *GET, NodeMax, NODE, , NUM, MAX
 N, NodeMax+19, dskoff
 *GET, LastNode, NODE, , NUM, MAX
-FILL, LastNode,  NodeEnd 
+FILL, LastNode,  NodeEnd
 N, LastNode, nx(LastNode) + 0.02
 *GET, LastNode, NODE, , NUM, MAX
 SAVE
@@ -70,7 +70,6 @@ KEYOPT, BeamShaft,15, 0
 *SET, SectionBeamShaft, LastSectionType + 1
 SECTYPE, SectionBeamShaft, BEAM, CSOLID
 SECDATA, shftdia/2
-!cm, BeamOmega, elem 
 
 ! Make elements
 SECNUM, SectionBeamShaft
@@ -90,7 +89,7 @@ SAVE
 /COM, -----------------------------------------------
 
 ! >>>> DEFINE GEOMETRY <<<<
-WPCSYS, -1 
+WPCSYS, -1
 WPOFFS, nx(LastNode), ny(LastNode), nz(LastNode)
 WPROTA, , , 90
 CYL4, 0, 0, d_i/2, 0, dskdia/2, 360
@@ -114,9 +113,7 @@ SECD, dskthk
 TYPE, ShellDisk
 SECNUM, SectionShellDisk
 MAT, Aluminum7075
-!cm, DiscOmega, elem
 MSHKEY, 0
-!MSHAPE, 1, 2D
 ESIZE, 0.02
 AMESH, ALL
 SAVE
@@ -131,7 +128,7 @@ ET, ClampDiskSplinde, MASS21
 KEYOPT, ClampDiskSplinde, 2, 0
 *GET, ClampDiskSplinde, ETYP, , NUM, MAX
 /COM, MASS21 for clamp between disk and spindle have number %ClampDiskSplinde%
-R, ClampDiskSplinde, 10, 10, 10, 8.59e-2, 4.295e-2, 4.295e-2
+R, ClampDiskSplinde, 5,5,5,1.776,0.592,0
 TYPE, ClampDiskSplinde
 REAL, ClampDiskSplinde
 MAT, Aluminum7075
@@ -141,7 +138,7 @@ SAVE
 CERIG, LastNode, LastNode-1, ALL
 ALLSEL, ALL
 LSEL, S, LOC, X, nx(LastNode)
-LSEL, R, RADIUS, , d_i/2  
+LSEL, R, RADIUS, , d_i/2
 NSLL, S, 1
 NSEL, A, NODE, , LastNode
 CERIG, LastNode, ALL, ALL
@@ -163,18 +160,18 @@ R, SpringDumperRealConst, bstf
 TYPE, SpringDamper
 KEYOPT, SpringDamper, 2, 2
 REAL, SpringDumperRealConst
-E, ARG1, NodeStart 
+E, ARG1, NodeStart
 E, ARG2, NodeEnd
-/COM, 1-D longitudinal spring-damper (UY degree of freedom): 
+/COM, 1-D longitudinal spring-damper (UY degree of freedom):
 /COM,	Node1: %ARG1% (ARG1); Node2: %NodeStart% (NodeStart)
 /COM,	Node1: %ARG2% (ARG2); Node2: %NodeEnd% (NodeEnd)
 
 !***longitudinal spring-damper (UZ degree of freedom)
 TYPE, SpringDamper
-KEYOPT, SpringDamper, 2, 3 
+KEYOPT, SpringDamper, 2, 3
 E, ARG1, NodeStart
 E, ARG2, NodeEnd
-/COM, 1-D longitudinal spring-damper (UZ degree of freedom): 
+/COM, 1-D longitudinal spring-damper (UZ degree of freedom):
 /COM,	Node1: %ARG1% (ARG1); Node2: %NodeStart% (NodeStart)
 /COM,	Node1: %ARG2% (ARG2); Node2: %NodeEnd% (NodeEnd)
 
@@ -182,8 +179,8 @@ E, ARG2, NodeEnd
 /COM,  REVOLUTE JOINT
 /COM,  create revolute joint to block d.o.f shaft
 /COM, -----------------------------------------------
-!MPC184 Revolute Joint Geometry shows the geometry and node locations for this element. 
-!Two nodes (I and J) define the element. The two nodes are expected to have identical spatial 
+!MPC184 Revolute Joint Geometry shows the geometry and node locations for this element.
+!Two nodes (I and J) define the element. The two nodes are expected to have identical spatial
 !coordinates initially.
 *GET, LastElementType, ETYP, , NUM, MAX
 *SET, RevoluteJoint, LastElementType+1
@@ -198,12 +195,12 @@ KEYOPT, RevoluteJoint, 4, 0
 TYPE, RevoluteJoint
 SECTYPE, , JOINT, REVO, RevoJoint_1
 SECJOINT, , ARG4, ARG4
-*GET, LastSectionType, SECP, ,NUM, MAX 
+*GET, LastSectionType, SECP, ,NUM, MAX
 SECNUM, LastSectionType
 E, ARG1, NodeStart
 SECTYPE, , JOINT, REVO, RevoJoint_2
 SECJOINT, , ARG5, ARG5
-*GET, LastSectionType, SECP, ,NUM, MAX 
+*GET, LastSectionType, SECP, ,NUM, MAX
 SECNUM, LastSectionType
 E, ARG2, NodeEnd
 SAVE
@@ -224,7 +221,7 @@ CM, RotorBlock, ELEM
 "Created: (%I) component, Named: (%S)"
 
 !clear parameters
-*SET, NodeMax, 
+*SET, NodeMax,
 *SET, LastElementType,
 *SET, RevoluteJoint,
 *SET, LastNode,
@@ -233,9 +230,9 @@ CM, RotorBlock, ELEM
 *SET, SpringDumperRealConst
 *SET, ClampDiskSplinde,
 *SET, ShellDisk,
-*SET, NodeNumShaft, 
-*SET, NodeStartShaft, 
-*SET, NodeEndShaft, 
+*SET, NodeNumShaft,
+*SET, NodeStartShaft,
+*SET, NodeEndShaft,
 *SET, BeamShaft,
 
 !Exit Macro
