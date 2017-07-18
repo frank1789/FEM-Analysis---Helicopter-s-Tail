@@ -310,42 +310,10 @@ FINISH
 /COM,  Preliminary static analysis - Prestress
 /COM, ------------------------------------------------
 /SOLU
-ANTYPE, STATIC,NEW		!Preliminary static analysis
-SOLVE
-FINISH
-
-! >>>> POSTPROCESSING <<<<
-/POST1
-PLDISP, 1
-*USE, generateimages.mac
-PLNSOL, U, SUM, 0, 1.0
-*USE, generateimages.mac
-PLNSOL, S, EQV, 0, 1.0
-*USE, generateimages.mac
-PLNSOL, U,Y, 0,1.0
-*USE, generateimages.mac
-PLNSOL, U,Z, 0,1.0
-*USE, generateimages.mac
-FINISH
-
-!Preliminary static analysis
-/SOLU
-ANTYPE, STATIC,NEW		!Preliminary static analysis
+ANTYPE, STATIC		!Preliminary static analysis
 PSTRES, ON			!Includes prestress effects
 Acel, , 9.81			!gravitational acceleration
 SOLVE
-FINISH
-
-! >>>> POSTPROCESSING <<<<
-/POST1
-PLDISP, 1
-*USE, generateimages.mac
-PLNSOL, U, SUM, 0, 1.0
-*USE, generateimages.mac
-PLNSOL, S, EQV, 0, 1.0
-*USE, generateimages.mac
-PLNSOL, U,Y, 0,1.0
-*USE, generateimages.mac
 FINISH
 
 ! >>>> POSTPROCESSING <<<<
