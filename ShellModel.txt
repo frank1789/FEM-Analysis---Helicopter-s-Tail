@@ -180,19 +180,23 @@ ALLSEL, ALL
 LSEL, S, LOC, Y, -(RadBaseTail*2)+eps, (RadBaseTail*2)+eps
 LSEL, S, LOC, x, 0, 0
 DL, ALL, , ALL, 0
+ALLSEL, ALL
 
+!Selct keypoint-node to apply force
+KSEL,S,LOC,X,4.457143
+KSEL,R,LOC,Y,0.4464286E-01
+KSEL,R,LOC,Z,-0.7732370E-01,0
+*GET,ForceOnNode,KP,,NUM,MAX
+FK,ForceOnNode,FZ,2243
+ALLSEL, ALL
 *USE, calcmass.mac, StrJobname(1)
 FINISH
 
 /COM, ------------------------------------------------
 /COM,  Preliminary static analysis - Prestress
 /COM, ------------------------------------------------
-! >>>> SOLUTION <<<<
 /SOLU
-ANTYPE, STATIC, NEW		!Preliminary static analysis
-PSTRES, ON			!Includes prestress effects
-Acel, , 9.81			!gravitational acceleration
-
+ANTYPE, STATIC,NEW		!Preliminary static analysis
 SOLVE
 FINISH
 
@@ -204,7 +208,31 @@ PLNSOL, U, SUM, 0, 1.0
 *USE, generateimages.mac
 PLNSOL, S, EQV, 0, 1.0
 *USE, generateimages.mac
+PLNSOL, U,Y, 0,1.0
+*USE, generateimages.mac
+PLNSOL, U,Z, 0,1.0
+*USE, generateimages.mac
+FINISH
 
+!Preliminary static analysis
+/SOLU
+ANTYPE, STATIC,NEW		!Preliminary static analysis
+PSTRES, ON			!Includes prestress effects
+Acel, , 9.81			!gravitational acceleration
+SOLVE
+FINISH
+
+! >>>> POSTPROCESSING <<<<
+/POST1
+PLDISP, 1
+*USE, generateimages.mac
+PLNSOL, U, SUM, 0, 1.0
+*USE, generateimages.mac
+PLNSOL, S, EQV, 0, 1.0
+*USE, generateimages.mac
+PLNSOL, U,Y, 0,1.0
+*USE, generateimages.mac
+FINISH
 
 /COM, ------------------------------------------------
 /COM,  Modal analysis
