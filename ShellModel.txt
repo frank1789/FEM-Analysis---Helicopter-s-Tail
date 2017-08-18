@@ -18,10 +18,10 @@ FINISH
 *SET, eps, 10e-3		!precision interval
 
 ! >>>>> MATERIAL PROPERTIES <<<<<
-!*** steel
-*SET, SteelEyounG, 205e9	![Pa] Young's modulus
-*SET, SteelNi, 0.29		!Poisson's ratio
-*SET, SteelDensity, 7850	![Kg/m^3]
+!*** Duraluminium
+*SET, DuralEyounG, 72e9	 ![Pa] Young's modulus
+*SET, DuralNi, 0.33		 !Poisson's ratio
+*SET, DuralDensity, 2810 ![Kg/m^3]
 
 !*** Aluminium
 *SET, AluminiumEyounG, 64e9 	![Pa] Young's modulus
@@ -114,9 +114,9 @@ LPLOT
 /ESHAPE, 1
 !set material properties and element
 ET, 1, BEAM189
-MP, EX, 1, SteelEyounG
-MP, NUXY, 1, SteelNi
-MP, DENS, 1, SteelDensity
+MP, EX, 1, DuralEyounG
+MP, NUXY, 1, DuralNi
+MP, DENS, 1, DuralDensity
 
 !***Horizzontal Stabilizer
 SECTYPE,  1, BEAM, RECT, HorizzontalStabilizer, 0
