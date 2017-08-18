@@ -21,8 +21,8 @@ FINISH
 *SET,brngoff, 0.12
 *SET,dskdia, 1.912/2
 *SET,d_i, 1.75/2
-*SET,dskthk, 0.10
-*SET,bstf, 378e+7 ! Brng Stiffness*SET,
+*SET,dskthk, 0.15
+*SET,bstf, 378e+7 ! Brng Stiffness
 *SET,nmd, 10      ! Number of modes
 *SET,nmspn, 8     ! Number of speeds
 *SET,mxspn, 2000  ! Max Omega (rpm)
@@ -84,7 +84,7 @@ AMESH,ALL
 
 !*** clamp between disk and spindle
 ET,3,MASS21
-R,3,5,5,5,1.776,0.592,0
+R,3,10,10,10,8.59E-2,4.295E-2,4.295E-2
 TYPE,3
 REAL,3
 MAT,1
@@ -148,7 +148,7 @@ CORIOLIS,ON,,,ON
 MODOPT,QRDAMP,nmd,,,ON
 ! Loop on speeds
 *DO,i,1,nmspn
-	spn = (i-1)*(((2*mxspn*Pi)/60)/(nmspn-1))
+	spn = (i-1)*(mxspn/(nmspn-1))
 	OMEGA,spn
 	MXPAND,nmd,,,YES
    SOLVE
@@ -166,12 +166,12 @@ SAVE
 ! Plot/List Campbell Diagrams
 /GROPTS,VIEW,1
 /YRANGE,0,100
-/XRANGE,0,spn*(60/(2*Pi))
+/XRANGE,0,spn
 /VIEW,1,,,1
 /ANG,1
 /REP,FAST
 /SHOW,PNG
-/GFILE,2400,
+/GFILE,800,
 PLCAMP,,1,RPM
 PRCAMP,,1,RPM
 /SHOW,CLOSE
@@ -197,7 +197,7 @@ PRCAMP,,1,RPM
 
 ! print other order
 /SHOW,PNG
-/GFILE,2400,
+/GFILE,800,
 PLCAMP,,1,RPM
 PRCAMP,,1,RPM
 /NOERASE
@@ -325,7 +325,7 @@ EXTREME,7
 /ANG,1
 /REP,FAST
 /SHOW,PNG
-/GFILE,2400,
+/GFILE,800,
 PLVAR,7
 EXTREME,7
 /SHOW,CLOSE
@@ -340,7 +340,7 @@ ESOL,9,18,19,SMISC,34,Sz_At_Disk
 PLVAR,8,9
 EXTREME,8,9
 /SHOW,PNG
-/GFILE,2400,
+/GFILE,800,
 PLVAR,8,9
 EXTREME,8,9
 /SHOW,CLOSE
