@@ -47,7 +47,7 @@ gamma = atan((L1/2-L5)/((Lt)/cos(beta)))  ! deg
 
 ! Added mass
 m_shaft = 7
-m_rotor = 30			!concentrated mass (kg)
+m_rotor = 30		!concentrated mass (kg)
 J0= 1			!concentrated inertia (kg m^2)
 
 /COM, ------------------------------------------------
@@ -233,10 +233,8 @@ FINISH
 /SOLU
 ANTYPE,STATIC	! Analisi statica preliminare
 LUMPM,ON
-PSTRES,ON		!Includes prestress effects
-
-!gravitational acceleration
-Acel,,9.81
+PSTRES,ON	!Includes prestress effects
+Acel,,9.81	!gravitational acceleration
 
 !------------------------------------------------
 ! Boundary conditions
@@ -269,9 +267,9 @@ PLNSOL,  S, EQV,  0, 1.0
 /COM, ------------------------------------------------
 /SOLU
 ANTYPE,MODAL		! Modal analysis
-PSTRES,ON			! Includes prestress effects
+PSTRES,ON		! Includes prestress effects
 MODOPT,LANB,10		! First 10 modes are extracted
-LUMPM,ON			! lumped/consistent mass matrix
+LUMPM,ON		! lumped/consistent mass matrix
 MXPAND,10,,,Yes		! First 10 modes are expanded, calculate element stress
 
 SOLVE

@@ -18,23 +18,23 @@ FINISH
 *SET, eps, 10e-3		!precision interval
 
 ! >>>>> MATERIAL PROPERTIES <<<<<
-!*** steel
-*SET, SteelEyounG, 205e9		![Pa] Young's modulus
-*SET, SteelNi, 0.29				!Poisson's ratio
-*SET, SteelDensity, 7850		![Kg/m^3]
+!*** Duraluminum
+*SET, DuralEyounG, 72e9	 ![Pa] Young's modulus
+*SET, DuralNi, 0.33		 !Poisson's ratio
+*SET, DuralDensity, 2810 ![Kg/m^3]
 
 !*** Aluminium
 *SET, AluminiumEyounG, 64e9 	![Pa] Young modulus
-*SET, AluminiumNi, 0.34			!Poisson ratio
+*SET, AluminiumNi, 0.34		!Poisson ratio
 *SET, AluminiumDensity, 2700 	![Kg/m^3]
 
 !*** Element size
-*SET, E_length_ct, 50e-3		![m]
+*SET, E_length_ct, 50e-3	![m]
 
 !geometric parameter
-*SET, Lt, 5.2					![m] total tail lenght
-*SET, RadBaseTail, 0.65/2		![m]
-*SET, RadEndTail, 0.10/2		![m]
+*SET, Lt, 5.2			![m] total tail lenght
+*SET, RadBaseTail, 0.65/2	![m]
+*SET, RadEndTail, 0.10/2	![m]
 *SET, alpha, atan((RadBaseTail-RadEndTail)/Lt) 	![deg]
 
 !geometric parameters section stiffner
@@ -49,9 +49,9 @@ FINISH
 *SET, ThichknessMantle, 5e-4 	![m]
 
 !mass Lumped
-*SET, MassShaft, 7				![kg] concentrated mass shaft
-*SET, MassRotor, 30				![kg] concentrated mass motorblock
-*SET, J0, 1						![kg*m^2] concentrated inertia motorblock
+*SET, MassShaft, 7		![kg] concentrated mass shaft
+*SET, MassRotor, 30		![kg] concentrated mass motorblock
+*SET, J0, 1			![kg*m^2] concentrated inertia motorblock
 
 !other parameters
 *SET, NumberDivisonSurface, 24	!division cone's area
@@ -67,17 +67,17 @@ K, 1, 0, 0, 0
 K, 2, 5, 0, 0
 
 ! create keypoints
-K, 3, 0, RadBaseTail, 0						!start keypoint tails
-*GET, MaxKp, KP, 0, num, max 				!extract max keypoint
-*SET, StartKpTail, MaxKp 					!store in variable
-*DIM, SegmentRadius, ARRAY, 7, 1			!store in array radius of segment distance between 0 - Y before rotating
+K, 3, 0, RadBaseTail, 0			!start keypoint tails
+*GET, MaxKp, KP, 0, num, max 		!extract max keypoint
+*SET, StartKpTail, MaxKp 		!store in variable
+*DIM, SegmentRadius, ARRAY, 7, 1	!store in array radius of segment distance between 0 - Y before rotating
 *DO, i, 1, 7, 1
-	*GET, MaxKp, KP, 0, num, max 			!extract max keypoint
+	*GET, MaxKp, KP, 0, num, max 	!extract max keypoint
 	K, MaxKp+1, Lt/7*i, RadBaseTail-Lt/7*i*tan(alpha), 0	!create keypoint
 	SegmentRadius(i) = RadBaseTail-Lt/7*i*tan(alpha)
 *ENDDO
-*GET, MaxKp, KP, 0, num, max 				!extract max keypoint
-*SET, EndKpTail, MaxKp						!store in variable end's tail
+*GET, MaxKp, KP, 0, num, max 		!extract max keypoint
+*SET, EndKpTail, MaxKp			!store in variable end's tail
 SAVE
 
 ! define keypoint mantle'tail
@@ -92,7 +92,7 @@ SAVE
 *GET, LenghtLineRference, LINE, 1, leng 	!extract lenght segment line's cone generator
 
 ! generate cone
-*GET, NumberLine, line, 0, count 			!count lines
+*GET, NumberLine, line, 0, count 		!count lines
 *GET, StartNumberLine, line, 0, num, min	!extract first number line
 LSEL, S, LOC, X, 0, Lt
 AROTAT, ALL, , , , , , 1, 2, 360, NumberDivisonSurface		!generate cone
@@ -100,7 +100,7 @@ SAVE
 
 !divide line in array straight line and curved line
 !to manage in next step meshing of elements
-*GET, NumberLine, line, 0, count 			!count lines
+*GET, NumberLine, line, 0, count 		!count lines
 *DIM, StraighLine, ARRAY, NumberLine, 2
 *DIM, ArchLine, ARRAY, NumberLine, 2
 *DO, n, StartNumberLine, NumberLine, 1
@@ -148,9 +148,9 @@ LPLOT
 /ESHAPE, 1
 ! set material properties and element
 ET, 1, BEAM189
-MP, EX, 1, SteelEyounG
-MP, NUXY, 1, SteelNi
-MP, DENS, 1, SteelDensity
+MP, EX, 1, DuralEyounG
+MP, NUXY, 1, DuralNi
+MP, DENS, 1, DuralDensity
 
 !***Horizzontal STabilizer
 SECTYPE,   1, BEAM, RECT, HorizzontalStabilizer, 0
@@ -251,8 +251,8 @@ E, ConnectionShaftSupportNode(7, 1)
 !***Support shaft - rigid connection
 ET, 3, MPC184, 1
 KEYOPT, 3, 1, 1
-MP, EX, 3, SteelEyounG
-MP, NUXY, 3, SteelNi
+MP, EX, 3, DuralEyounG
+MP, NUXY, 3, DuralNi
 
 SECNUM, 4
 MAT, 3
@@ -293,12 +293,16 @@ EPLOT
 ALLSEL, ALL
 LSEL, S, LOC, Y, -(RadBaseTail*2)+eps, (RadBaseTail*2)+eps
 LSEL, S, LOC, x, 0, 0
-*GET, MinBaseTailLine, line, 0, num, min
-*GET, MaxBaseTailLine, line, 0, num, max
-*DO, i, MinBaseTailLine, MaxBaseTailLine, 8
-	DL, i, , ALL, 0
-*ENDDO
+DL, ALL, , ALL, 0
+ALLSEL, ALL
 
+!Selct keypoint-node to apply force
+KSEL,S,LOC,X,4.457143
+KSEL,R,LOC,Y,0.4464286E-01
+KSEL,R,LOC,Z,-0.7732370E-01,0
+*GET,ForceOnNode,KP,,NUM,MAX
+FK,ForceOnNode,FZ,2243
+ALLSEL, ALL
 *USE, calcmass.mac, StrJobname(1)
 FINISH
 
@@ -306,31 +310,34 @@ FINISH
 /COM,  Preliminary static analysis - Prestress
 /COM, ------------------------------------------------
 /SOLU
-ANTYPE, STATIC, NEW	!Preliminary static analysis
-PSTRES, ON		!Includes prestress effects
-LUMPM, ON
-Acel, , 9.81		!gravitational acceleration
-
+ANTYPE, STATIC		!Preliminary static analysis
+PSTRES, ON			!Includes prestress effects
+Acel, , 9.81			!gravitational acceleration
 SOLVE
 FINISH
 
 ! >>>> POSTPROCESSING <<<<
 /POST1
 PLDISP, 1
-*use, generateimages.mac
-PLNSOL,  U, SUM,  0, 1.0
-*use, generateimages.mac
-PLNSOL,  S, EQV,  0, 1.0
-*use, generateimages.mac
+*USE, generateimages.mac
+PLNSOL, U, SUM, 0, 1.0
+*USE, generateimages.mac
+PLNSOL, S, EQV, 0, 1.0
+*USE, generateimages.mac
+PLNSOL, U,Y, 0,1.0
+*USE, generateimages.mac
+PLNSOL, U,Z, 0,1.0
+*USE, generateimages.mac
+FINISH
 
 /COM, ------------------------------------------------
 /COM,  Modal analysis
 /COM, ------------------------------------------------
 /SOLU
 ANTYPE, MODAL, NEW
-PSTRES, ON				! Includes prestress effects
+PSTRES, ON			! Includes prestress effects
 MODOPT, LANB, 10		! First 10 modes are extracted
-LUMPM, ON				! lumped/consistent mass matrix
+LUMPM, OFF			! lumped/consistent mass matrix
 MXPAND, 10, , , Yes		! First 10 modes are expanded, calculate element stress
 
 SOLVE

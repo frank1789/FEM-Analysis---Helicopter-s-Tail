@@ -13,18 +13,19 @@ FINISH
 *USE,testperson.mac
 
 ! >>>>> MODEL PARAMETERS <<<<<
-shftlen = 0.50
-shftdia = 0.05
-dskoff = shftlen
-brngoff = 0.12
-dskdia = 1.912/2
-d_i = 1.75/2
-dskthk = 0.15
-bstf = 378e+7 ! Brng Stiffness
-nmd = 10      ! Number of modes
-nmspn = 8     ! Number of speeds
-mxspn = 2000  ! Max Omega (rpm)
-
+*SET, Pi, ACOS(-1)
+*AFUN, DEG
+*SET,shftlen, 0.50
+*SET,shftdia, 0.05
+*SET,dskoff, shftlen
+*SET,brngoff, 0.12
+*SET,dskdia, 1.912/2
+*SET,d_i, 1.75/2
+*SET,dskthk, 0.15
+*SET,bstf, 378e+7 ! Brng Stiffness
+*SET,nmd, 10      ! Number of modes
+*SET,nmspn, 8     ! Number of speeds
+*SET,mxspn, 2000  ! Max Omega (rpm)
 
 /PREP7
 ! >>>>> MATERIAL PROPERTIES <<<<<
@@ -132,6 +133,7 @@ EPLOT
 *USE, generateimages.mac
 /VUP,1,z
 *USE, generateimages.mac
+*USE, calcmass.mac, %StrJobname(1)%
 
 /TITLE, Tail rotor disk - Modal Analysis
 /COM,----------------------------------------------
@@ -169,13 +171,23 @@ SAVE
 /ANG,1
 /REP,FAST
 /SHOW,PNG
-/GFILE,2400,
+/GFILE,800,
 PLCAMP,,1,RPM
 PRCAMP,,1,RPM
 /SHOW,CLOSE
 !store modal frequencies
 PLCAMP,,1,RPM
 PRCAMP,,1,RPM
+
+!extract critical speed
+*DIM,VeloCrit,ARRAY,4,1
+*DO,i,1,4,1
+	*GET, VelCrit, CAMP,i, VCRI
+	VeloCrit(i,1) = VelCrit
+*ENDDO
+*SET, i,
+
+!extrac vibration modes
 *GET, NumModes, CAMP,,NBMO
 *DIM,ModalFreq,ARRAY,NumModes,1
 *DO,i,1,NumModes,1
@@ -185,7 +197,7 @@ PRCAMP,,1,RPM
 
 ! print other order
 /SHOW,PNG
-/GFILE,2400,
+/GFILE,800,
 PLCAMP,,1,RPM
 PRCAMP,,1,RPM
 /NOERASE
@@ -206,6 +218,13 @@ PRCAMP,,1,RPM
    (F12.0,F12.5)
 *CFCLOS
 
+*CFOPEN,'VelocCritic-%StrJobname(1)%','txt'
+ *VWRITE,'Num', 'Critical'
+  (7x,A8,3X,A8)
+  *VWRITE,sequ,VeloCrit(1,1)
+   (F12.0,3x,F12.5)
+*CFCLOS
+
 /VIEW,1,1,1,1
 /ANG,1
 /REP,FAST
@@ -219,7 +238,7 @@ PLNSOL,U,SUM
 *USE, generateimages.mac
 /vup,1,z
 *USE, generateimages.mac
-!ANHARM
+ANHARM
 FINISH
 SAVE
 
@@ -228,15 +247,13 @@ SAVE
 /COM,----------------------------------------------
 /COM, TRANSIENT ANALISYS
 /COM,----------------------------------------------
-
-*SET, PI, ACOS(-1)
-spin = mxspn*pi/30
-tinc = 0.5e-3
-tend = 4
-spindot = spin/tend
-nbp = nint(tend/tinc) + 1
-unb = 1.e-4
-f0 = unb*dskdia
+*SET,spin, mxspn
+*SET,tinc, 0.5e-3
+*SET,tend, 4
+*SET,spindot, spin/tend
+*SET,nbp, nint(tend/tinc) + 1
+*SET,unb, 1.e-4
+*SET,f0, unb*dskdia
 
 *dim,spinTab,table,nbp,,,TIME
 *dim,rotTab, table,nbp,,,TIME
@@ -308,7 +325,7 @@ EXTREME,7
 /ANG,1
 /REP,FAST
 /SHOW,PNG
-/GFILE,2400,
+/GFILE,800,
 PLVAR,7
 EXTREME,7
 /SHOW,CLOSE
@@ -323,7 +340,7 @@ ESOL,9,18,19,SMISC,34,Sz_At_Disk
 PLVAR,8,9
 EXTREME,8,9
 /SHOW,PNG
-/GFILE,2400,
+/GFILE,800,
 PLVAR,8,9
 EXTREME,8,9
 /SHOW,CLOSE
