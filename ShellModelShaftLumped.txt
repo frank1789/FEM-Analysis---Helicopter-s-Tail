@@ -257,7 +257,7 @@ MP, NUXY, 3, DuralNi
 SECNUM, 4
 MAT, 3
 TYPE, 3
-*DO, i, 1, 8, 1
+*DO, i, 1, 7, 1
 	KSEL, s, KP, , KpShaft(i)
 	NSLK, s
 	*GET, NodeShaft, node, , num, max
