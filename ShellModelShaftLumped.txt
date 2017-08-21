@@ -229,10 +229,10 @@ SAVE
 *DIM, ConnectionShaftSupportNode, ARRAY, 8, 3
 *GET, KpShaftDimension,'PARM',KPSHAFT,DIM,X
 ET, 4, MASS21, , ,2
-R, 4, MassShaft/8
+R, 4, MassShaft/7
 TYPE, 4
 REAL, 4
-*DO, i, 1, KpShaftDimension, 1
+*DO, i, 1, KpShaftDimension-1, 1
 	*GET,LastNode,NODE,,NUM,MAX
 	N, LastNode+1, KX(Kpshaft(i)), KY(Kpshaft(i)), KZ(Kpshaft(i))
 	*GET,node_numb,NODE,,NUM,MAX
