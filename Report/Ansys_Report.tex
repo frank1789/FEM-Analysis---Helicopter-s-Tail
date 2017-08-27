@@ -1,0 +1,273 @@
+%========================================
+% PREAMBOLO
+%========================================
+
+% === Impostazione del documento ==========================
+\documentclass[a4paper,12pt,twoside,english,hidelinks]{report}
+\pagenumbering{arabic}
+\usepackage{setspace}
+\onehalfspace
+
+% === Regolazione dei margini =============================
+\usepackage{geometry}
+\geometry{a4paper, top=2.5cm, bottom=3cm, left=3.0cm, right=3.0cm, heightrounded, bindingoffset=5mm}
+
+\addtolength{\oddsidemargin}{30pt}
+\addtolength{\evensidemargin}{-30pt}
+\usepackage{fancyhdr}
+\usepackage{multirow}
+\usepackage{multicol}
+\usepackage[section]{placeins}
+
+% === Impostazione dei font ===============================
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{ae}
+\usepackage{relsize}
+\usepackage{csquotes}
+\usepackage{quoting} 
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{pifont}
+\usepackage{mathdots}
+\usepackage{mathtools}
+\usepackage[colorlinks=true]{hyperref}
+\hypersetup{
+	bookmarksnumbered=true,
+	linkcolor=black,
+	citecolor=black,
+	pagecolor=black,
+	urlcolor=black,
+}
+\usepackage{verbatim}
+\usepackage{alltt,footnote}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\DeclarePairedDelimiter{\norma}{\lVert}{\rVert}
+\usepackage{enumitem}
+\usepackage{textcomp}
+\usepackage{syntonly}
+	\usepackage{microtype}
+\usepackage{indentfirst}
+
+% === Integrazione delle figure ===========================
+\usepackage{graphicx}
+\graphicspath{{./PICTURES/}}
+\renewcommand{\figurename}{Fig.}
+\usepackage{subfig}
+
+% === Per gli algoritmi ===================================
+\usepackage{algorithmicx}
+\usepackage[ruled]{algorithm}
+\usepackage{algpseudocode}
+\usepackage{xcolor}
+\usepackage{listings}
+
+% === Per le tabelle ======================================
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{color}
+\usepackage{colortbl}
+\usepackage{longtable}
+\usepackage{pgfplotstable}
+\usepackage{makecell}
+\usepackage{booktabs}
+
+%==Per le figure latex======================================
+%Package e librerie per TikZ e PGF, le librerie non sono tutte necessarie a questo documento LATEX.
+\usepackage{tikz,fp,ifthen,fullpage,pgfmath,xparse,tikz-dimline}
+\usetikzlibrary{decorations,backgrounds,fit,calc,through}
+\usetikzlibrary{arrows,shadows,shapes}
+\usetikzlibrary{fadings,patterns,mindmap}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.13}
+
+
+%==Per APDL e linguaggi======================================          
+\usepackage{listings}
+\usepackage{xcolor}
+% === APDL STYLE LANGUAGE ==================================
+%colori per il linguaggio
+\definecolor{darkpastelpurple}{rgb}{0.59,0.44,0.84}
+\definecolor{halfgray}{gray}{0.55}
+\definecolor{arylideyellow}{rgb}{0.91,0.84,0.42}
+\definecolor{cadmiumgreen}{rgb}{0.0,0.42,0.24}
+\definecolor{ceruleanblue}{rgb}{0.16,0.32,0.75}
+\definecolor{cinnamon}{rgb}{0.82,0.41,0.12}
+\definecolor{darkslateblue}{rgb}{0.28,0.24,0.55}
+\lstdefinelanguage{apdl-modified}
+{
+	alsoletter=/*\%,
+	morekeywords={/clear,/filnam,/title,/unit,/inquire,/rep,/ang,/eshape,/replot,/view,/exit,/replo,/plopts,/triad,/efacet,/rgb,/show,/gile,/eof,/solve,/output,/out,/device
+	},
+	morekeywords={*afun,*dim,*vget,*do,*enddo,*cfopen,*vwrite,*cfclos,*set,
+		*get,*use,*abbr,*msg,*if,*else,*endif,*abset,*abcheck,*abfini},
+	morekeywords={start,new,finish,si,antype,static,set,deg,num,max,min,dim,
+		count,line,llist,lplot,pngr,fast,leng,arotat,allsel,lsel,s,a,r,u ,
+		none,acel,pstres,dl,mxpand,modopt,lumpm,d,save,eplot,modal,plnsol,
+		sum,eqv,loc,eq,then,k,n,e,et,mp,ex,nuxy,dens,latt,lmesh,lesise,
+		sectype,secoffset,secdata,keyopt,mshkey,ksel,nesl,lsel,kp,
+		node,line,sect,mshape,amesh,aesize,secnum,type,real,
+		mat,nslk,nsel,cyl4,wpcsys,csys,wpoffs,wprota,cerig,
+		secjoint,joint,revo,esel,cm,elem,ui,x,y,z,
+		lesize,solve,pldisp,sequ,l,mode,freq,coriolis,qrdamp,
+		wpstyle,fill,secd,nsll,clocal,outpr,elform,elprep,nplot,psolve,
+		secp,ncomp,cdsys,rect,csolid,etyp},
+	otherkeywords={/angle},
+	keywords=[2]{beam188,beam189,shell181,mpc184,combin14,mass21},
+	keywords=[3]{/prep7,/solu,/post1,/post26},
+	keywords=[5]{ARRAY,TABLE},
+	keywords=[4]{
+		',
+		-,
+		",
+		\%,
+		(,
+		),
+		,,
+		.,
+		:,
+		;,
+		?,
+		^,
+		−,
+		+,
+		<,
+		=,
+		>,
+		e,
+	},
+	%define string
+	morestring=[b]\%,
+	morestring=[b]',%
+	morestring=[b]",%
+	morestring=[s]{r'}{'},% `raw' strings
+	morestring=[s]{r"}{"},% `raw' strings
+	morestring=[s][\color{red}\bfseries]{\%}{\%},% `raw' strings
+	sensitive=false,% keywords are not case-sensitive
+	%define comment
+	morecomment=[l]{!},
+	morecomment=[l]{/COM},
+}
+\lstset{
+	%Frame style
+	frame=single,
+	rulecolor=\color{black},
+	%number style
+	numbers=left,
+	numberstyle=\tiny\color{halfgray},
+	%space and special character
+	showspaces=false,
+	showstringspaces=false,
+	showstringspaces=false,
+	breaklines=true,
+	%input path
+	%inputpath={{/}},
+	extendedchars=true,
+	literate=
+	{á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+	{Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+	{à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
+	{À}{{\`A}}1 {È}{{\'E}}1 {Ì}{{\`I}}1 {Ò}{{\`O}}1 {Ù}{{\`U}}1
+	{ä}{{\"a}}1 {ë}{{\"e}}1 {ï}{{\"i}}1 {ö}{{\"o}}1 {ü}{{\"u}}1
+	{Ä}{{\"A}}1 {Ë}{{\"E}}1 {Ï}{{\"I}}1 {Ö}{{\"O}}1 {Ü}{{\"U}}1
+	{â}{{\^a}}1 {ê}{{\^e}}1 {î}{{\^i}}1 {ô}{{\^o}}1 {û}{{\^u}}1
+	{Â}{{\^A}}1 {Ê}{{\^E}}1 {Î}{{\^I}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1
+	{œ}{{\oe}}1 {Œ}{{\OE}}1 {æ}{{\ae}}1 {Æ}{{\AE}}1 {ß}{{\ss}}1
+	{ç}{{\c c}}1 {Ç}{{\c C}}1 {ø}{{\o}}1 {å}{{\r a}}1 {Å}{{\r A}}1
+	{€}{{\EUR}}1 {£}{{\pounds}}1 {θ}{{$\theta$}}1 {Φ}{{$\Phi$}}1,
+	% defie style
+	basicstyle=\scriptsize\ttfamily,
+	% style of keyword
+	% keyword
+	keywordstyle=\color{ceruleanblue}\bfseries\ttfamily,
+	%type elements
+	keywordstyle=[2]\color{darkslateblue},
+	% section
+	keywordstyle=[3]\color{cinnamon},
+	keywordstyle=[4]\color{black},
+	keywordstyle=[5]\color{arylideyellow},
+	% style of comments
+	commentstyle=\color{cadmiumgreen}\ttfamily,
+	% style of string
+	stringstyle=\color{darkpastelpurple}\ttfamily,
+} 
+
+
+
+
+\usepackage{appendix}
+
+%========================================
+% TESTO REPORT
+%========================================
+
+\begin{document}
+	
+	% === Frontespizio ====================================
+	\pagestyle{empty}
+	\input{frontespizio}
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+	\pagestyle{empty}
+	
+	\begin{abstract}
+		This document is aimed to be a report of the work performed during the master course of \emph{Modeling and Design with Finite Elements}, for the part about the course's project, developed in team with ANSYS Mechanical APDL Software. \\ 
+		
+		\noindent
+		The purpose is to present a consistent finite-element formulation, developed to predict the free vibration characteristics of two different helicopters tailboom structures. \\ Both airframes considered for our analysis are taken from real-world widespread helicopters types; the first model regards the tail of a \textbf{Lama SA-315b} which is an old type of reticular steel structure, quite easy to design and manufacture, while the second model represents a modern semi-monocoque tail design that consists in an ensemble of an aluminium skin layer connected with other structural elements and commonly adopted in modern rotor-craft's airframes like the one of the \textbf{Eurocopter AS-350 ecureuil}. \\
+		
+		\noindent
+		The work has been organized in a sequence of \underline{steps of increasing complexity and accuracy}. \\ Initially the problem has been approached by independent investigations of the free vibrational behaviour of the two different airframes (\emph{uncoupled tailrotor-fuselage dynamic model}). Thus, results are obtained for the naked structures only. Then, the tailboom's models have been improved taking into account also the presence of additional subsystems normally fixed on helicopter's tail and the system's natural frequencies have been re-calculated. Furthermore, some theoretical hints on how to take into account the \emph{tailrotor-fuselage dynamic coupling}, which considers also the interaction of the effects related to the the tail-rotor rotation, have been presented in the chapter 4. This last step is quite ambitious, the topic is wide and complex, however it should be considered to develop a model which is accurate enough to study the real system's vibrational behaviour. \\
+		
+		\noindent
+		  The last part, instead, is aimed to explore the Ansys' Rotor-dynamic capabilities and tools which are only recently implemented in the software. A great deal of efforts have been done to understand the physical phenomena and try to implement a simple model from the rotor-dynamics point of view. However, this can be done only under important simplifying assumptions. For our purposes, this part is only limited to study the rotor's vibrational behaviour which turns to be velocity dependent (varies with tail rotor speed). \\ 
+		
+		
+		%  In fact, \underline{a simplified elastically-suspended rotor} has been considered and it has %been modelled as a rigid disk (actually as an annular ring of material) which rotates around an %elastic beam's shaft fixed on the tail by two elastic bearings. \\
+		
+		
+	\end{abstract}
+	
+	\clearpage
+	\newpage %PAGINA VUOTA
+	\null
+	\pagestyle{empty}
+	\newpage
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+	% === Indice ==========================================
+	\tableofcontents
+	\pagestyle{headings}
+	\setcounter{page}{3}
+
+
+	% === Capitoli Report ===================================
+	\pagestyle{plain}
+	\input{Introduction}
+	\input{CHAPTER_1}
+	\input{CHAPTER_2}
+	\input{CHAPTER_3}
+	\input{CHAPTER_4}
+	\input{CHAPTER_5}
+	\input{CONCLUSIONS}
+	\input{APPENDIX}
+
+
+\nocite{*}
+
+
+	% === Bibliografia ====================================
+	\cleardoublepage
+	\pagestyle{fancy}
+    \input{Bibliography}
+
+
+\end{document}
+%========================================

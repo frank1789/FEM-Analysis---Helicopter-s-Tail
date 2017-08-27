@@ -1,0 +1,20 @@
+\chapter{Complete Model}
+Now describe the procedure to attach the tail rotor to two structure: the truss model and shell model, respectively.
+In both base model we add a part that realize the nodes that represent rigid connection between the tail structure and tail rotor.
+After call the macro to realize the component, realized connection by rigid elements between these and component previous realized.
+
+\section{Truss model with rotor tail}
+As previously introduced, we use the base model of the trellis structure, which serves as a base for attaching the tail rotor developed in detail in the chapter.
+Two nodes are placed at the end of the tail and two new raised nodes of a certain offset are created that will act as a base for the bearing attachment.
+Once the basic nodes are made, the macro \ref{lst:rotor} is used to make the rotor model.
+To allow rotation of the tail rotor shaft, the rigid element \textsc{mpc184} with (keyopt, 6) was used in such a way as to produce joint revolutions placed in their respective nodes of attack.
+This result allows the shaft to rotate along its axis and simultaneously limiting other movements.
+Finally, the two structures are connected by rigid elements of the \textsc{mpc184} type, the final result is shown in the figure
+
+%\listingautocaption[language=apdl-modified, label={lst:ShellModeldiskRun},firstline=170,lastline=236]{ShellModeldiskRun.txt}
+
+
+
+%firstline=300,lastline=500
+\section{Shell model with rotor Tail}
+
