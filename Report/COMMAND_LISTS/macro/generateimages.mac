@@ -1,0 +1,23 @@
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!                                                  !
+!              IMAGE GENERATOR MACRO               !
+!                                                  !
+! NO PARAMETERS INPUT                              !
+!                                                  !
+!                                                  !
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+/EFACET, 4
+/REPLOT
+/SHOW, PNG, , 0
+PNGR, COMP, 0, -1
+PNGR, ORIENT, HORIZ
+PNGR, COLOR, 2
+PNGR, TMOD, 1
+/GFILE, 800,
+!*
+/REPLOT
+/SHOW, CLOSE
+/DEVICE, VECTOR, 0
+!*
+/EOF

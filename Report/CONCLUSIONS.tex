@@ -1,0 +1,120 @@
+\chapter{Conclusions}
+
+
+\section*{General considerations}
+\addcontentsline{toc}{section}{General considerations}
+
+\noindent
+To sum up the results of our study project we must start from the motivations which has driven it along the path and follow the logical steps:
+
+\begin{itemize}
+	\item the project grows from the fact that helicopter crew and passenger comfort has recently gained increased emphasis and so vibration requirements have become more and more stringent.
+	
+	\item Consequently, treat the helicopters vibration problem only after the manufacturing phase adding suppression devices (absorbers) to overcome the inadequate vibration prediction capability has no more sense and it is not cost-efficient; \\ 
+	\underline{The new challenge is to design helicopters with intrinsically low vibration level}.
+	
+	\item To reach this goal, a \textbf{precise FEM model of the helicopter have to be implemented} so it can provide a broad insight of its characteristics dynamical behaviour since the beginning. 
+	The need to precise modelling of the basic frame or the basic structure including the material properties and the cross sections is that it contributes to \underline{helicopter stiffness characteristics} which must be precisely modelled to investigate in vibration problems.
+	
+	\item Structural parts of the fuselage can be easily and accurately modelled with the Ansys most common structural elements; in fact, dynamic analysis yield satisfactorily results with simplified models. \\
+	In fact, it is not advisable to build solid models or surfaces with many elements to represent the basic frame's parts of the airframe. \\
+	\underline{Comparison with literature results showed that simple} \textbf{truss, beam, shells elements} \underline{models accurately predict the real system's behaviour}. In our case, in both models, longerons, cross members, stringers, stiffeners, bulkheads and outer skin have all been modelled with those simple type of elements.
+	
+	\item Then, \textbf{it is essential to add the secondary structural components} that have a critical role in the vibration characteristics of the model. 
+	
+	So, in the case of considering the whole model of the helicopter, the fuselage skin, the cabin floor, the windscreen glass and doors with their assigned properties must be considered and added to the model.
+
+    Furthermore, \textbf{also the non-structural components} have to be considered (for example tailrotor head, gearbox, aerodynamical stabilizers and, eventually, for the full model, also engines, fuel tank, landing skid, swash plate) and added to certain points on the model as lumped masses. \\
+    In fact, as it can be appreciated in the results table, adding those components to the basic structure has a dramatical effect on the results values; structure's resonant frequencies results to be considerably lowered down.  
+    
+    \item 
+    Unfortunately, \underline{the complete helicopter vibration problem is really difficult	to predict} \underline{accurately}, as yet, because of its structural, as well as aerodynamic, complexity. \\
+    To let the problem to be more tractable, \emph{simplifying assumptions} must be imposed at the beginning. In our case, \textbf{we neglected aerodynamic loads} which typically introduce non-linearities on the problem. However, in the future studies, to extend our analysis, those loads must be considered. 
+    
+    \item
+    Nowadays, rotordynamics tools are not enough advanced to treat problems with asymmetric structures, because them are recently introduced in ANSYS and above all for a computational cost issue. As we seen before, the coupling rotor - fuselage analysis suffers troubles of geometrical asymmetry. So as to partially overcome this issue, one possibility is to simplify the rotor as a concentrated mass and inertia with torsional springs in order to simulate the gyroscopic effects. \\
+    Results obtained from the analysis of the sole rotor (without coupling) are not reliable to give an overview of the tailboom dynamic behaviour. In this project, considerations about the rotor were made just as a matter of investigation.\\
+    The dynamic studies relative to tailboom - rotor coupling, therefore, should have a future development using, for example, a software capable to treat multibody dynamic simulations.  
+	
+\end{itemize}
+
+
+\section*{Review of the main results}
+\addcontentsline{toc}{section}{Review of the main results}
+
+\noindent
+Once defined each model, a free vibration analysis has been carried out to extract the natural frequencies of the basic frames up to its 20 modes, which is located around 61.6 Hz for the LAMA SA-315b helicopters model and 94.2 Hz for the Ecureuil AS-350.\\ 
+\noindent The results on the natural frequencies of the full structures reasonably match with the literature (especially for lower modes) giving confidence in our simple models. However, in order to let our models to become a comprehensive design tool for analysing the real behaviour of the two helicopter's considered, it \textbf{is essential to add the non-linear contribution of aerodynamic loads and the rotor-fuselage dynamic coupling effects}. 
+
+%\clearpage
+%
+\begin{table}[h]
+ \centering 
+ \pgfplotstableset{
+ 	column type=l,
+ 	every head row/.style={
+ 	before row={
+ 		\toprule 
+   		& \multicolumn{2}{c}{TRUSS} & \multicolumn{2}{c}{MONOCOQUE}\\
+   	 	&  \multicolumn{1}{c}{simple} & \multicolumn{1}{c}{complete} & \multicolumn{1}{c}{simple} &\multicolumn{1}{c}{complete}\\
+   	 	}, after row=\midrule,
+   	 },
+   	every last row/.style={after row=\bottomrule},
+ % global config, for example in the preamble
+ % these columns/<colname>/.style={<options>} things define a style
+ % which applies to <colname> only.
+ %every head row/.style={before row=\hline, after row=\hline},
+ %every last row/.style={after row=\hline},
+ display columns/0/.style={column name =Mode, int detect,column type=r},
+ display columns/1/.style={column name =Frequence [Hz], column type=r, fixed,fixed zerofill,precision=5,set thousands separator={\,}},
+ display columns/2/.style={column name =Frequence [Hz], column type=r,fixed,fixed zerofill,precision=5,set thousands separator={\,}},
+ display columns/3/.style={column name =Frequence [Hz], column type=r,fixed,fixed zerofill,precision=5,set thousands separator={\,}},
+ display columns/4/.style={column name =Frequence [Hz], column type=r,fixed,fixed zerofill,precision=5,set thousands separator={\,}},
+		%other style option
+	}
+ %TRUSS MODEL - RESULT
+ \pgfplotstableread{ModalFreq-Helicopter_tail.txt}{\dataA}
+ \pgfplotstableread{ModalFreq-TrussTailLumped.txt}{\dataB}
+ %SHELL MODEL - RESULT
+ \pgfplotstableread{ModalFreq-Shellmodel.txt}{\dataC}
+ \pgfplotstableread{ModalFreq-ShellmodelShaftLumped.txt}{\dataD}
+ % concatenate table
+ \pgfplotstablecreatecol[copy column from table={\dataB}{[index] 1}] {par2} {\dataA}
+ \pgfplotstablecreatecol[copy column from table={\dataC}{[index] 1}] {par3} {\dataA}
+ \pgfplotstablecreatecol[copy column from table={\dataD}{[index] 1}] {par4} {\dataA}
+ %generate full table
+ \pgfplotstabletypeset{\dataA}
+ \caption{Result all natural frequencies}
+ \label{tab:ResultRecap}
+\end{table}
+%
+
+
+\smallskip
+\noindent
+FURTHER IMPORTANT NOTES:
+\noindent
+\begin{itemize}
+	\item Since the exciting frequency of the tail rotor head is almost 33,35 Hz (2001 rpm), the first harmonic of the main rotor head (regarding the three bladed tail rotor) will be 66.70 Hz. So, \underline{the higher modes (from the number 10 on) will be critical modes} and have to be considered carefully in design stage in order to prevent
+	resonance with the tail rotor excitation forces. 
+	
+	\item \noindent
+	The tail rotor speed has obviously influence on the tailboom natural frequencies; In fact they are expected to increase with the rotational velocity.\\
+\end{itemize}
+
+
+\medskip
+\section*{Giving confidence to the FEM model by testing}
+\addcontentsline{toc}{section}{Giving confidence to the FEM model by testing}
+\noindent   
+As previously noted, FE modelling technique found wide application in helicopters vibrations problems investigation and results to be a very useful and powerful tool. However, in order to become applicable for real purposes, FE model should always be validated via experimental modal analysis results. \\
+\noindent
+Also literature's research led to the conclusion that helicopters vibrations problems might be effectively solved with use of the analytical and FEM models if their accuracy is improved by updating to the experimental results. \\
+
+\noindent
+Hence, the models can be experimentally verified by \textbf{ground} or \textbf{in-flight tests}.\\
+\noindent
+With ground tests, the effects of the rotating systems (e.g. rotors, engines, \dots) and the aerodynamic environment on the fuselage dynamic behaviour \underline{cannot be investigated}. This is the reason why \textbf{it is preferable to perform in-flight test} for helicopter structural dynamic investigation despite their higher costs and greater technical experiment complexity.
+The ground modal test results to be only an approximation of the structural dynamics model description
+for the in-flight conditions and in-flight modal testing is always considered superior.
+%
