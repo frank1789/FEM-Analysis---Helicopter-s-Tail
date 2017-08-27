@@ -9,7 +9,7 @@ The work has been organized in a sequence of __steps of increasing complexity an
 The last part, instead, is aimed to explore the Ansys’ Rotor-dynamic capabilities and tools which are only recently implemented in the software. A great deal of efforts have been done to understand the physical phenomena and try to implement a simple model from the rotor-dynamics point of view. However, this can be done only under important simplifying assumptions. For our purposes, this part is only limited to study the rotor’s vibrational behaviour which turns to be velocity dependent (varies with tail rotor speed).
 
 ## Report
-The complete report about dynamic analisys for tailboom helicopter is aviable [here](https://github.com/frank1789/FEM-Analysis---Helicopter-s-Tail/)
+The complete report about dynamic analisys for tailboom helicopter is aviable [here](https://github.com/frank1789/FEM-Analysis---Helicopter-s-Tail/Report/Ansys_Report.pdf)
 
 ## Authors
 
